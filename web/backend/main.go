@@ -332,7 +332,7 @@ func main() {
 	// Always available even when higher-tier providers are throttled.
 	mux.HandleFunc("/api/market/prices", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		cfg, _ := loadRuntimeConfig(absPath)
+		cfg := runtimeConfig(absPath)
 		mints := watchlistMints(cfg)
 		if raw := strings.TrimSpace(r.URL.Query().Get("ids")); raw != "" {
 			mints = splitCSV(raw)
@@ -354,7 +354,7 @@ func main() {
 	// gracefully with an error field when the key is unentitled or throttled.
 	mux.HandleFunc("/api/market/perps", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		cfg, _ := loadRuntimeConfig(absPath)
+		cfg := runtimeConfig(absPath)
 		key := firstNonEmptyEnv("BIRDEYE_API_KEY", cfg.Solana.BirdeyeAPIKey)
 		resp := map[string]any{"source": "birdeye/hyperliquid", "asOf": time.Now().UTC().Format(time.RFC3339)}
 		if key == "" {
@@ -380,7 +380,7 @@ func main() {
 	// API: Live trending — Birdeye trending Solana tokens with graceful degradation.
 	mux.HandleFunc("/api/market/trending", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		cfg, _ := loadRuntimeConfig(absPath)
+		cfg := runtimeConfig(absPath)
 		key := firstNonEmptyEnv("BIRDEYE_API_KEY", cfg.Solana.BirdeyeAPIKey)
 		resp := map[string]any{"source": "birdeye", "asOf": time.Now().UTC().Format(time.RFC3339)}
 		if key == "" {
@@ -454,7 +454,7 @@ func main() {
 	// the best params with in-sample and out-of-sample scores (overfit exposure).
 	mux.HandleFunc("/api/trading/optimize", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		cfg, _ := loadRuntimeConfig(absPath)
+		cfg := runtimeConfig(absPath)
 		base := strategyParamsFromConfig(cfg)
 		res := strategy.Optimize(demoBars(600), base, strategy.DefaultGrid(), strategy.CalmarScore, 0.7)
 		json.NewEncoder(w).Encode(res)
@@ -464,7 +464,7 @@ func main() {
 	// console shows every perp surface (Aster, Phoenix/Vulcan, Birdeye/hyperliquid).
 	mux.HandleFunc("/api/perps/venues", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		cfg, _ := loadRuntimeConfig(absPath)
+		cfg := runtimeConfig(absPath)
 		venues := []map[string]any{
 			{"name": "Aster DEX", "kind": "onchain_perps", "status": configuredStr(cfg.Solana.AsterAPIKey != ""), "signing": "hmac"},
 			{"name": "Phoenix (Vulcan CLI)", "kind": "onchain_perps", "status": binaryStatus("vulcan"), "modes": []string{"paper", "dry-run", "confirm-each", "auto-execute"}},
@@ -765,6 +765,9 @@ func firstNonEmpty(values ...string) string {
 
 // strategyParamsFromConfig maps the runtime strategy config into engine params.
 func strategyParamsFromConfig(cfg *config.Config) strategy.StrategyParams {
+	if cfg == nil {
+		cfg = config.DefaultConfig()
+	}
 	return strategy.StrategyParams{
 		RSIOverbought:   cfg.Strategy.RSIOverbought,
 		RSIOversold:     cfg.Strategy.RSIOversold,
@@ -780,6 +783,9 @@ func strategyParamsFromConfig(cfg *config.Config) strategy.StrategyParams {
 // portfolioLimitsFromConfig derives account-level guardrails from config, using
 // conservative defaults for limits the config does not yet express.
 func portfolioLimitsFromConfig(cfg *config.Config) trading.PortfolioLimits {
+	if cfg == nil {
+		cfg = config.DefaultConfig()
+	}
 	maxConcurrent := cfg.OODA.MaxPositions
 	if maxConcurrent <= 0 {
 		maxConcurrent = 3
@@ -861,6 +867,18 @@ func loadRuntimeConfig(path string) (*config.Config, error) {
 	// .env.local / process are first-class even when config.json is sparse.
 	config.ApplyEnvOverrides(cfg)
 	return cfg, nil
+}
+
+// runtimeConfig is the fail-soft loader for market / degraded endpoints.
+// Never returns nil — falls back to defaults + env when the file is missing or unreadable.
+// Strict handlers (config, doctor, readiness) should use loadRuntimeConfig and surface errors.
+func runtimeConfig(path string) *config.Config {
+	cfg, err := loadRuntimeConfig(path)
+	if err != nil || cfg == nil {
+		cfg = config.DefaultConfig()
+		config.ApplyEnvOverrides(cfg)
+	}
+	return cfg
 }
 
 func redactedConfig(cfg *config.Config) config.Config {
@@ -1535,16 +1553,44 @@ func loggerMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// findProjectRoot walks up from the config dir to find the go.mod file.
+// findProjectRoot walks up from cwd (preferred), the config dir, and the
+// executable location to find the go.mod that owns this monorepo.
+// Preferring cwd avoids resolving ~/.clawdbot/config.json → wrong root.
 func findProjectRoot(configPath string) string {
-	candidates := []string{filepath.Dir(configPath)}
+	var candidates []string
 	if cwd, err := os.Getwd(); err == nil {
 		candidates = append(candidates, cwd)
 	}
+	if configPath != "" {
+		candidates = append(candidates, filepath.Dir(configPath))
+	}
+	if exe, err := os.Executable(); err == nil {
+		if resolved, err := filepath.EvalSymlinks(exe); err == nil {
+			candidates = append(candidates, filepath.Dir(resolved))
+		} else {
+			candidates = append(candidates, filepath.Dir(exe))
+		}
+	}
+	seen := make(map[string]struct{}, len(candidates))
 	for _, start := range candidates {
+		start = filepath.Clean(start)
+		if start == "" {
+			continue
+		}
+		if _, ok := seen[start]; ok {
+			continue
+		}
+		seen[start] = struct{}{}
 		dir := start
 		for {
 			if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+				// Prefer the clawdbot module when multiple go.mod exist up the tree.
+				if data, err := os.ReadFile(filepath.Join(dir, "go.mod")); err == nil {
+					if strings.Contains(string(data), "module github.com/8bitlabs/clawdbot") {
+						return dir
+					}
+				}
+				// Keep first match as fallback if module line is unexpected.
 				return dir
 			}
 			parent := filepath.Dir(dir)
@@ -1554,7 +1600,13 @@ func findProjectRoot(configPath string) string {
 			dir = parent
 		}
 	}
-	return filepath.Dir(configPath)
+	if configPath != "" {
+		return filepath.Dir(configPath)
+	}
+	if cwd, err := os.Getwd(); err == nil {
+		return cwd
+	}
+	return "."
 }
 
 // resolveFrontendDir finds web/frontend/dist relative to the monorepo root,

@@ -133,6 +133,7 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 | **Birdeye v3 Analytics** | 22 API endpoints, 19 LLM-callable agent tools — token overview, OHLCV, trade feeds, security audits, trending, wallet analytics |
 | **Helius DAS + RPC** | Digital Asset Standard queries (get-asset, owner-assets, search), SPL token operations (balance, supply, largest holders), raw RPC forwarding |
 | **ZK + Privacy Primitives** | Nullifiers, attestations, encrypted state commitments, and privacy-preserving proof flows under `zk-primitives/` |
+| **ZK Omnichain (RH ↔ Solana)** | msgType-4 LayerZero messages with Ed25519 PoK — `pkg/zkomni`, `clawdbot zero zkomni`, skill `cheshire-zk-omni` (pairs with cheshire-terminal `robinhood-agents`) |
 | **Cloudflare Edge Installer** | Branded install routes plus read-only ZK metadata at `/.well-known/clawdbot-zk.json` |
 | **Aster DEX Perpetuals** | HMAC-signed futures trading — market/limit orders, position management, stop-loss/take-profit, account analytics |
 | **Jupiter Aggregator** | Best-route spot swaps with slippage protection |
@@ -355,6 +356,10 @@ clawdbot-go/
 │   ├── tools/                   Tool interface + registry
 │   └── ...                      health, heartbeat, logger, identity, etc.
 │
+├── pkg/zkomni/                  RH↔Solana ZK omnichain (msgType 4 Ed25519 PoK)
+│   ├── proof.go                 Plan/verify nullifier + proof (matches robinhood-agents)
+│   └── proof_test.go
+│
 ├── zk-primitives/               ZK agent, TypeScript client, Anchor program
 │   ├── docs/EDGE_DISTRIBUTION.md     ← Cloudflare metadata surface
 │   ├── docs/PIEDPIPER_ADAPTATION.md ← full classical→ZK mapping
@@ -364,6 +369,8 @@ clawdbot-go/
 │   ├── configs/                 Light tree and runtime config
 │   ├── programs/                clawd-zk Anchor program
 │   └── tests/                   Off-chain and on-chain test notes
+│
+├── skills/cheshire-zk-omni/     Skill for zk-omni messenger + Zero CLI
 │
 ├── cloudflare/                  Branded install Worker and tests
 │   ├── install-worker.js        Worker routes, wrappers, metadata
@@ -437,6 +444,43 @@ Clawd is designed to be privacy-preserving by default. Sensitive user context, r
 
 ---
 
+## 🔗 ZK Omnichain (Robinhood ↔ Solana)
+
+Zero Clawd ships a first-class path for **Cheshire ZK Omnichain** messages (LayerZero **msgType 4**): Ed25519 proof of knowledge, nullifier anti-replay, optional handoff to the cheshire-terminal **robinhood-agents** relayer.
+
+| Surface | Command / path |
+|---------|----------------|
+| Plan (Go, offline) | `clawdbot zero zkomni plan --action attest --memo demo` |
+| One-shot | `clawdbot zero zkomni oneshot --action publish_attestation` |
+| Natural language | `clawdbot zero ask "zk-omni message attest demo"` |
+| Go package | `pkg/zkomni` (crypto aligned with `robinhood-agents/src/zkOmni/proof.js`) |
+| Intent router | `IntentZkOmni` in `pkg/zero/intents.go` |
+| Skill | `skills/cheshire-zk-omni/SKILL.md` |
+
+```bash
+# Native plan — no Node required
+export ZERO_SECRET_HEX=0x$(openssl rand -hex 32)   # optional; else ephemeral
+clawdbot zero zkomni plan --action attest --memo zero-clawd
+
+# NL dispatch (no model call for routing)
+clawdbot zero ask "send cross-chain message robinhood to solana"
+
+# Full relayer / live deliver lives in cheshire-terminal:
+#   cd robinhood-agents && npm run zk-omni:oneshot
+#   npm run zk-omni:relayer -- --port 8787
+```
+
+Cross-repo stack (contracts, Solana program, relayer, docs):
+
+- **cheshire-terminal** `robinhood-agents/docs/ZK_OMNI.md`
+- RH messenger: `contracts/zk-omni/CheshireZkOmniMessenger.sol`
+- Solana: `programs/zk_omni` (`Hfbc3tAGYE5nBUa5UncjSV6hoWd3JoVKdA49jPcreXFJ`)
+- Agent TUI: `packages/clawd-agent-tui` (`zk_omni_plan` / `zk_omni_oneshot`)
+
+```bash
+go test ./pkg/zkomni ./pkg/zero   # plan/verify + intent routing
+```
+
 ## 📋 CLI Reference
 
 ### Agent & OODA
@@ -473,6 +517,9 @@ clawdbot catalog                         # Summary of local skills, agents, and 
 clawdbot catalog skills                  # List skills entries
 clawdbot catalog agents                  # List agent catalog JSON definitions
 clawdbot catalog zk                      # Inspect zk-primitives package/program/docs
+clawdbot zero zkomni plan --action attest --memo demo   # Plan RH↔Solana ZK omni message
+clawdbot zero zkomni oneshot --action publish_attestation
+clawdbot zero ask "zk-omni message attest demo"         # NL route → IntentZkOmni
 clawdbot catalog compress                # Pack agent catalog into tar.gz bundle
 clawdbot catalog --json                  # Machine-readable report
 ```

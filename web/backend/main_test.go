@@ -165,6 +165,45 @@ func TestLoadRuntimeConfig_appliesRobinhoodEnv(t *testing.T) {
 	}
 }
 
+func TestRuntimeConfig_neverNilOnCorruptJSON(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "bad.json")
+	if err := os.WriteFile(path, []byte("not-json"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	// Strict loader must error.
+	if _, err := loadRuntimeConfig(path); err == nil {
+		t.Fatal("expected parse error for corrupt JSON")
+	}
+	// Soft loader must never return nil (market handlers depend on this).
+	cfg := runtimeConfig(path)
+	if cfg == nil {
+		t.Fatal("runtimeConfig returned nil")
+	}
+	// Strategy helpers must tolerate nil too.
+	_ = strategyParamsFromConfig(nil)
+	_ = portfolioLimitsFromConfig(nil)
+}
+
+func TestFindProjectRoot_prefersCwdModule(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// web/backend → monorepo root with go.mod
+	root := filepath.Clean(filepath.Join(cwd, "..", ".."))
+	// Config lives outside the monorepo (like ~/.clawdbot/config.json).
+	outside := filepath.Join(t.TempDir(), "config.json")
+	got := findProjectRoot(outside)
+	if got != root {
+		// When not running from package dir, accept any path that has clawdbot go.mod.
+		if data, err := os.ReadFile(filepath.Join(got, "go.mod")); err != nil ||
+			!strings.Contains(string(data), "module github.com/8bitlabs/clawdbot") {
+			t.Fatalf("findProjectRoot(%q)=%q, want monorepo root with clawdbot module (cwd root %q)", outside, got, root)
+		}
+	}
+}
+
 func TestPackageAPIHandler_oneButton(t *testing.T) {
 	// Drive the real package path: POST builds slim archive, GET reports it, download streams it.
 	cwd, err := os.Getwd()
