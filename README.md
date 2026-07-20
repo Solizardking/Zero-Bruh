@@ -28,29 +28,60 @@
 
 ## 🚀 One-shot install (Grok Build style)
 
-**Full stack via npm** (skills + agent skill dirs + env + optional packages):
+**Skills are prepackaged at install** — every `skills/*/SKILL.md` in this repo
+(`pack-index.json` v2, **23** skills) is copied to `~/.clawdbot/skills` and
+symlinked into `~/.agents`, `~/.claude`, and `~/.codex` skill roots.
+
+### A · Skills only (fastest — default on `npm install`)
+
+```bash
+# From npm (postinstall prepackages the full skill pack)
+npm install -g clawdbot-go
+# or local checkout:
+cd /path/to/go-bot && npm install
+
+# Explicit skills-only re-prepackage
+npx clawdbot-go skills-install --force
+# → ~/.clawdbot/skills  (+ agent root symlinks)
+```
+
+Skip skill prepackage: `CLAWDBOT_SKIP_SKILLS=1 npm install clawdbot-go`
+
+### B · Full stack via curl/npm (skills + env + optional Go/birth/automaton)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
-```
 
-**npm / npx only** (no curl):
-
-```bash
+# same as:
 npx clawdbot-go install
-# or after publish:
-npm install -g clawdbot-go && clawdbot-go install
+# full stack inside postinstall:
+CLAWDBOT_ONESHOT=1 npm install -g clawdbot-go
 ```
 
-**Classic Go binary + source** (also seeds the RH skill pack into `~/.clawdbot/skills`):
+### C · Classic Go binary + source
+
+Also seeds the RH skill pack into `~/.clawdbot/skills` and agent skill roots:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash
+# or from this checkout:
+./install.sh
+```
+
+### D · Related one-shots (Skill Hub + agents SDK)
+
+```bash
+# Skill Hub pack (same Cheshire/RH suite as catalog skills)
+npx github:Solizardking/skills install cheshire-terminal-agents --force
+
+# Agents SDK + forge + registries (npm)
+npm i cheshire-terminal-agents
 ```
 
 | What you get | Path |
 |--------------|------|
-| RH skill pack (23) | `~/.clawdbot/skills` + `~/.agents/skills/*` |
+| RH skill pack (23) | `~/.clawdbot/skills` + `~/.agents/skills/*` (prepackaged) |
+| Pack manifest | `~/.clawdbot/skills/.clawdbot-prepackaged.json` |
 | Env template | `~/.clawdbot/.env` (`CLAWDBOT_SKILLS_DIR`, RH hooks) |
 | CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
 | Product | [funpump.ai](https://funpump.ai) · [cheshire forge](https://cheshireterminal.ai/agents/forge) |
@@ -59,6 +90,8 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/insta
 export CLAWDBOT_SKILLS_DIR="$HOME/.clawdbot/skills"
 npx clawdbot-go skills          # list pack ids
 npx clawdbot-go inspect         # validate SKILL.md files
+npx clawdbot-go skills-install  # re-prepackage all skills
+clawdbot catalog skills         # if Go binary present
 ```
 
 ---

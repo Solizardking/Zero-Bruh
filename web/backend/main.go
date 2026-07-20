@@ -202,12 +202,7 @@ func main() {
 
 	mux.HandleFunc("/api/ecosystem", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{
-			"runtime_repo": config.RuntimeRepoURL,
-			"hub_repo":     config.HubRepoURL,
-			"gateway":      config.GatewayURL,
-			"terminal":     config.TerminalURL,
-		})
+		json.NewEncoder(w).Encode(ecosystemLinks())
 	})
 
 	mux.HandleFunc("/api/laws", func(w http.ResponseWriter, r *http.Request) {
@@ -922,10 +917,16 @@ func redactSecret(value string) string {
 
 func ecosystemLinks() map[string]string {
 	return map[string]string{
-		"runtime_repo": config.RuntimeRepoURL,
-		"hub_repo":     config.HubRepoURL,
-		"gateway":      config.GatewayURL,
-		"terminal":     config.TerminalURL,
+		"runtime_repo":         config.RuntimeRepoURL,
+		"hub_repo":             config.HubRepoURL,
+		"gateway":              config.GatewayURL,
+		"terminal":             config.TerminalURL,
+		"agent_hub":            config.AgentHubURL,
+		"agent_forge":          config.AgentForgeURL,
+		"zero_clawd":           config.ZeroClawdURL,
+		"cheshire_agents_npm":  config.CheshireAgentsNpmURL,
+		"cheshire_agents_repo": config.CheshireAgentsRepoURL,
+		"skillhub_repo":        config.SkillHubRepoURL,
 	}
 }
 

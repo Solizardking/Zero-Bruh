@@ -114,7 +114,13 @@ Public surfaces:
   • Runtime repo: https://github.com/Solizardking/clawdbot-go
   • Ecosystem hub: https://github.com/solizardking/solana-clawd
   • x402 gateway: https://zk.x402.wtf
-  • Terminal: https://cheshireterminal.ai`,
+  • Terminal: https://cheshireterminal.ai
+  • Zero Clawd: https://cheshireterminal.ai/zeroclawd
+  • Agent hub: https://cheshireterminal.ai/agents
+  • Agent forge: https://cheshireterminal.ai/agents/forge
+  • npm agents: https://www.npmjs.com/package/cheshire-terminal-agents
+  • Agents repo: https://github.com/Solizardking/Cheshire-Terminal-Agents
+  • SkillHub: https://github.com/Solizardking/skillhub-main`,
 		Example: "clawdbot agent -m \"What is SOL price?\"\nclawdbot ooda --interval 60\nclawdbot ooda harness --ticks 50 --sleep 0\nclawdbot ooda --hw-bus 1\nclawdbot hardware scan\nclawdbot hardware demo\nclawdbot status",
 	}
 
@@ -499,10 +505,16 @@ func NewGatewayCommand() *cobra.Command {
 			fmt.Printf("  Jupiter: %s\n", boolIcon(cfg.Solana.JupiterEndpoint != ""))
 
 			fmt.Printf("\n%sPublic Surfaces:%s\n", colorTeal, colorReset)
-			fmt.Printf("  Runtime:   %s\n", config.RuntimeRepoURL)
-			fmt.Printf("  Hub:       %s\n", config.HubRepoURL)
-			fmt.Printf("  Gateway:   %s\n", config.GatewayURL)
-			fmt.Printf("  Terminal:  %s\n", config.TerminalURL)
+			fmt.Printf("  Runtime:      %s\n", config.RuntimeRepoURL)
+			fmt.Printf("  Hub:          %s\n", config.HubRepoURL)
+			fmt.Printf("  Gateway:      %s\n", config.GatewayURL)
+			fmt.Printf("  Terminal:     %s\n", config.TerminalURL)
+			fmt.Printf("  Zero Clawd:   %s\n", config.ZeroClawdURL)
+			fmt.Printf("  Agent hub:    %s\n", config.AgentHubURL)
+			fmt.Printf("  Agent forge:  %s\n", config.AgentForgeURL)
+			fmt.Printf("  Agents npm:   %s\n", config.CheshireAgentsNpmURL)
+			fmt.Printf("  Agents repo:  %s\n", config.CheshireAgentsRepoURL)
+			fmt.Printf("  SkillHub:     %s\n", config.SkillHubRepoURL)
 
 			return runGatewayRuntime(cfg)
 		},
@@ -742,10 +754,16 @@ func NewStatusCommand() *cobra.Command {
 			fmt.Printf("  Birdeye:     %s\n", boolIcon(cfg.Solana.BirdeyeAPIKey != ""))
 			fmt.Printf("  Birdeye WSS: %s\n", boolIcon(cfg.Solana.BirdeyeWSSURL != ""))
 			fmt.Printf("\n%sPublic Surfaces:%s\n", colorTeal, colorReset)
-			fmt.Printf("  Runtime:   %s\n", config.RuntimeRepoURL)
-			fmt.Printf("  Hub:       %s\n", config.HubRepoURL)
-			fmt.Printf("  Gateway:   %s\n", config.GatewayURL)
-			fmt.Printf("  Terminal:  %s\n", config.TerminalURL)
+			fmt.Printf("  Runtime:      %s\n", config.RuntimeRepoURL)
+			fmt.Printf("  Hub:          %s\n", config.HubRepoURL)
+			fmt.Printf("  Gateway:      %s\n", config.GatewayURL)
+			fmt.Printf("  Terminal:     %s\n", config.TerminalURL)
+			fmt.Printf("  Zero Clawd:   %s\n", config.ZeroClawdURL)
+			fmt.Printf("  Agent hub:    %s\n", config.AgentHubURL)
+			fmt.Printf("  Agent forge:  %s\n", config.AgentForgeURL)
+			fmt.Printf("  Agents npm:   %s\n", config.CheshireAgentsNpmURL)
+			fmt.Printf("  Agents repo:  %s\n", config.CheshireAgentsRepoURL)
+			fmt.Printf("  SkillHub:     %s\n", config.SkillHubRepoURL)
 			fmt.Printf("  Jupiter:     %s\n", boolIcon(cfg.Solana.JupiterEndpoint != ""))
 			fmt.Printf("  Aster DEX:   %s\n", boolIcon(cfg.Solana.AsterAPIKey != ""))
 			_, vulcanErr := exec.LookPath(cfg.Vulcan.Binary)

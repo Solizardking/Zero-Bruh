@@ -24,9 +24,14 @@ const (
 	clawdDim    = "#556680"
 
 	// Product hosts — never clawdcode.net
-	hostFunPump  = "https://funpump.ai"
-	hostForge    = "https://cheshireterminal.ai/agents/forge"
-	hostCheshire = "https://cheshireterminal.ai"
+	hostFunPump      = "https://funpump.ai"
+	hostCheshire     = "https://cheshireterminal.ai"
+	hostAgentHub     = "https://cheshireterminal.ai/agents"
+	hostForge        = "https://cheshireterminal.ai/agents/forge"
+	hostZeroClawd    = "https://cheshireterminal.ai/zeroclawd"
+	hostAgentsNpm    = "https://www.npmjs.com/package/cheshire-terminal-agents"
+	hostAgentsRepo   = "https://github.com/Solizardking/Cheshire-Terminal-Agents"
+	hostSkillHubRepo = "https://github.com/Solizardking/skillhub-main"
 
 	// RH mainnet pins (align with go-bot skills + FunPump product)
 	addrLaunchpadV3 = "0x27f27F998fdBa2a38C136Bb3E7a8BA43155798Cd"
@@ -164,7 +169,7 @@ func main() {
 	infoBar := tview.NewTextView().
 		SetDynamicColors(true).
 		SetTextAlign(tview.AlignCenter).
-		SetText(fmt.Sprintf("[%s]$CLAWD · funpump.ai · cheshireterminal.ai · RH 4663 · zk-omni[-]", clawdDim))
+		SetText(fmt.Sprintf("[%s]$CLAWD · zeroclawd · agents · forge · funpump · RH 4663 · zk-omni[-]", clawdDim))
 	infoBar.SetBackgroundColor(tcell.ColorBlack)
 
 	// ── Layout ───────────────────────────────────────────────
@@ -282,8 +287,13 @@ func updateStatus(view *tview.TextView) {
   SPL/RPC:   %s
 
 [%s]FunPump / Cheshire[%s]
-  Host:      funpump.ai
-  Forge:     cheshireterminal.ai
+  Zero:      cheshireterminal.ai/zeroclawd
+  Agents:    cheshireterminal.ai/agents
+  Forge:     cheshireterminal.ai/agents/forge
+  FunPump:   funpump.ai
+  npm:       cheshire-terminal-agents
+  GitHub:    Solizardking/Cheshire-Terminal-Agents
+  SkillHub:  Solizardking/skillhub-main
   Launch V3: %s…
   Identity:  %s…
 
