@@ -11,6 +11,7 @@
 **Autonomous OODA · Agent DNA · ZK Primitives · Solana SVM · Robinhood EVM (4663) · FunPump Launch · Uniswap · Blockscout · Helius DAS · Vulcan/Phoenix · Jupiter · Hardware I2C · Web Console**
 
 [![Go](https://img.shields.io/badge/Go-1.26.4+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev)
+[![npm](https://img.shields.io/badge/npm-clawdbot--go-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/clawdbot-go)
 [![Solana](https://img.shields.io/badge/Solana-Mainnet-14F195?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com)
 [![Robinhood](https://img.shields.io/badge/Robinhood_Chain-4663-00d4ff?style=for-the-badge)](https://robinhoodchain.blockscout.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
@@ -28,24 +29,40 @@
 
 ## 🚀 One-shot install (Grok Build style)
 
+**Published package:** [`clawdbot-go` on npm](https://www.npmjs.com/package/clawdbot-go)
+(`npm i clawdbot-go` / `npm i -g clawdbot-go`).
+
 **Skills are prepackaged at install** — every `skills/*/SKILL.md` in this repo
 (`pack-index.json` v2, **23** skills) is copied to `~/.clawdbot/skills` and
 symlinked into `~/.agents`, `~/.claude`, and `~/.codex` skill roots.
 
-### A · Skills only (fastest — default on `npm install`)
+### A · `npm i clawdbot-go` (recommended)
 
 ```bash
-# From npm (postinstall prepackages the full skill pack)
-npm install -g clawdbot-go
-# or local checkout:
-cd /path/to/go-bot && npm install
+# Local project dependency (postinstall prepackages the skill pack)
+npm i clawdbot-go
 
+# Global CLI bins: clawdbot-go · zero-clawd · clawdbot-stack
+npm i -g clawdbot-go
+
+# If your npm blocks install scripts (skills will not prepackage until allowed):
+npm install -g --allow-scripts=clawdbot-go clawdbot-go
+# or once for all installs of this package:
+# npm config set allow-scripts=clawdbot-go --location=user
+```
+
+Package page: **https://www.npmjs.com/package/clawdbot-go**
+
+```bash
 # Explicit skills-only re-prepackage
 npx clawdbot-go skills-install --force
 # → ~/.clawdbot/skills  (+ agent root symlinks)
+
+# From this checkout instead of npm:
+cd /path/to/go-bot && npm install
 ```
 
-Skip skill prepackage: `CLAWDBOT_SKIP_SKILLS=1 npm install clawdbot-go`
+Skip skill prepackage: `CLAWDBOT_SKIP_SKILLS=1 npm i clawdbot-go`
 
 ### B · Full stack via curl/npm (skills + env + optional Go/birth/automaton)
 
@@ -55,7 +72,7 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install
 # same as:
 npx clawdbot-go install
 # full stack inside postinstall:
-CLAWDBOT_ONESHOT=1 npm install -g clawdbot-go
+CLAWDBOT_ONESHOT=1 npm i -g clawdbot-go
 ```
 
 ### C · Classic Go binary + source
@@ -78,12 +95,39 @@ npx github:Solizardking/skills install cheshire-terminal-agents --force
 npm i cheshire-terminal-agents
 ```
 
+### E · Connect from Cheshire Terminal (hosted `/zeroclawd`)
+
+After `npm i clawdbot-go` (or a full oneshot), start the web console and open
+the public hub:
+
+```bash
+# Start local agent web console (default :18800)
+npx clawdbot-go install   # if you have not run the full stack yet
+# or from this tree: go run ./web/backend -port 18800   /   clawdbot web
+
+# Allow the hosted page to probe your loopback agent (browser-direct):
+export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai
+```
+
+Then open **[https://cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd)**
+(aliases: `/clawdbot-go`, `/clawdbot`):
+
+1. Confirm install source: [npmjs.com/package/clawdbot-go](https://www.npmjs.com/package/clawdbot-go)
+2. Connect agent base URL (default `http://127.0.0.1:18800`)
+3. Chat with live `/api/health` · `/api/status` · `/api/dna` context
+
+Loopback agents are probed **from your browser** (not the Cheshire server).
+Public remote agent hosts may use the same-origin `/api/zeroclawd/probe` bridge
+(SSRF-hardened — private/link-local/loopback targets are blocked server-side).
+
 | What you get | Path |
 |--------------|------|
 | RH skill pack (23) | `~/.clawdbot/skills` + `~/.agents/skills/*` (prepackaged) |
 | Pack manifest | `~/.clawdbot/skills/.clawdbot-prepackaged.json` |
 | Env template | `~/.clawdbot/.env` (`CLAWDBOT_SKILLS_DIR`, RH hooks) |
+| npm package | [clawdbot-go](https://www.npmjs.com/package/clawdbot-go) · `npm i clawdbot-go` |
 | CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
+| Hosted connect | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 | Product | [zeroclawd](https://cheshireterminal.ai/zeroclawd) · [agents](https://cheshireterminal.ai/agents) · [forge](https://cheshireterminal.ai/agents/forge) · [funpump.ai](https://funpump.ai) |
 
 ```bash
