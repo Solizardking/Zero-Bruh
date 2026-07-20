@@ -33,6 +33,7 @@ type SettingsHost = {
   basePath: string;
   themeMedia: MediaQueryList | null;
   themeMediaHandler: ((event: MediaQueryListEvent) => void) | null;
+  password?: string;
 };
 
 export function applySettings(host: SettingsHost, next: UiSettings) {
@@ -77,7 +78,7 @@ export function applySettingsFromUrl(host: SettingsHost) {
   if (passwordRaw != null) {
     const password = passwordRaw.trim();
     if (password) {
-      (host as { password: string }).password = password;
+      host.password = password;
     }
     params.delete("password");
     shouldCleanUrl = true;

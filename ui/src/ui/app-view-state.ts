@@ -48,7 +48,6 @@ export type AppViewState = {
   hello: GatewayHelloOk | null;
   lastError: string | null;
   eventLog: EventLogEntry[];
-  eventLogBuffer: EventLogEntry[];
   assistantName: string;
   assistantAvatar: string | null;
   assistantAgentId: string | null;
@@ -69,7 +68,6 @@ export type AppViewState = {
   sidebarContent: string | null;
   sidebarError: string | null;
   splitRatio: number;
-  chatHasAutoScrolled: boolean;
   logsAtBottom: boolean;
   nodesLoading: boolean;
   nodes: Array<Record<string, unknown>>;
@@ -168,8 +166,6 @@ export type AppViewState = {
   logsLimit: number;
   logsMaxBytes: number;
   client: GatewayBrowserClient | null;
-  themeMedia: MediaQueryList | null;
-  themeMediaHandler: ((event: MediaQueryListEvent) => void) | null;
 
   connect: () => void;
   setTab: (tab: Tab) => void;
@@ -204,7 +200,4 @@ export type AppViewState = {
   handleOpenSidebar: (content: string) => void;
   handleCloseSidebar: () => void;
   handleSplitRatioChange: (ratio: number) => void;
-  setPassword: (next: string) => void;
-  setSessionKey: (next: string) => void;
-  setChatMessage: (next: string) => void;
 };
