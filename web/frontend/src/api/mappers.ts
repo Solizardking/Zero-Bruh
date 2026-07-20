@@ -404,12 +404,129 @@ export function formatBytes(n: number | undefined): string {
 }
 
 /** Summarize health for the header strip. */
-export function mapHealth(payload: unknown): { ok: boolean; agent: string; label: string } {
-  const h = (payload ?? {}) as { status?: string; agent?: string }
+export function mapHealth(payload: unknown): {
+  ok: boolean
+  agent: string
+  packageName: string
+  product: string
+  label: string
+} {
+  const h = (payload ?? {}) as {
+    status?: string
+    agent?: string
+    package?: string
+    product?: string
+  }
   const ok = h.status === 'ok'
+  const agent = h.agent || 'unknown'
   return {
     ok,
-    agent: h.agent || 'unknown',
-    label: ok ? `healthy · ${h.agent || 'agent'}` : 'degraded',
+    agent,
+    packageName: h.package || '',
+    product: h.product || '',
+    label: ok ? `healthy · ${agent}` : 'degraded',
+  }
+}
+
+/** Preferred display order + labels for GET /api/ecosystem. */
+const ECOSYSTEM_LABELS: Record<string, string> = {
+  zero_clawd: 'Zero Clawd',
+  agent_hub: 'Agent hub',
+  agent_forge: 'Agent forge',
+  terminal: 'Terminal',
+  runtime_repo: 'Runtime repo',
+  hub_repo: 'Ecosystem hub',
+  gateway: 'x402 gateway',
+  cheshire_agents_npm: 'Agents npm',
+  cheshire_agents_repo: 'Agents GitHub',
+  skillhub_repo: 'SkillHub',
+}
+
+/** Map ecosystem link object → ordered rows (unknown keys still included). */
+export function mapEcosystem(payload: unknown): DisplayRow[] {
+  const links = (payload ?? {}) as Record<string, unknown>
+  const keys = Object.keys(links)
+  const preferred = Object.keys(ECOSYSTEM_LABELS)
+  const ordered = [
+    ...preferred.filter((k) => keys.includes(k)),
+    ...keys.filter((k) => !preferred.includes(k)).sort(),
+  ]
+  return ordered.map((key) => {
+    const val = links[key]
+    const href = typeof val === 'string' ? val : String(val ?? '')
+    return {
+      key,
+      primary: ECOSYSTEM_LABELS[key] ?? key,
+      secondary: href,
+      badge: key,
+      tone: href.includes('zeroclawd') || href.includes('/agents') ? 'ok' : 'neutral',
+    }
+  })
+}
+
+/** Map GET /api/rh/readiness (presence-only gate from pkg/rh). */
+export function mapRhReadiness(payload: unknown): {
+  ready: boolean
+  metrics: DisplayMetric[]
+  rows: DisplayRow[]
+  message: string
+} {
+  const r = (payload ?? {}) as {
+    ready?: boolean
+    chainId?: number
+    blockscoutConfigured?: boolean
+    rhRpcConfigured?: boolean
+    usingPublicRpcRead?: boolean
+    missing?: string[]
+    resolvedRpc?: string
+    message?: string
+  }
+  const missing = Array.isArray(r.missing) ? r.missing : []
+  return {
+    ready: !!r.ready,
+    message: r.message || '',
+    metrics: [
+      { label: 'Ready', value: r.ready ? 'YES' : 'NO', tone: r.ready ? 'ok' : 'warn' },
+      { label: 'Chain', value: r.chainId != null ? String(r.chainId) : '—', tone: 'neutral' },
+      {
+        label: 'Blockscout',
+        value: r.blockscoutConfigured ? 'set' : 'missing',
+        tone: r.blockscoutConfigured ? 'ok' : 'err',
+      },
+      {
+        label: 'RH RPC',
+        value: r.rhRpcConfigured ? 'private' : r.usingPublicRpcRead ? 'public read' : '—',
+        tone: r.rhRpcConfigured ? 'ok' : 'warn',
+      },
+    ],
+    rows: [
+      ...missing.map((m) => ({
+        key: m,
+        primary: m,
+        secondary: 'required for launch/deploy/trade',
+        badge: 'missing',
+        tone: 'err' as const,
+      })),
+      ...(r.resolvedRpc
+        ? [
+            {
+              key: 'rpc',
+              primary: 'Resolved RPC',
+              secondary: r.resolvedRpc,
+              tone: 'neutral' as const,
+            },
+          ]
+        : []),
+      ...(r.message
+        ? [
+            {
+              key: 'msg',
+              primary: 'Message',
+              secondary: r.message,
+              tone: r.ready ? ('ok' as const) : ('warn' as const),
+            },
+          ]
+        : []),
+    ],
   }
 }

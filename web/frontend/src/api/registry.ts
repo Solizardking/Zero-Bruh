@@ -1,5 +1,5 @@
 /**
- * Feature section registry + API path map for the ClawdBot web console.
+ * Feature section registry + API path map for the Zero Clawd web console.
  * Pure data — no React, no fetch — so unit tests can pin the contract.
  */
 
@@ -31,13 +31,14 @@ export const API_ENDPOINTS: readonly ApiEndpoint[] = [
   { id: 'status', path: '/api/status', label: 'Status', group: 'core', poll: true, description: 'Runtime status' },
   { id: 'health', path: '/api/health', label: 'Health', group: 'core', poll: true, description: 'Liveness probe' },
   { id: 'connectors', path: '/api/connectors', label: 'Connectors', group: 'core', poll: true },
-  { id: 'ecosystem', path: '/api/ecosystem', label: 'Ecosystem', group: 'core', poll: true },
+  { id: 'ecosystem', path: '/api/ecosystem', label: 'Ecosystem', group: 'core', poll: true, description: 'Public product + repo surfaces' },
   { id: 'dna', path: '/api/dna', label: 'Agent DNA', group: 'core', poll: true },
   { id: 'packages', path: '/api/packages', label: 'Packages', group: 'core', poll: true },
   { id: 'package', path: '/api/package', label: 'Package (one-button)', group: 'ops', poll: false },
   { id: 'keys', path: '/api/keys', label: 'API Keys popup', group: 'ops', poll: false },
   { id: 'env', path: '/api/env', label: 'Environment', group: 'core', poll: true },
   { id: 'config', path: '/api/config', label: 'Config', group: 'core', poll: false },
+  { id: 'rhReadiness', path: '/api/rh/readiness', label: 'RH Readiness', group: 'core', poll: true, description: 'Robinhood Chain launch/deploy gate (presence-only)' },
 
   { id: 'cockpit', path: '/api/trading/cockpit', label: 'Cockpit', group: 'trading', poll: true },
   { id: 'signal', path: '/api/trading/signal', label: 'Signal', group: 'trading', poll: true },
@@ -85,6 +86,21 @@ export const REQUIRED_FEATURE_PATHS: readonly string[] = [
   '/api/middleout',
   '/api/lobster-council',
   '/api/vault/status',
+  '/api/rh/readiness',
+] as const
+
+/** Canonical keys from GET /api/ecosystem (pkg/config public surfaces). */
+export const ECOSYSTEM_LINK_KEYS: readonly string[] = [
+  'runtime_repo',
+  'hub_repo',
+  'gateway',
+  'terminal',
+  'agent_hub',
+  'agent_forge',
+  'zero_clawd',
+  'cheshire_agents_npm',
+  'cheshire_agents_repo',
+  'skillhub_repo',
 ] as const
 
 /** Legacy surfaces that must remain wired. */

@@ -3,12 +3,14 @@ import { API_ENDPOINTS, GROUP_META, type FeatureGroup } from './api/registry'
 import {
   mapCouncil,
   mapDoctor,
+  mapEcosystem,
   mapHealth,
   mapLaws,
   mapLife,
   mapMiddleout,
   mapOptimize,
   mapPortfolio,
+  mapRhReadiness,
   mapSize,
   mapTrending,
   mapVaultKeys,
@@ -27,7 +29,12 @@ interface StatusInfo {
   go_version: string; go_os: string; go_arch: string
   num_cpu: number; goroutines: number
 }
-interface HealthInfo { status: string; agent: string }
+interface HealthInfo {
+  status: string
+  agent: string
+  package?: string
+  product?: string
+}
 interface PackageInfo { name: string; path: string; file_count: number; description?: string }
 interface KeyPresence {
   name: string
@@ -47,7 +54,19 @@ interface KeysResponse {
   error?: string
 }
 interface EnvInfo { AGENT_MODE: string; HOSTNAME: string; PWD: string; SHELL: string }
-interface EcosystemInfo { runtime_repo: string; hub_repo: string; gateway: string; terminal: string }
+/** GET /api/ecosystem — open-ended map of product/repo URLs from pkg/config. */
+type EcosystemInfo = Record<string, string>
+
+interface RhReadinessInfo {
+  ready?: boolean
+  chainId?: number
+  blockscoutConfigured?: boolean
+  rhRpcConfigured?: boolean
+  usingPublicRpcRead?: boolean
+  missing?: string[]
+  resolvedRpc?: string
+  message?: string
+}
 interface CockpitInfo {
   mode: string; watchlist: string[]
   readiness: { score: number; grade: string; status: string; reasons: string[] }

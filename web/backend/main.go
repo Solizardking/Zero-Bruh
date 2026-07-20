@@ -33,6 +33,7 @@ import (
 
 	"github.com/8bitlabs/clawdbot/pkg/birthfund"
 	"github.com/8bitlabs/clawdbot/pkg/config"
+	"github.com/8bitlabs/clawdbot/pkg/constants"
 	dnaPkg "github.com/8bitlabs/clawdbot/pkg/dna"
 	"github.com/8bitlabs/clawdbot/pkg/doctor"
 	"github.com/8bitlabs/clawdbot/pkg/gameoflife"
@@ -169,7 +170,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		connectors := []map[string]any{
 			{"name": "x402 Gateway", "status": urlStatus(os.Getenv("ZKROUTER_BASE_URL"), config.ZkRouterBaseURL), "type": "gateway"},
-			{"name": "Clawd Terminal", "status": "public", "type": "terminal"},
+			{"name": "Zero Clawd / Cheshire", "status": "public", "type": "terminal"},
 			{"name": "Helius", "status": envStatus("HELIUS_API_KEY"), "type": "rpc"},
 			{"name": "Birdeye", "status": envStatus("BIRDEYE_API_KEY"), "type": "analytics"},
 			{"name": "Jupiter", "status": envStatus("JUPITER_API_KEY"), "type": "swap"},
@@ -1428,10 +1429,13 @@ func webEnvBool(key string) bool {
 
 // healthPayload is the JSON body returned by GET /api/health.
 // Kept as a pure function so smoke tests and deploy checks can pin the contract.
+// agent is the product name (Zero Clawd); package is the npm/CLI technical alias.
 func healthPayload() map[string]string {
 	return map[string]string{
-		"status": "ok",
-		"agent":  "clawdbot-go",
+		"status":  "ok",
+		"agent":   constants.AppName,
+		"package": "clawdbot-go",
+		"product": config.ZeroClawdURL,
 	}
 }
 

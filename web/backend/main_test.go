@@ -275,6 +275,37 @@ func TestPackageAPIHandler_oneButton(t *testing.T) {
 	_ = tmp // reserved for future isolation
 }
 
+func TestEcosystemLinksExposeProductSurfaces(t *testing.T) {
+	links := ecosystemLinks()
+	required := []string{
+		"runtime_repo",
+		"hub_repo",
+		"gateway",
+		"terminal",
+		"agent_hub",
+		"agent_forge",
+		"zero_clawd",
+		"cheshire_agents_npm",
+		"cheshire_agents_repo",
+		"skillhub_repo",
+	}
+	for _, key := range required {
+		val, ok := links[key]
+		if !ok || strings.TrimSpace(val) == "" {
+			t.Fatalf("ecosystemLinks missing %q", key)
+		}
+	}
+	if !strings.Contains(links["zero_clawd"], "zeroclawd") {
+		t.Fatalf("zero_clawd = %q, want zeroclawd product URL", links["zero_clawd"])
+	}
+	if !strings.Contains(links["agent_hub"], "/agents") {
+		t.Fatalf("agent_hub = %q, want /agents hub", links["agent_hub"])
+	}
+	if !strings.Contains(links["cheshire_agents_npm"], "cheshire-terminal-agents") {
+		t.Fatalf("cheshire_agents_npm = %q", links["cheshire_agents_npm"])
+	}
+}
+
 func TestHealthAPIHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/health", nil)
 	rr := httptest.NewRecorder()
@@ -301,6 +332,15 @@ func TestHealthAPIHandler(t *testing.T) {
 	want := healthPayload()
 	if body["status"] != want["status"] || body["agent"] != want["agent"] {
 		t.Fatalf("body = %#v, want %#v", body, want)
+	}
+	if body["agent"] != "Zero Clawd" {
+		t.Fatalf("agent = %q, want Zero Clawd product name", body["agent"])
+	}
+	if body["package"] != "clawdbot-go" {
+		t.Fatalf("package = %q, want clawdbot-go technical alias", body["package"])
+	}
+	if !strings.Contains(body["product"], "zeroclawd") {
+		t.Fatalf("product = %q, want zeroclawd URL", body["product"])
 	}
 }
 
