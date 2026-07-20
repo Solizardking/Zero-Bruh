@@ -200,31 +200,52 @@ function installSkillPack({ installDir, force }) {
 
   let linked = 0;
   for (const root of agentRoots) {
-    ensureDir(root);
+    try {
+      ensureDir(root);
+    } catch {
+      continue;
+    }
     for (const id of ids) {
       const src = join(destSkills, id);
       const dst = join(root, id);
-      if (!existsSync(src) || !statSync(src).isDirectory()) continue;
       try {
-        if (existsSync(dst)) {
-          const st = statSync(dst);
-          if (st.isSymbolicLink() || force) {
+        if (!existsSync(src) || !statSync(src).isDirectory()) continue;
+      } catch {
+        continue;
+      }
+      // Safe link: prefer symlink; never crash the oneshot on FS quirks (macOS
+      // "equivalent: Operation not supported" when comparing cross-volume paths).
+      try {
+        // lstat via existsSync can throw on dangling multi-volume links — probe carefully
+        let destExists = false;
+        try {
+          destExists = existsSync(dst);
+        } catch {
+          destExists = false;
+        }
+        if (destExists) {
+          if (!force) continue;
+          try {
             rmSync(dst, { recursive: true, force: true });
-          } else {
+          } catch {
             continue;
           }
         }
-        symlinkSync(src, dst, "dir");
-        linked += 1;
-      } catch {
-        // Windows or FS without symlink — fall back to copy
         try {
-          if (existsSync(dst)) rmSync(dst, { recursive: true, force: true });
-          cpSync(src, dst, { recursive: true });
+          symlinkSync(src, dst, "dir");
+          linked += 1;
+          continue;
+        } catch {
+          /* fall through to copy */
+        }
+        try {
+          cpSync(src, dst, { recursive: true, force: true, errorOnExist: false });
           linked += 1;
         } catch {
-          /* ignore single skill failure */
+          /* skip single skill */
         }
+      } catch {
+        /* never fail oneshot on agent skill linking */
       }
     }
   }
