@@ -332,7 +332,7 @@ export default function App() {
   const [keysBusy, setKeysBusy] = useState(false)
   const [keysError, setKeysError] = useState('')
   const [keysFocus, setKeysFocus] = useState<string | null>(null)
-  const [logs, setLogs] = useState<string[]>(['🦞 ClawdBot ops console online.'])
+  const [logs, setLogs] = useState<string[]>(['🦞 Zero Clawd ops console online.'])
   const [activeNav, setActiveNav] = useState('status')
   const logRef = useRef<HTMLDivElement>(null)
   const keysInputRef = useRef<HTMLInputElement | null>(null)

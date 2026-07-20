@@ -1,5 +1,5 @@
-// ClawdBot Web Console — web-based dashboard and agent control.
-// ClawdBot Go web launcher — serves embedded frontend,
+// Zero Clawd Web Console — web-based dashboard and agent control.
+// Zero Clawd Go web launcher — serves embedded frontend,
 // provides API for config management and gateway control.
 //
 // Usage:
@@ -50,7 +50,7 @@ import (
 
 const banner = `
   ╔══════════════════════════════════════════════╗
-  ║       🦞 ClawdBot OS — Web Console           ║
+  ║       🦞 Zero Clawd — Web Console            ║
   ║  Sovereign Solana Trading Intelligence       ║
   ╚══════════════════════════════════════════════╝`
 
@@ -60,7 +60,7 @@ func main() {
 	noBrowser := flag.Bool("no-browser", false, "Do not auto-open browser on startup")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "ClawdBot Web Console — Dashboard and agent control\n\n")
+		fmt.Fprintf(os.Stderr, "Zero Clawd Web Console — Dashboard and agent control\n\n")
 		fmt.Fprintf(os.Stderr, "Usage: %s [options] [config.json]\n\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "Options:\n")
 		flag.PrintDefaults()
@@ -101,7 +101,7 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]any{
 			"status":       "running",
 			"version":      "1.0.0",
-			"agent":        "ClawdBot Go",
+			"agent":        "Zero Clawd",
 			"config":       absPath,
 			"uptime":       time.Since(startTime).String(),
 			"mode":         os.Getenv("AGENT_MODE"),
@@ -119,7 +119,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		path := dnaPkg.DefaultPath(config.DefaultWorkspacePath())
 		value, created, err := dnaPkg.EnsureFile(path, dnaPkg.Options{
-			AgentName: "ClawdBot",
+			AgentName: "Zero Clawd",
 			Role:      "sovereign Solana trading intelligence",
 		})
 		if err != nil {
@@ -1841,7 +1841,7 @@ const fallbackHTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClawdBot OS — Console</title>
+<title>Zero Clawd — Console</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -1856,7 +1856,7 @@ a:hover{text-decoration:underline}
 </head>
 <body>
 <div class="container">
-  <h1>🦞 ClawdBot OS</h1>
+  <h1>🦞 Zero Clawd</h1>
   <p class="status">Web Console Running</p>
   <p>API: <a href="/api/status">/api/status</a> | <a href="/api/dna">/api/dna</a> | <a href="/api/connectors">/api/connectors</a> | <a href="/api/trading/cockpit">/api/trading/cockpit</a> | <a href="/api/laws">/api/laws</a> | <a href="/api/doctor">/api/doctor</a></p>
   <p class="info">Build the frontend with: cd web/frontend && npm run build</p>

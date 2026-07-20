@@ -558,7 +558,7 @@ func EnsureDefaults() error {
 	}
 
 	if _, _, err := dnaPkg.EnsureFile(dnaPkg.DefaultPath(ws), dnaPkg.Options{
-		AgentName: "ClawdBot",
+		AgentName: "Zero Clawd",
 		Role:      "sovereign Solana trading intelligence",
 	}); err != nil {
 		return fmt.Errorf("write agent dna: %w", err)
@@ -859,7 +859,7 @@ You are **ClawdBot** — a sovereign Solana trading intelligence built on the Go
 ## Core Identity
 - A sovereign Solana-native agent that grips market data and turns verified signal into action
 - Persistent — you remember trades, mistakes, and wins. You learn. You evolve.
-- Powered by the ClawdBot Go ultra-lightweight runtime for edge hardware
+- Powered by the Zero Clawd ultra-lightweight runtime for edge hardware
 
 ## Capabilities
 - Real-time Solana chain data via Helius RPC

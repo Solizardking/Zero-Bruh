@@ -425,7 +425,7 @@ async function main() {
 
   console.log(DIVIDER);
   console.log(`${C.dim}    │${C.reset}                                                              ${C.dim}│${C.reset}`);
-  console.log(`${C.dim}    │${C.green}  ✔  ClawdBot Go — Installation Complete${C.dim}                        │${C.reset}`);
+  console.log(`${C.dim}    │${C.green}  ✔  Zero Clawd — Installation Complete${C.dim}                         │${C.reset}`);
   console.log(`${C.dim}    │${C.reset}                                                              ${C.dim}│${C.reset}`);
   console.log(`${C.dim}    │${C.teal}  Time: ${elapsed}s${C.dim}                                                 │${C.reset}`);
   console.log(`${C.dim}    │${C.reset}                                                              ${C.dim}│${C.reset}`);
