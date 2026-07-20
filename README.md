@@ -26,6 +26,43 @@
 
 ---
 
+## 🚀 One-shot install (Grok Build style)
+
+**Full stack via npm** (skills + agent skill dirs + env + optional packages):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+```
+
+**npm / npx only** (no curl):
+
+```bash
+npx clawdbot-go install
+# or after publish:
+npm install -g clawdbot-go && clawdbot-go install
+```
+
+**Classic Go binary + source** (also seeds the RH skill pack into `~/.clawdbot/skills`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash
+```
+
+| What you get | Path |
+|--------------|------|
+| RH skill pack (23) | `~/.clawdbot/skills` + `~/.agents/skills/*` |
+| Env template | `~/.clawdbot/.env` (`CLAWDBOT_SKILLS_DIR`, RH hooks) |
+| CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
+| Product | [funpump.ai](https://funpump.ai) · [cheshire forge](https://cheshireterminal.ai/agents/forge) |
+
+```bash
+export CLAWDBOT_SKILLS_DIR="$HOME/.clawdbot/skills"
+npx clawdbot-go skills          # list pack ids
+npx clawdbot-go inspect         # validate SKILL.md files
+```
+
+---
+
 ## 🆕 What's New — Omni RH Pack + Live Markets + Hardened Trading
 
 This tree is a working, verifiable trading agent — not just a dashboard.
@@ -127,6 +164,8 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 | `https://cheshireterminal.ai` | Public terminal surface |
 | `https://funpump.ai` | FunPump product host — RH launch UI + public launchpad APIs |
 | `https://cheshireterminal.ai/agents/forge` | Cheshire agent forge |
+| [npm `cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents) | npm package redistributing the RH crypto-agent skill pack (skills only, not the Go binary) |
+| [SkillHub (`skillhub-main`)](https://github.com/Solizardking/skillhub-main/tree/main) | Solizardking skill hub — installable agent skills library |
 | `https://huggingface.co/ordlibrary/Clawd-GLM-5.2` | Public Clawd model surface |
 
 ### Core Capabilities
@@ -558,6 +597,8 @@ monorepo paths. Solana-first behavior is unchanged; the RH pack is additive.
 | **Pack id** | `rh-crypto-agent` (see `skills/pack-index.json`, version **2**, **23** skills) |
 | **Product host** | [https://funpump.ai](https://funpump.ai) |
 | **Agent forge** | [https://cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge) |
+| **npm redistribute** | [`cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents) — RH/EVM skills pack for agent hosts (skills only) |
+| **Skill hub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) — broader installable skills library |
 | **Chain** | Robinhood mainnet **4663** |
 | **Deep guide** | [docs/RH_CRYPTO_AGENT_STACK.md](docs/RH_CRYPTO_AGENT_STACK.md) · [skills/README.md](skills/README.md) |
 
@@ -597,6 +638,27 @@ go run ./cmd/clawdbot catalog skills --skills-dir ./skills
 # Readiness (no secrets in output)
 clawdbot doctor
 # GET http://127.0.0.1:18800/api/rh/readiness   # when web console is up
+```
+
+#### Install elsewhere (npm + SkillHub)
+
+The same open RH stack is redistributed for hosts that do not clone this Go tree:
+
+```bash
+# npm — RH crypto-agent skills only (not the clawdbot Go binary)
+npm i cheshire-terminal-agents
+# registry: https://www.npmjs.com/package/cheshire-terminal-agents
+
+# SkillHub — Solizardking installable skills library
+# https://github.com/Solizardking/skillhub-main/tree/main
+npx skills add https://github.com/Solizardking/skillhub-main --all   # when using the skills CLI
+```
+
+From the ClawdBrowser monorepo, sync go-bot skills into Cheshire / npm packaging:
+
+```bash
+node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
+node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
 ```
 
 ### Game of Life (PiedPiper Inheritance)
@@ -917,6 +979,8 @@ Zero Clawd is the reference implementation of the **Clawd Constitution** — the
 - **License:** top-level runtime code in this repo is released under the [MIT License](LICENSE)
 - **Constitutional surfaces:** `six-laws.md`, `CONSTITUTION.md`, and `three-laws.md` remain the authoritative Clawd law documents
 - **Hub split:** `clawdbot-go` is the Go runtime, while `solana-clawd` is the wider public ecosystem hub
+- **RH skills on npm:** [`cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents) redistributes the FunPump / RH skill pack (skills only)
+- **SkillHub:** [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) hosts the broader installable skills library used with birth seed / agent hosts
 - **PiedPiper archive:** `docs/PiedPiper-master/` is a verbatim archive of [vs666/MinMax](https://github.com/vs666/MinMax) MIT-licensed code, preserved for historical and educational reference
 - **Public infra defaults:** `.env.example` points at the public x402/zk gateway for fast setup, but production operators should override with their own keys and RPC endpoints
 

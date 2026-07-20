@@ -63,10 +63,21 @@ go run ./cmd/clawdbot catalog skills --skills-dir ./skills
 
 When `CLAWDBOT_SKILLS_DIR` is unset, go-bot prefers this bundled `./skills` directory if `pack-index.json` is present.
 
-## Redistribute to Cheshire / npm
+## Redistribute to Cheshire / npm / SkillHub
+
+| Surface | URL |
+|---------|-----|
+| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) — RH crypto-agent skills pack (skills only, not the Go binary) |
+| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) — broader Solizardking installable skills library |
 
 ```bash
-# From ClawdBrowser monorepo root
+# npm consumers
+npm i cheshire-terminal-agents
+
+# SkillHub (skills CLI)
+npx skills add https://github.com/Solizardking/skillhub-main --all
+
+# From ClawdBrowser monorepo root — sync go-bot skills into Cheshire packaging
 node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
 node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
 ```

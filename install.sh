@@ -397,9 +397,11 @@ SOLANA_RPC_URL=${RPC_URL}
 HELIUS_RPC_URL=${RPC_URL}
 
 # ── Local Clawd catalogs (instant read-only discovery) ───────────
+# Prefer bundled RH pack under install home when present after install.
 CLAWDBOT_SKILLS_DIR=${LOCAL_SKILLS_DIR}
 CLAWDBOT_AGENTS_DIR=${LOCAL_AGENTS_DIR}
 CLAWDBOT_ZK_PRIMITIVES_DIR=${LOCAL_ZK_PRIMITIVES_DIR}
+CLAWDBOT_MERGE_BUNDLED_SKILLS=1
 
 # ── Optional: bring your own keys for higher limits ──────────────
 # OPENROUTER_API_KEY=sk-or-...
@@ -467,6 +469,37 @@ ENVEOF
   fi
 fi
 
+# ── Bundle RH / Cheshire skill pack from this repo ────────────────────────────
+BUNDLED_SKILLS="$REPO_DIR/skills"
+if [[ -f "$BUNDLED_SKILLS/pack-index.json" ]]; then
+  info "Installing bundled RH skill pack → $INSTALL_DIR/skills"
+  mkdir -p "$INSTALL_DIR/skills"
+  # Prefer rsync; fall back to cp -R
+  if check_cmd rsync; then
+    rsync -a --delete --exclude node_modules "$BUNDLED_SKILLS/" "$INSTALL_DIR/skills/"
+  else
+    rm -rf "$INSTALL_DIR/skills"
+    cp -R "$BUNDLED_SKILLS" "$INSTALL_DIR/skills"
+  fi
+  LOCAL_SKILLS_DIR="$INSTALL_DIR/skills"
+  append_env_if_missing "CLAWDBOT_SKILLS_DIR" "$LOCAL_SKILLS_DIR"
+  # Symlink into common agent skill roots (best-effort)
+  for _agent_root in "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills"; do
+    mkdir -p "$_agent_root"
+    if [[ -d "$INSTALL_DIR/skills" ]]; then
+      for _skill in "$INSTALL_DIR/skills"/*/; do
+        [[ -d "$_skill" ]] || continue
+        _id="$(basename "$_skill")"
+        [[ -f "${_skill}SKILL.md" ]] || continue
+        ln -sfn "$_skill" "$_agent_root/$_id" 2>/dev/null || true
+      done
+    fi
+  done
+  success "RH skill pack ready: $LOCAL_SKILLS_DIR"
+else
+  warn "Bundled skills/pack-index.json missing in source tree"
+fi
+
 # ── Birth skill seed ──────────────────────────────────────────────────────────
 if [[ "${CLAWDBOT_SKIP_SKILL_SEED:-0}" != "1" ]]; then
   if check_cmd npx; then
@@ -492,8 +525,10 @@ echo -e "  ${CYAN}clawdbot dna show${RESET}            # inspect starter DNA"
 echo -e "  ${CYAN}clawdbot agent${RESET}               # AI REPL (free via zkrouter)"
 echo -e "  ${CYAN}clawdbot ooda --sim${RESET}          # paper trading mode"
 echo -e "  ${CYAN}clawdbot skills birth --install${RESET} # reseed skills"
+echo -e "  ${CYAN}clawdbot catalog skills${RESET}      # RH pack + birth skills"
 echo -e "  ${CYAN}clawdbot solana trending${RESET}     # top Solana tokens"
 echo -e "  ${CYAN}clawdbot web${RESET}                 # web console (port 18800)"
+echo -e "  ${CYAN}# npm oneshot (skills only): curl -fsSL …/install-npm.sh | bash${RESET}"
 [[ "$INSTALL_CORE_AI" == "1" ]] && echo -e "  ${CYAN}${CORE_AI_MCP_CONFIG}${RESET}  # core-ai MCP config"
 echo
 echo -e "  ${BOLD}Edit your config:${RESET}  ${CYAN}nano ${ENV_FILE}${RESET}"
