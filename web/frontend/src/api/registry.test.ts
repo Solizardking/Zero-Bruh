@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import {
   API_ENDPOINTS,
+  ECOSYSTEM_LINK_KEYS,
   LEGACY_PATHS,
   REQUIRED_FEATURE_PATHS,
   allPaths,
@@ -10,6 +11,7 @@ import {
 import {
   mapCouncil,
   mapDoctor,
+  mapEcosystem,
   mapHealth,
   mapLaws,
   decodeLifeCells,
@@ -17,6 +19,7 @@ import {
   mapMiddleout,
   mapOptimize,
   mapPortfolio,
+  mapRhReadiness,
   mapSize,
   mapTrending,
   mapVaultStatus,
@@ -55,6 +58,14 @@ describe('API registry', () => {
       ids.add(e.id)
       expect(findEndpoint(e.id)?.path).toBe(e.path)
     }
+  })
+
+  test('registers RH readiness + ecosystem contract keys for pkg/config surfaces', () => {
+    expect(findEndpoint('rhReadiness')?.path).toBe('/api/rh/readiness')
+    expect(ECOSYSTEM_LINK_KEYS).toContain('zero_clawd')
+    expect(ECOSYSTEM_LINK_KEYS).toContain('agent_hub')
+    expect(ECOSYSTEM_LINK_KEYS).toContain('cheshire_agents_npm')
+    expect(ECOSYSTEM_LINK_KEYS).toContain('skillhub_repo')
   })
 })
 
@@ -154,8 +165,68 @@ describe('display mappers', () => {
     const council = mapCouncil({ count: 1, members: [{ name: 'Clawd', role: 'chair' }] })
     expect(council.rows[0].primary).toBe('Clawd')
 
-    const health = mapHealth({ status: 'ok', agent: 'clawdbot-go' })
+    const health = mapHealth({
+      status: 'ok',
+      agent: 'Zero Clawd',
+      package: 'clawdbot-go',
+      product: 'https://cheshireterminal.ai/zeroclawd',
+    })
     expect(health.ok).toBe(true)
-    expect(health.agent).toBe('clawdbot-go')
+    expect(health.agent).toBe('Zero Clawd')
+    expect(health.packageName).toBe('clawdbot-go')
+    expect(health.product).toContain('zeroclawd')
+    expect(health.label).toContain('Zero Clawd')
+  })
+
+  test('mapEcosystem orders product surfaces from pkg/config keys', () => {
+    const rows = mapEcosystem({
+      skillhub_repo: 'https://github.com/Solizardking/skillhub-main',
+      zero_clawd: 'https://cheshireterminal.ai/zeroclawd',
+      agent_hub: 'https://cheshireterminal.ai/agents',
+      runtime_repo: 'https://github.com/Solizardking/Zero-Bruh',
+      terminal: 'https://cheshireterminal.ai',
+      hub_repo: 'https://github.com/solizardking/solana-clawd',
+      gateway: 'https://zk.x402.wtf',
+      agent_forge: 'https://cheshireterminal.ai/agents/forge',
+      cheshire_agents_npm: 'https://www.npmjs.com/package/cheshire-terminal-agents',
+      cheshire_agents_repo: 'https://github.com/Solizardking/Cheshire-Terminal-Agents',
+    })
+    expect(rows[0].primary).toBe('Zero Clawd')
+    expect(rows[0].secondary).toContain('zeroclawd')
+    expect(rows.find((r) => r.key === 'agent_hub')?.secondary).toContain('/agents')
+    expect(rows.find((r) => r.key === 'cheshire_agents_npm')?.secondary).toContain(
+      'cheshire-terminal-agents',
+    )
+    for (const key of ECOSYSTEM_LINK_KEYS) {
+      expect(rows.some((r) => r.key === key), `missing ecosystem key ${key}`).toBe(true)
+    }
+  })
+
+  test('mapRhReadiness maps pkg/rh AssessReadiness shape', () => {
+    const gated = mapRhReadiness({
+      ready: false,
+      chainId: 4663,
+      blockscoutConfigured: true,
+      rhRpcConfigured: false,
+      usingPublicRpcRead: true,
+      missing: ['RH_RPC_URL'],
+      resolvedRpc: '<configured>',
+      message: 'RH_RPC_URL unset — public read RPC only (not deploy-safe)',
+    })
+    expect(gated.ready).toBe(false)
+    expect(gated.metrics.find((m) => m.label === 'Ready')?.value).toBe('NO')
+    expect(gated.metrics.find((m) => m.label === 'Chain')?.value).toBe('4663')
+    expect(gated.rows.some((r) => r.primary === 'RH_RPC_URL')).toBe(true)
+
+    const ready = mapRhReadiness({
+      ready: true,
+      chainId: 4663,
+      blockscoutConfigured: true,
+      rhRpcConfigured: true,
+      usingPublicRpcRead: false,
+      message: 'configured',
+    })
+    expect(ready.ready).toBe(true)
+    expect(ready.metrics.find((m) => m.label === 'Ready')?.tone).toBe('ok')
   })
 })
