@@ -9,12 +9,13 @@
 ### 🦞 Open-source agent runtime for Solana (and Robinhood Chain)
 
 [![Go](https://img.shields.io/badge/Go-1.26.4+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev)
-[![npm](https://img.shields.io/badge/npm-clawdbot--go-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/clawdbot-go)
+[![npm](https://img.shields.io/npm/v/clawdbot-go?style=for-the-badge&logo=npm&logoColor=white&label=clawdbot-go)](https://www.npmjs.com/package/clawdbot-go)
+[![GitHub release](https://img.shields.io/github/v/release/Solizardking/Zero-Bruh?style=for-the-badge&logo=github&label=Zero-Bruh)](https://github.com/Solizardking/Zero-Bruh/releases/latest)
 [![Solana](https://img.shields.io/badge/Solana-Mainnet-14F195?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com)
 [![Robinhood](https://img.shields.io/badge/Robinhood_Chain-4663-00d4ff?style=for-the-badge)](https://robinhoodchain.blockscout.com)
 [![License](https://img.shields.io/badge/License-MIT-9945FF?style=for-the-badge)](LICENSE)
 
-[Product](https://cheshireterminal.ai/zeroclawd) · [Agent hub](https://cheshireterminal.ai/agents) · [npm](https://www.npmjs.com/package/clawdbot-go) · [Security](SECURITY.md) · [Release checklist](docs/OPEN_SOURCE_RELEASE.md)
+[Product](https://cheshireterminal.ai/zeroclawd) · [GitHub](https://github.com/Solizardking/Zero-Bruh) · [npm `clawdbot-go`](https://www.npmjs.com/package/clawdbot-go) · [Release v1.0.2](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) · [Agent hub](https://cheshireterminal.ai/agents) · [Security](SECURITY.md)
 
 </div>
 
@@ -22,12 +23,31 @@
 
 It is **Solana-first**. Robinhood Chain / EVM support is additive through an open skill pack (token launch, Uniswap, registries, payments). You bring your own keys and risk limits; live money paths stay opt-in.
 
+### Official release (public)
+
+| Channel | Status |
+|---------|--------|
+| **GitHub** | Public repo [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh) · tag / notes [**v1.0.2**](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
+| **npm** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) (`latest`) · homepage [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Install scripts (raw)** | [`install-npm.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh) · [`install.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh) |
+| **Hosted connect** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) (aliases: `/clawdbot-go`, `/clawdbot`) |
+
+```bash
+# Fastest path (published npm package)
+npm install -g clawdbot-go@1.0.2
+npx clawdbot-go install
+
+# Or curl one-shots from the public GitHub main branch
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
+```
+
 ### What you get
 
 | Piece | What it is |
 |-------|------------|
 | **CLI** (`clawdbot`) | Go binary for agent chat, OODA loops, catalog, doctor, status, web console |
-| **npm package** (`clawdbot-go`) | One-shot install + RH skill pack into `~/.clawdbot` (and common agent skill dirs) |
+| **npm package** (`clawdbot-go@1.0.2`) | One-shot install + RH skill pack into `~/.clawdbot` (and common agent skill dirs); ships `install.sh` + `install-npm.sh` |
 | **Skill pack** | 23 open skills under `skills/` — FunPump launch, swaps, LP, Cheshire registries, zk-omni |
 | **Web console** | Local dashboard/API (default `127.0.0.1:18800`) you can also wire to [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 | **Laws + DNA** | Six-law harness, onchain-oriented identity, and starter agent DNA at install |
@@ -38,7 +58,7 @@ It is **Solana-first**. Robinhood Chain / EVM support is additive through an ope
 |----------|--------|
 | **Zero Clawd** | Product name (docs, DNA, UI, install banners) |
 | **`clawdbot` / `clawdbot-go`** | CLI binary and npm package (kept for compatibility) |
-| **Zero-Bruh** | This GitHub repository |
+| **Zero-Bruh** | Public GitHub repository (`Solizardking/Zero-Bruh`) |
 | **`cheshire-terminal-agents`** | Separate npm package: agent catalog + dual-chain forge SDK (not the Go runtime) |
 
 ### At a glance
@@ -48,15 +68,16 @@ It is **Solana-first**. Robinhood Chain / EVM support is additive through an ope
 - **ZK primitives** tree for nullifiers / attestations (observer by default; live writes are delegated)
 - **Lightweight footprint** — slim source archive via `make package`, stripped CLI on the order of ~10 MB
 - **Grok-first** model defaults, with other providers via env
+- **Cheshire Terminal** product hub for install + connect after local console is up
 
-Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
+Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Connect (Cheshire)](#e--connect-from-cheshire-terminal-hosted-zeroclawd) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
 
 ---
 
 ## 🚀 One-shot install (Grok Build style)
 
-**Published package:** [`clawdbot-go` on npm](https://www.npmjs.com/package/clawdbot-go)
-(`npm i clawdbot-go` / `npm i -g clawdbot-go`).
+**Published package:** [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) on npm  
+(`npm i clawdbot-go` / `npm i -g clawdbot-go@1.0.2`).
 
 **Skills are prepackaged at install** — every `skills/*/SKILL.md` in this repo
 (`pack-index.json` v2, **23** skills) is copied to `~/.clawdbot/skills` and
@@ -66,18 +87,19 @@ symlinked into `~/.agents`, `~/.claude`, and `~/.codex` skill roots.
 
 ```bash
 # Local project dependency (postinstall prepackages the skill pack)
-npm i clawdbot-go
+npm i clawdbot-go@1.0.2
 
 # Global CLI bins: clawdbot-go · zero-clawd · clawdbot-stack
-npm i -g clawdbot-go
+npm i -g clawdbot-go@1.0.2
 
 # If your npm blocks install scripts (skills will not prepackage until allowed):
-npm install -g --allow-scripts=clawdbot-go clawdbot-go
+npm install -g --allow-scripts=clawdbot-go clawdbot-go@1.0.2
 # or once for all installs of this package:
 # npm config set allow-scripts=clawdbot-go --location=user
 ```
 
-Package page: **https://www.npmjs.com/package/clawdbot-go**
+Package page: **https://www.npmjs.com/package/clawdbot-go**  
+GitHub release: **https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2**
 
 ```bash
 # Explicit skills-only re-prepackage
@@ -85,12 +107,15 @@ npx clawdbot-go skills-install --force
 # → ~/.clawdbot/skills  (+ agent root symlinks)
 
 # From this checkout instead of npm:
-cd /path/to/go-bot && npm install
+git clone https://github.com/Solizardking/Zero-Bruh.git
+cd Zero-Bruh && npm install
 ```
 
 Skip skill prepackage: `CLAWDBOT_SKIP_SKILLS=1 npm i clawdbot-go`
 
 ### B · Full stack via curl/npm (skills + env + optional Go/birth/automaton)
+
+Public **main** branch (raw GitHub) — both scripts return **HTTP 200**:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
@@ -98,7 +123,7 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install
 # same as:
 npx clawdbot-go install
 # full stack inside postinstall:
-CLAWDBOT_ONESHOT=1 npm i -g clawdbot-go
+CLAWDBOT_ONESHOT=1 npm i -g clawdbot-go@1.0.2
 ```
 
 ### C · Classic Go binary + source
@@ -141,15 +166,15 @@ npx cheshire-terminal-agents packages-list
 
 | Package | npm | Role |
 |---------|-----|------|
-| **This runtime** | [clawdbot-go](https://www.npmjs.com/package/clawdbot-go) | Skills oneshot, CLI bins, web console `:18800` |
+| **This runtime** | [clawdbot-go@1.0.2](https://www.npmjs.com/package/clawdbot-go) | Skills oneshot, CLI bins, web console `:18800` |
 | **Agents / forge** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) | Catalog, dual-chain forge, nested TS packages + optional `clawdbot-install` bridge |
 
 Install both when you need identity forge **and** a local Zero Clawd console.
 
 ### E · Connect from Cheshire Terminal (hosted `/zeroclawd`)
 
-**Zero Clawd** (this repo) is the local runtime. **Cheshire Terminal** hosts the
-public install + connect hub that talks to your agent after the one-shots.
+**Zero Clawd** (this repo / `clawdbot-go`) is the **local runtime**.  
+**Cheshire Terminal** hosts the public install + connect hub that talks to your agent after the one-shots.
 
 | Surface | Where |
 |---------|--------|
@@ -159,9 +184,11 @@ public install + connect hub that talks to your agent after the one-shots.
 | **CT client source** | `cheshire-terminal/client/src` — `pages/ClawdbotGoPage.tsx`, `lib/zeroClawd.ts`, routes in `App.tsx` |
 | **Install scripts** | [`install-npm.sh`](install-npm.sh) · [`install.sh`](install.sh) (printed steps end with the CT connect loop) |
 | **Local console** | `clawdbot web` → `http://127.0.0.1:18800` (`web/backend` + `web/frontend`) |
+| **npm package** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) |
+| **GitHub release** | [v1.0.2](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
 
 ```bash
-# One-shots (also the curl lines on the hosted hub)
+# One-shots (same curl lines as the hosted hub + release notes)
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
 # from this checkout:
@@ -181,12 +208,12 @@ Hosted probes (browser-direct for loopback; `/api/zeroclawd/probe` for public ag
 | `GET /api/health` | Liveness · agent **Zero Clawd** · package `clawdbot-go` · product URL |
 | `GET /api/status` | Runtime status (+ `public_links` ecosystem map) |
 | `GET /api/dna` | Starter DNA |
-| `GET /api/ecosystem` | Product/repo surfaces |
+| `GET /api/ecosystem` | Product/repo surfaces (zeroclawd, agents, SkillHub, …) |
 | `GET /api/rh/readiness` | RH 4663 presence gate |
 
-Also: live npm meta via Cheshire `GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest`.
+Also: live npm meta via Cheshire `GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest` (**1.0.2**).
 
-Loopback agents are probed **from your browser** (not the Cheshire server).
+Loopback agents are probed **from your browser** (not the Cheshire server).  
 Public remote hosts use the same-origin probe bridge (SSRF-hardened — private/link-local/loopback blocked server-side).
 
 | What you get | Path |
@@ -194,7 +221,8 @@ Public remote hosts use the same-origin probe bridge (SSRF-hardened — private/
 | RH skill pack (23) | `~/.clawdbot/skills` + `~/.agents/skills/*` (prepackaged) |
 | Pack manifest | `~/.clawdbot/skills/.clawdbot-prepackaged.json` |
 | Env template | `~/.clawdbot/.env` (`CLAWDBOT_SKILLS_DIR`, RH hooks) |
-| npm package | [clawdbot-go](https://www.npmjs.com/package/clawdbot-go) · `npm i clawdbot-go` |
+| npm package | [clawdbot-go@1.0.2](https://www.npmjs.com/package/clawdbot-go) · `npm i -g clawdbot-go@1.0.2` |
+| GitHub | [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh) · [release v1.0.2](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
 | Agents bridge | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) · `npx cheshire-terminal-agents clawdbot-install` (optional; not a hard dep) |
 | CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
 | Hosted connect | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
@@ -1141,14 +1169,33 @@ Zero Clawd is the reference implementation of the **Clawd Constitution** — the
 ## 🌐 Open Source Posture
 
 - **License:** top-level runtime code in this repo is released under the [MIT License](LICENSE)
+- **Public GitHub:** [`Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh) — release [**v1.0.2**](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2)
+- **Public npm:** [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) (`latest`) — bins `clawdbot-go` · `zero-clawd` · `clawdbot-stack`
+- **Product homepage (npm):** [https://cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd)
 - **Constitutional surfaces:** `six-laws.md`, `CONSTITUTION.md`, and `three-laws.md` remain the authoritative Clawd law documents
-- **Hub split:** GitHub runtime is [`Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh) (npm package `clawdbot-go`); `solana-clawd` is the wider public ecosystem hub
+- **Hub split:** Zero-Bruh is the Go/npm runtime; `solana-clawd` is the wider public ecosystem hub
 - **RH skills on npm:** [`cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents) redistributes the FunPump / RH skill pack + agent catalog/forge SDK (skills only)
 - **Agents source:** [Solizardking/Cheshire-Terminal-Agents](https://github.com/Solizardking/Cheshire-Terminal-Agents)
 - **SkillHub:** [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main) hosts the broader installable skills library used with birth seed / agent hosts
 - **Hosted surfaces:** [zeroclawd](https://cheshireterminal.ai/zeroclawd) · [agents](https://cheshireterminal.ai/agents) · [forge](https://cheshireterminal.ai/agents/forge)
 - **PiedPiper archive:** `docs/PiedPiper-master/` is a verbatim archive of [vs666/MinMax](https://github.com/vs666/MinMax) MIT-licensed code, preserved for historical and educational reference
 - **Public infra defaults:** `.env.example` points at the public x402/zk gateway for fast setup, but production operators should override with their own keys and RPC endpoints
+
+### Verify a fresh install (smoke)
+
+```bash
+# Registry
+npm view clawdbot-go version homepage
+# → 1.0.2 · https://cheshireterminal.ai/zeroclawd
+
+# GitHub raw installers
+curl -fsSIL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | head -1
+curl -fsSIL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | head -1
+
+# After install + web console on :18800
+curl -sS http://127.0.0.1:18800/api/health
+# → {"status":"ok","agent":"Zero Clawd","package":"clawdbot-go","product":"https://cheshireterminal.ai/zeroclawd"}
+```
 
 ---
 

@@ -75,3 +75,22 @@ If `govulncheck` is installed, include the result of:
 ```bash
 govulncheck ./...
 ```
+
+### Official channels (current)
+
+| Channel | Value |
+|---------|--------|
+| GitHub | https://github.com/Solizardking/Zero-Bruh |
+| Latest release | https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2 |
+| npm | `clawdbot-go@1.0.2` · https://www.npmjs.com/package/clawdbot-go |
+| Product | https://cheshireterminal.ai/zeroclawd |
+
+```bash
+# npm (requires auth; automation token or --otp)
+npm publish --access public
+
+# GitHub tag + release notes
+git tag -a vX.Y.Z -m "Zero Clawd / clawdbot-go X.Y.Z"
+git push origin main vX.Y.Z
+gh release create vX.Y.Z --title "Zero Clawd vX.Y.Z (clawdbot-go)" --generate-notes
+```
