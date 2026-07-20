@@ -31,15 +31,22 @@ It is **Solana-first**. Robinhood Chain / EVM support is additive through an ope
 | **npm** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) (`latest`) · homepage [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 | **Install scripts (raw)** | [`install-npm.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh) · [`install.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh) |
 | **Hosted connect** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) (aliases: `/clawdbot-go`, `/clawdbot`) |
+| **Computer / E2B desk** | [cheshireterminal.ai/cheshire-computer](https://cheshireterminal.ai/cheshire-computer) · `curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh \| bash` (installs this package) |
 
 ```bash
 # Fastest path (published npm package)
+# https://www.npmjs.com/package/clawdbot-go
 npm install -g clawdbot-go@1.0.2
 npx clawdbot-go install
 
 # Or curl one-shots from the public GitHub main branch
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
+
+# Cheshire Terminal Computer (E2B desk + ct_os_ + clawdbot-go for CLAWD holders)
+curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh | bash
+# packages only (local Node, no E2B):
+curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh | bash -s -- --packages-only
 ```
 
 ### What you get
@@ -70,7 +77,7 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install
 - **Grok-first** model defaults, with other providers via env
 - **Cheshire Terminal** product hub for install + connect after local console is up
 
-Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Connect (Cheshire)](#e--connect-from-cheshire-terminal-hosted-zeroclawd) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
+Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Cheshire Computer / E2B](#f--cheshire-terminal-computer-e2b--clawd-holders) · [Connect (Cheshire)](#e--connect-from-cheshire-terminal-hosted-zeroclawd) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
 
 ---
 
@@ -214,6 +221,40 @@ Hosted probes (browser-direct for loopback; `/api/zeroclawd/probe` for public ag
 
 Also: live npm meta via Cheshire `GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest` (**1.0.2**).
 
+### F · Cheshire Terminal Computer (E2B) · CLAWD holders
+
+**[`clawdbot-go`](https://www.npmjs.com/package/clawdbot-go)** is installed by the **Cheshire Terminal Computer** product path — not only by this repo’s scripts.
+
+| Piece | Detail |
+|-------|--------|
+| **Desk UI** | [cheshireterminal.ai/cheshire-computer](https://cheshireterminal.ai/cheshire-computer) |
+| **One-shot** | `curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh \| bash` |
+| **Packages only** | `curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh \| bash -s -- --packages-only` |
+| **E2B template** | `cheshire-terminal-computer` (preinstalls `clawdbot-go@1.0.2` + `cheshire-terminal-agents@1.48.0`) |
+| **Status / install matrix** | `GET https://cheshireterminal.ai/api/e2b/computer/status` → `agentStack.clawdbotGo.npmUrl` |
+| **npm package** | **https://www.npmjs.com/package/clawdbot-go** |
+| **Connect after install** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+
+```bash
+# What the Computer one-shot installs (when Node/npm is available)
+npm install -g clawdbot-go@1.0.2 cheshire-terminal-agents@1.48.0
+npx clawdbot-go skills-install --force
+# → bins: clawdbot-go · zero-clawd · clawdbot-stack
+# → skills: ~/.clawdbot/skills (23 RH pack skills)
+
+# Inside an E2B desk shell (template or oneshot inject)
+clawdbot-go --help
+cheshire status
+ls ~/.clawdbot/skills
+```
+
+Cheshire monorepo sources (if you have the product tree checked out):
+
+- `e2b/cheshire-terminal-computer/template.ts` — bakes packages into the sandbox image  
+- `server/lib/e2b-agent-stack.ts` — install matrix + oneshot inject script  
+- `server/routes/e2b-computer.ts` — `GET /api/e2b/install.sh` · `POST /api/e2b/oneshot`  
+- `client/src/pages/CheshireComputerPage.tsx` — holder stack UI with npmjs links  
+
 Loopback agents are probed **from your browser** (not the Cheshire server).  
 Public remote hosts use the same-origin probe bridge (SSRF-hardened — private/link-local/loopback blocked server-side).
 
@@ -225,6 +266,7 @@ Public remote hosts use the same-origin probe bridge (SSRF-hardened — private/
 | npm package | [clawdbot-go@1.0.2](https://www.npmjs.com/package/clawdbot-go) · `npm i -g clawdbot-go@1.0.2` |
 | GitHub | [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh) · [release v1.0.2](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
 | Agents bridge | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) · `npx cheshire-terminal-agents clawdbot-install` (optional; not a hard dep) |
+| Cheshire Computer | [cheshire-computer](https://cheshireterminal.ai/cheshire-computer) · [install.sh](https://cheshireterminal.ai/api/e2b/install.sh) |
 | CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
 | Hosted connect | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 | Product | [zeroclawd](https://cheshireterminal.ai/zeroclawd) · [agents](https://cheshireterminal.ai/agents) · [forge](https://cheshireterminal.ai/agents/forge) · [funpump.ai](https://funpump.ai) |
