@@ -328,7 +328,7 @@ clawdbot-go/
 │   ├── clawdbot/                 CLI agent (cobra)
 │   └── clawdbot-tui/             TUI launcher (tcell/tview)
 │
-├── pkg/                         ── 45 Packages, 24K+ lines ──
+├── pkg/                         ── ~53 Packages, 24K+ lines ──
 │   │
 │   │  ┌─ Core Agent ────────────────────────────────────────┐
 │   ├── agent/                   OODA loop, hooks, tool executor, prompts
@@ -380,7 +380,7 @@ clawdbot-go/
 │   ├── cheshire-omni-mint/      Dual-rail Solana + RH identity mint
 │   ├── cheshire-zk-omni/        LayerZero msgType-4 messenger skill
 │   ├── swap-*/ liquidity-*/ v4-*/  Uniswap trade + LP + v4
-│   ├── copy-trade/ dca-bot/ index-bot/  Strategy bots
+│   ├── copy-trade/ dca-bot/ index-bot/ deployer/  Strategy bots + CCA
 │   ├── pay-with-*/              HTTP 402 / MPP payments
 │   └── viem-integration/        EVM client patterns
 │
@@ -743,17 +743,19 @@ go build -o build/clawdbot-web ./web/backend
 |:---------|:-------|:------------|
 | `/api/status` | GET | Agent status (version, Go runtime, uptime, mode, goroutines) |
 | `/api/health` | GET | Health check |
-| `/api/connectors` | GET | Connector status (Helius, Birdeye, Jupiter, Aster, LLM, Supabase) |
+| `/api/connectors` | GET | Connector presence: Solana (Helius, Birdeye, Jupiter, Aster), **Blockscout**, **Robinhood RPC**, LLM, Supabase, Vulcan — status only, no secrets |
+| `/api/rh/readiness` | GET | RH launch/deploy/trade gate — `ready`, `missing` (`BLOCKSCOUT_API_KEY`, `RH_RPC_URL`), chain **4663**; presence only |
+| `/api/keys` | GET/POST | Managed key presence / localhost upsert (allowlist incl. RH env names) |
 | `/api/laws` | GET | Canonical six-law harness |
 | `/api/trading/cockpit` | GET | Trading readiness, risk limits, connector status, law state |
-| `/api/doctor` | GET | Runtime, config, trading, and ZK diagnostics |
-| `/api/config` | GET | Read-only configuration |
-| `/api/packages` | GET | All 45 Go packages with file counts |
+| `/api/doctor` | GET | Runtime, config, trading, **connectors.robinhood**, and ZK diagnostics |
+| `/api/config` | GET | Read-only configuration (secrets redacted) |
+| `/api/packages` | GET | All Go packages under `pkg/` (~53) with file counts |
 | `/api/env` | GET | Safe (non-secret) environment variables |
 | `/api/vault/status` | GET | Local `.env.local` vault metadata, no secret values |
 | `/api/vault/keys` | GET | Authorized key-name list from the local vault |
 | `/api/vault/key?name=HELIUS_API_KEY` | GET | Authorized single key lookup |
-| `/api/vault/export?names=HELIUS_API_KEY,BIRDEYE_API_KEY` | GET | Authorized shell export source |
+| `/api/vault/export?names=HELIUS_API_KEY,BIRDEYE_API_KEY,BLOCKSCOUT_API_KEY,RH_RPC_URL` | GET | Authorized shell export source |
 
 ---
 
