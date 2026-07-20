@@ -134,11 +134,12 @@ Assembles the per-tick prompt from `CLAWD.md` + live observations and calls an L
 
 **Provider priority (uses first key found):**
 
-1. `XAI_API_KEY` → `grok-4.3-fast` (or `XAI_MODEL`)
-2. `DEEPSEEK_API_KEY` → `deepseek-v4-flash` (via `DEEPSEEK_BASE_URL`)
-3. `ZKROUTER_API_KEY` (or `OPENROUTER_API_KEY`) → `nex-agi/nex-n2-pro:free` via `ZKROUTER_BASE_URL`
-4. `ANTHROPIC_API_KEY` → `claude-haiku-4-5-20251001` (or `ANTHROPIC_MODEL`)
-5. **Fallback** → `deterministicDecision()` (no key needed)
+1. `MOONSHOT_API_KEY` → `kimi-k3` (or `MOONSHOT_MODEL`) via `MOONSHOT_BASE_URL` (default `https://api.moonshot.ai/v1`)
+2. `XAI_API_KEY` → `grok-4.3-fast` (or `XAI_MODEL`)
+3. `DEEPSEEK_API_KEY` → `deepseek-v4-flash` (via `DEEPSEEK_BASE_URL`)
+4. `ZKROUTER_API_KEY` (or `OPENROUTER_API_KEY`) → `nex-agi/nex-n2-pro:free` via `ZKROUTER_BASE_URL`
+5. `ANTHROPIC_API_KEY` → `claude-haiku-4-5-20251001` (or `ANTHROPIC_MODEL`)
+6. **Fallback** → `deterministicDecision()` (no key needed)
 
 **`deterministicDecision(obs)`** — 5-candle SMA crossover: opens long when price < SMA × 0.995, opens short when price > SMA × 1.005, closes on reversal. No API key required.
 
@@ -252,15 +253,19 @@ All enforced in code — not just prompt guidance:
 
 | Variable | Used by | Description |
 | --- | --- | --- |
-| `XAI_API_KEY` | clawd-decision | Grok API key (priority 1) |
+| `MOONSHOT_API_KEY` | clawd-decision | Moonshot / Kimi K3 key (priority 1; default agent when set) |
+| `MOONSHOT_MODEL` | clawd-decision | Override model (default `kimi-k3`) |
+| `MOONSHOT_BASE_URL` | clawd-decision | Override base URL (default `https://api.moonshot.ai/v1`) |
+| `MOONSHOT_REASONING_EFFORT` | clawd-decision | K3 thinking effort: `low` / `high` / `max` |
+| `XAI_API_KEY` | clawd-decision | Grok API key (priority 2) |
 | `XAI_MODEL` | clawd-decision | Override Grok model |
-| `DEEPSEEK_API_KEY` | clawd-decision | DeepSeek key (priority 2) |
+| `DEEPSEEK_API_KEY` | clawd-decision | DeepSeek key (priority 3) |
 | `DEEPSEEK_BASE_URL` | clawd-decision | DeepSeek base URL |
-| `ZKROUTER_API_KEY` | clawd-decision | Preferred Clawd router key on the public zk.x402.wtf stack (priority 3) |
+| `ZKROUTER_API_KEY` | clawd-decision | Preferred Clawd router key on the public zk.x402.wtf stack (priority 4) |
 | `ZKROUTER_BASE_URL` | clawd-decision | Override the default router base (`https://clawdrouter-zk.fly.dev/v1`) |
 | `OPENROUTER_API_KEY` | clawd-decision | Compatibility fallback for the same OpenAI-format router slot |
 | `OPENROUTER_MODEL` | clawd-decision | Override the router model |
-| `ANTHROPIC_API_KEY` | clawd-decision | Claude key (priority 4) |
+| `ANTHROPIC_API_KEY` | clawd-decision | Claude key (priority 5) |
 | `ANTHROPIC_MODEL` | clawd-decision | Override Claude model |
 | `SOLANA_RPC_URL` | loop | RPC URL (mainnet URLs rejected) |
 | `MAINNET_OK` | observe | Set to `1` to bypass mainnet guard |

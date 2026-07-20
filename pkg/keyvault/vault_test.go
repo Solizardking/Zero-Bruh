@@ -204,6 +204,12 @@ func TestManagedAPIKeys_includesRobinhoodCore(t *testing.T) {
 	}
 }
 
+func TestManagedAPIKeys_includesMoonshot(t *testing.T) {
+	if !IsManagedKey("MOONSHOT_API_KEY") {
+		t.Fatal("MOONSHOT_API_KEY must be allowlisted for Kimi K3 default agent")
+	}
+}
+
 func writeFile(t *testing.T, path, content string) {
 	t.Helper()
 	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
