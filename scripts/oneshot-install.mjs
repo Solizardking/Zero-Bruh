@@ -223,22 +223,29 @@ function installSkillPack({ installDir, force }) {
     join(homedir(), ".codex", "skills"),
   ];
 
-  // Link into agent hosts via `ln -sfn` in a child process — never use Node
-  // fs.equivalent/rmSync across volumes (macOS aborts with uncatchable
-  // filesystem_error on some ~/.agents paths).
+  // Link into agent hosts in one shell batch — Node fs.equivalent can abort on
+  // macOS multi-volume paths; per-skill spawnSync is also slow.
   let linked = 0;
   if (process.env.CLAWDBOT_SKIP_AGENT_LINKS !== "1") {
-    for (const root of agentRoots) {
-      const mkdir = spawnSync("mkdir", ["-p", root], { encoding: "utf8" });
-      if (mkdir.status !== 0) continue;
-      for (const id of ids) {
-        const src = join(destSkills, id);
-        const dst = join(root, id);
-        const check = spawnSync("test", ["-d", src]);
-        if (check.status !== 0) continue;
-        const ln = spawnSync("ln", ["-sfn", src, dst], { encoding: "utf8" });
-        if (ln.status === 0) linked += 1;
-      }
+    const script = [
+      "set +e",
+      ...agentRoots.map((root) => `mkdir -p ${JSON.stringify(root)}`),
+      ...agentRoots.flatMap((root) =>
+        ids.map((id) => {
+          const src = join(destSkills, id);
+          const dst = join(root, id);
+          return `if [ -d ${JSON.stringify(src)} ]; then ln -sfn ${JSON.stringify(src)} ${JSON.stringify(dst)} && echo linked; fi`;
+        }),
+      ),
+    ].join("\n");
+    const batch = spawnSync("bash", ["-c", script], {
+      encoding: "utf8",
+      timeout: 30_000,
+    });
+    if (batch.status === 0 || batch.stdout) {
+      linked = String(batch.stdout || "")
+        .split("\n")
+        .filter((l) => l.trim() === "linked").length;
     }
   }
 
