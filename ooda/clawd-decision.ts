@@ -2,10 +2,11 @@
  * ooda/clawd-decision.ts — AI-powered OODA decision function
  *
  * Provider priority:
- *   1. XAI_API_KEY      → grok-4.3 (fast, cheap, streaming)
- *   2. DEEPSEEK_API_KEY → deepseek-v4-flash
- *   3. ZKROUTER_API_KEY / OPENROUTER_API_KEY → OpenAI-compatible router
- *   4. ANTHROPIC_API_KEY                     → Claude direct
+ *   1. MOONSHOT_API_KEY → kimi-k3 (Moonshot / Kimi Open Platform)
+ *   2. XAI_API_KEY      → grok-4.3 (fast, cheap, streaming)
+ *   3. DEEPSEEK_API_KEY → deepseek-v4-flash
+ *   4. ZKROUTER_API_KEY / OPENROUTER_API_KEY → OpenAI-compatible router
+ *   5. ANTHROPIC_API_KEY                     → Claude direct
  *
  * Design: Fresh context per tick. No conversation history.
  * The per-tick prompt (CLAWD.md) + observations → one JSON decision.
@@ -163,14 +164,27 @@ async function callClaude(prompt: string, apiKey: string): Promise<string> {
   return data.content?.[0]?.text ?? '';
 }
 
-async function callOpenAi(prompt: string, apiKey: string, baseUrl: string, model: string): Promise<string> {
+async function callOpenAi(
+  prompt: string,
+  apiKey: string,
+  baseUrl: string,
+  model: string,
+  opts?: { omitTemperature?: boolean; reasoningEffort?: string },
+): Promise<string> {
   const client = new OpenAI({ apiKey, baseURL: baseUrl });
-  const response = await client.chat.completions.create({
+  // Kimi K3 fixes temperature/top_p/penalties — omit sampling params.
+  const body: Record<string, unknown> = {
     model,
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 200,
-    temperature: 0.1,
-  });
+  };
+  if (!opts?.omitTemperature) {
+    body.temperature = 0.1;
+  }
+  if (opts?.reasoningEffort) {
+    body.reasoning_effort = opts.reasoningEffort;
+  }
+  const response = await client.chat.completions.create(body as any);
   return response.choices[0]?.message?.content ?? '';
 }
 
@@ -178,13 +192,31 @@ export async function clawdDecision(obs: Observations): Promise<unknown> {
   const prompt = getPrompt(obs);
   let raw: string | undefined;
 
-  // Provider priority: Grok → DeepSeek → zkrouter/OpenRouter-compatible → Claude
+  // Provider priority: Moonshot K3 → Grok → DeepSeek → zkrouter → Claude
+  const moonshotKey = process.env['MOONSHOT_API_KEY'];
   const xaiKey = process.env['XAI_API_KEY'];
   const dsKey = process.env['DEEPSEEK_API_KEY'];
   const zkRouterKey = process.env['ZKROUTER_API_KEY'] || process.env['OPENROUTER_API_KEY'];
   const antKey = process.env['ANTHROPIC_API_KEY'];
 
-  if (xaiKey) {
+  if (moonshotKey) {
+    try {
+      raw = await callOpenAi(
+        prompt,
+        moonshotKey,
+        process.env['MOONSHOT_BASE_URL'] || 'https://api.moonshot.ai/v1',
+        process.env['MOONSHOT_MODEL'] || 'kimi-k3',
+        {
+          omitTemperature: true,
+          reasoningEffort: process.env['MOONSHOT_REASONING_EFFORT'] || 'low',
+        },
+      );
+    } catch (err) {
+      process.stderr.write(`[clawd-decision] Moonshot/Kimi K3 failed: ${err}\n`);
+    }
+  }
+
+  if (!raw && xaiKey) {
     try {
       raw = await callGrok(prompt, xaiKey);
     } catch (err) {

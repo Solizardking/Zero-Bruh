@@ -1,6 +1,6 @@
 import { html, nothing } from "lit";
 import type { ConfigUiHints } from "../types";
-import { MOONSHOT_KIMI_K2_MODELS } from "../data/moonshot-kimi-k2";
+import { MOONSHOT_KIMI_K3_MODELS } from "../data/moonshot-kimi-k3";
 import { analyzeConfigSchema, renderConfigForm, SECTION_META } from "./config-form";
 import {
   hintForPath,
@@ -150,14 +150,14 @@ const MODEL_PRESETS: ModelPreset[] = [
     ],
   },
   {
-    label: "Kimi K2",
+    label: "Kimi K3",
     providerKey: "moonshot",
     providerName: "Moonshot",
     baseURL: "https://api.moonshot.ai/v1",
     protocol: "openai-chat-completions",
     apiKeyEnv: "MOONSHOT_API_KEY",
-    primaryModel: "moonshot/kimi-k2-0905-preview",
-    models: MOONSHOT_KIMI_K2_MODELS.map((model) => ({
+    primaryModel: "moonshot/kimi-k3",
+    models: MOONSHOT_KIMI_K3_MODELS.map((model) => ({
       id: `moonshot/${model.id}`,
       name: model.name,
       alias: model.alias,

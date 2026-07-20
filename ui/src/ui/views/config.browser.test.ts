@@ -158,7 +158,7 @@ describe("config view", () => {
     );
   });
 
-  it("applies Moonshot (Kimi) preset", () => {
+  it("applies Moonshot (Kimi K3) preset", () => {
     const container = document.createElement("div");
     const onRawChange = vi.fn();
     const onFormPatch = vi.fn();
@@ -172,24 +172,23 @@ describe("config view", () => {
     );
 
     const btn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("Kimi"),
+      b.textContent?.includes("Kimi K3"),
     ) as HTMLButtonElement | undefined;
     expect(btn).toBeTruthy();
     btn?.click();
 
     const raw = String(onRawChange.mock.calls.at(-1)?.[0] ?? "");
     expect(raw).toContain("https://api.moonshot.ai/v1");
-    expect(raw).toContain("moonshot/kimi-k2-0905-preview");
-    expect(raw).toContain("moonshot/kimi-k2-turbo-preview");
-    expect(raw).toContain("moonshot/kimi-k2-thinking");
-    expect(raw).toContain("moonshot/kimi-k2-thinking-turbo");
-    expect(raw).toContain("Kimi K2 Turbo");
-    expect(raw).toContain("Kimi K2 Thinking");
-    expect(raw).toContain("Kimi K2 Thinking Turbo");
+    expect(raw).toContain("moonshot/kimi-k3");
+    expect(raw).toContain("moonshot/kimi-k2.7-code");
+    expect(raw).toContain("moonshot/kimi-k2.7-code-highspeed");
+    expect(raw).toContain("moonshot/kimi-k2.6");
+    expect(raw).toContain("Kimi K3");
+    expect(raw).toContain("Kimi K2.7 Code");
     expect(raw).toContain("MOONSHOT_API_KEY");
     expect(onFormPatch).toHaveBeenCalledWith(
       ["agents", "defaults", "model", "primary"],
-      "moonshot/kimi-k2-0905-preview",
+      "moonshot/kimi-k3",
     );
   });
 });
