@@ -34,9 +34,9 @@
     "node": ">=18.18"
   },
   "bin": {
-    "clawdbot-go": "./bin/clawdbot-go.js",
-    "zero-clawd": "./bin/clawdbot-go.js",
-    "clawdbot-stack": "./bin/clawdbot-go.js"
+    "clawdbot-go": "bin/clawdbot-go.js",
+    "zero-clawd": "bin/clawdbot-go.js",
+    "clawdbot-stack": "bin/clawdbot-go.js"
   },
   "exports": {
     ".": "./scripts/oneshot-install.mjs",
