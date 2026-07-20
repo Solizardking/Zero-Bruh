@@ -270,16 +270,18 @@ cast call "$LAUNCHPAD_ADDRESS" "tokenCount()(uint256)" \
 ## Install this skill elsewhere
 
 ```bash
-# Into another agent skills dir
-cp -R ~/.agents/skills/rh-bonded-launch \
-  ~/.agents/skills/rh-bonded-launch
+# From a clone of this runtime (pack lives under ./skills)
+cp -R ./skills/rh-bonded-launch ~/.agents/skills/rh-bonded-launch
 
-# Or Cheshire skills tree
-cp -R ~/.agents/skills/rh-bonded-launch \
-  ~/cheshire-terminal/skills/rh-bonded-launch
+# Or into a Cheshire skills tree
+cp -R ./skills/rh-bonded-launch ~/cheshire-terminal/skills/rh-bonded-launch
+
+# npm redistribute (skills only)
+npm i cheshire-terminal-agents
+# then point CLAWDBOT_SKILLS_DIR at the package's rh-crypto-agent skills root
 ```
 
-Portable duplicate: `skills/rh-bonded-launch/SKILL.md` in ClawdBrowser.
+Portable duplicate ships in this repo at `skills/rh-bonded-launch/SKILL.md`.
 
 ## Related docs
 

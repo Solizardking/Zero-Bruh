@@ -339,7 +339,7 @@ curl -X POST https://tee.onchainai.fund/v1/proof \
 <div align="center">
 
 **Clawd TEE Gateway** · Solana-native attestation anchoring  
-Built with 🦞 by the Clawd ecosystem · [`github.com/Solizardking/clawdbot-go`](https://github.com/Solizardking/Zero-Bruh)
+Built with 🦞 by the Clawd ecosystem · [`github.com/Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh)
 
 *The shell molts. The proofs do not.*
 

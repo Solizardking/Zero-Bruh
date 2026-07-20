@@ -69,6 +69,11 @@ func TestNormalizeArchivePath(t *testing.T) {
 		"go.mod":                           "go.mod",
 		"./clawdbot-go-x/README.md":        "README.md",
 		"clawdbot-go-dev/":                 "",
+		"Zero-Bruh-main/go.mod":            "go.mod",
+		"Zero-Bruh-v1.0.0/cmd/main.go":     "cmd/main.go",
+		"./Zero-Bruh-x/README.md":          "README.md",
+		"Zero-Bruh-main/":                  "",
+		"zero-bruh-dev/pkg/x.go":           "pkg/x.go",
 	}
 	for in, want := range cases {
 		if got := NormalizeArchivePath(in); got != want {

@@ -109,23 +109,31 @@ func ValidateGitattributesFile(path string) error {
 	return ValidateGitattributesContent(string(data))
 }
 
-// NormalizeArchivePath strips a single top-level prefix (clawdbot-go-*/).
+// archiveTopLevelPrefix reports whether name is a known source-archive prefix
+// (npm/package history used clawdbot-go-*; public GitHub repo uses Zero-Bruh-*).
+func archiveTopLevelPrefix(name string) bool {
+	return strings.HasPrefix(name, "clawdbot-go") ||
+		strings.HasPrefix(name, "Zero-Bruh") ||
+		strings.HasPrefix(name, "zero-bruh")
+}
+
+// NormalizeArchivePath strips a single top-level prefix (clawdbot-go-*/Zero-Bruh-*/).
 func NormalizeArchivePath(entry string) string {
 	entry = strings.TrimPrefix(entry, "./")
 	if entry == "" {
 		return ""
 	}
-	// git archive --prefix=clawdbot-go-VERSION/ → strip first segment
+	// git archive --prefix=clawdbot-go-VERSION/ or Zero-Bruh-VERSION/ → strip first segment
 	if i := strings.IndexByte(entry, '/'); i >= 0 {
 		first := entry[:i]
 		rest := entry[i+1:]
-		if strings.HasPrefix(first, "clawdbot-go") {
+		if archiveTopLevelPrefix(first) {
 			return strings.TrimSuffix(rest, "/")
 		}
 	}
-	// Prefix-only directory entry (clawdbot-go-dev/) → empty residual path
+	// Prefix-only directory entry (clawdbot-go-dev/ or Zero-Bruh-main/) → empty residual path
 	trimmed := strings.TrimSuffix(entry, "/")
-	if strings.HasPrefix(trimmed, "clawdbot-go") && !strings.Contains(trimmed, "/") {
+	if archiveTopLevelPrefix(trimmed) && !strings.Contains(trimmed, "/") {
 		return ""
 	}
 	return strings.TrimSuffix(entry, "/")

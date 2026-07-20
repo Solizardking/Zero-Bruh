@@ -169,6 +169,9 @@ Prefer **user-signed** wallet txs. Agent-held keys only with explicit approval.
 ## Install elsewhere
 
 ```bash
-cp -R ~/.agents/skills/rh-launchpad-v3 \
-  ~/.agents/skills/rh-launchpad-v3
+# From a clone of this runtime
+cp -R ./skills/rh-launchpad-v3 ~/.agents/skills/rh-launchpad-v3
+
+# npm redistribute (skills only)
+npm i cheshire-terminal-agents
 ```

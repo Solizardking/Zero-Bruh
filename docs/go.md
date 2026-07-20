@@ -1,7 +1,8 @@
 # ClawdBot-Go — Agent Handoff Document
 
 **Repo:** `https://github.com/Solizardking/Zero-Bruh`  
-**Local path:** `.`  
+**Clone dir:** `Zero-Bruh` (after `git clone https://github.com/Solizardking/Zero-Bruh`)  
+
 **Language:** Go 1.26.4+  
 **Module:** `github.com/8bitlabs/clawdbot`  
 **Public gateway:** `https://zk.x402.wtf`  
@@ -161,7 +162,8 @@ signatures or a queued status. The installer writes the non-secret receipt to
 ## Build & Test
 
 ```bash
-cd .    # or clone from GitHub
+git clone https://github.com/Solizardking/Zero-Bruh
+cd Zero-Bruh
 
 go mod download
 go build ./...                 # must compile cleanly

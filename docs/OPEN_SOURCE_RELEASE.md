@@ -2,6 +2,23 @@
 
 Use this checklist before pushing a public release.
 
+## Branding matrix (public)
+
+| Surface | Canonical value |
+|---------|-----------------|
+| Product name | **Zero Clawd** |
+| GitHub runtime | https://github.com/Solizardking/Zero-Bruh |
+| npm package / CLIs | `clawdbot-go` · bins `clawdbot-go` / `zero-clawd` · Go bin `clawdbot` |
+| Go module path | `github.com/8bitlabs/clawdbot` (stable; not the GitHub URL) |
+| Product page | https://cheshireterminal.ai/zeroclawd |
+| Agent hub / forge | https://cheshireterminal.ai/agents · `/agents/forge` |
+| Agents npm / source | `cheshire-terminal-agents` · https://github.com/Solizardking/Cheshire-Terminal-Agents |
+| SkillHub | https://github.com/Solizardking/skillhub-main |
+| Terminal | https://cheshireterminal.ai |
+| Ecosystem hub | https://github.com/solizardking/solana-clawd |
+
+Do **not** hardcode machine paths (`/Users/...`). Prefer `~/…`, `./skills`, or env vars.
+
 ## Required Gate
 
 ```bash
@@ -18,6 +35,7 @@ tracked generated artifacts.
 - Keep `.env` local. Commit only `.env.example`.
 - Keep live wallets, treasury keypairs, install ledgers, funding receipts, and
   private API keys outside the repository.
+- No host-local absolute paths in docs, skills, installers, or metadata.
 - Prefer `CLAWDBOT_SOURCE_MODE=archive` for one-shot installs so
   `.gitattributes export-ignore` keeps downloads small.
 - Slim package rules live in `.gitattributes` (`export-ignore`). Build a local

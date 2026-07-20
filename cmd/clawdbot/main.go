@@ -807,9 +807,9 @@ func NewCatalogCommand() *cobra.Command {
 		Use:   "catalog",
 		Short: "Inspect local Clawd skills, agents, and ZK primitives",
 		Long: `Inspect the local Clawd ecosystem indexes that Zero Clawd can use:
-  • ~/skills/skills        local AgentSkill library
-  • ~/agents/agents/src    local agent catalog JSON definitions
-  • ./zk-primitives                  Clawd ZK agent/client/program surface
+  • ./skills (or CLAWDBOT_SKILLS_DIR / ~/skills/skills)   skill library
+  • CLAWDBOT_AGENTS_DIR or ~/agents/agents/src            agent catalog JSON
+  • ./zk-primitives (or CLAWDBOT_ZK_PRIMITIVES_DIR)       ZK agent/client/program
 
 The command is read-only. It does not install skills, execute tools, or call live
 trading endpoints.`,

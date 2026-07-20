@@ -2,7 +2,9 @@
 
 ## Supported Surface
 
-Security fixes target the current `main` branch of `clawdbot-go`.
+Security fixes target the current `main` branch of
+[`Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh)
+(npm package name: `clawdbot-go`).
 
 ## Reporting
 

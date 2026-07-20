@@ -270,7 +270,7 @@ clawdbot solana trending         # top Solana tokens
 
 ```bash
 git clone https://github.com/Solizardking/Zero-Bruh
-cd clawdbot-go
+cd Zero-Bruh
 
 # Configure API keys (zkrouter + RPC pre-filled, add your own to unlock higher limits)
 cp .env.example .env
@@ -1028,7 +1028,7 @@ Zero Clawd is the reference implementation of the **Clawd Constitution** — the
 
 - **License:** top-level runtime code in this repo is released under the [MIT License](LICENSE)
 - **Constitutional surfaces:** `six-laws.md`, `CONSTITUTION.md`, and `three-laws.md` remain the authoritative Clawd law documents
-- **Hub split:** `clawdbot-go` is the Go runtime, while `solana-clawd` is the wider public ecosystem hub
+- **Hub split:** GitHub runtime is [`Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh) (npm package `clawdbot-go`); `solana-clawd` is the wider public ecosystem hub
 - **RH skills on npm:** [`cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents) redistributes the FunPump / RH skill pack + agent catalog/forge SDK (skills only)
 - **Agents source:** [Solizardking/Cheshire-Terminal-Agents](https://github.com/Solizardking/Cheshire-Terminal-Agents)
 - **SkillHub:** [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main) hosts the broader installable skills library used with birth seed / agent hosts
@@ -1066,7 +1066,7 @@ This codebase stands on the shoulders of academic and open-source pioneers:
 
 <div align="center">
 
-**MIT License** — Clawd runtime repo: [`github.com/Solizardking/clawdbot-go`](https://github.com/Solizardking/Zero-Bruh)
+**MIT License** — Clawd runtime repo: [`github.com/Solizardking/Zero-Bruh`](https://github.com/Solizardking/Zero-Bruh)
 
 🦞 **$CLAWD :: Droids Lead The Way** :: **$WIF Hat Stays On** :: **$BONK for the People**
 
