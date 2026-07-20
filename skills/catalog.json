@@ -66,7 +66,8 @@
       "evm",
       "open-source",
       "crypto-agent",
-      "zk"
+ df     "zk",
+      "erc-8004"
     ]
   },
   {
