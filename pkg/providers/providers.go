@@ -147,6 +147,9 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 		// K3 always thinks; default effort is max on the platform.
 		payload["reasoning_effort"] = "max"
 	}
+	if len(opts.Tools) > 0 {
+		payload["tools"] = openAITools(opts.Tools)
+	}
 
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -182,6 +185,14 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 			Message struct {
 				Content          string `json:"content"`
 				ReasoningContent string `json:"reasoning_content"`
+				ToolCalls        []struct {
+					ID       string `json:"id"`
+					Type     string `json:"type"`
+					Function struct {
+						Name      string `json:"name"`
+						Arguments string `json:"arguments"`
+					} `json:"function"`
+				} `json:"tool_calls"`
 			} `json:"message"`
 			FinishReason string `json:"finish_reason"`
 		} `json:"choices"`
@@ -201,12 +212,58 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 		OutputTokens: orResp.Usage.CompletionTokens,
 	}
 	if len(orResp.Choices) > 0 {
-		result.Content = orResp.Choices[0].Message.Content
-		result.Thinking = orResp.Choices[0].Message.ReasoningContent
-		result.StopReason = orResp.Choices[0].FinishReason
+		choice := orResp.Choices[0]
+		result.Content = choice.Message.Content
+		result.Thinking = choice.Message.ReasoningContent
+		if choice.FinishReason != "" {
+			result.StopReason = choice.FinishReason
+		}
+		for _, tc := range choice.Message.ToolCalls {
+			input := map[string]any{}
+			if args := strings.TrimSpace(tc.Function.Arguments); args != "" {
+				if err := json.Unmarshal([]byte(args), &input); err != nil {
+					// Keep raw string if model returns non-JSON arguments.
+					input = map[string]any{"_raw": args}
+				}
+			}
+			name := tc.Function.Name
+			if name == "" {
+				continue
+			}
+			result.ToolCalls = append(result.ToolCalls, ToolCall{
+				Name:  name,
+				Input: input,
+			})
+		}
+		if len(result.ToolCalls) > 0 && (result.StopReason == "end_turn" || result.StopReason == "stop" || result.StopReason == "") {
+			result.StopReason = "tool_calls"
+		}
 	}
 
 	return result, nil
+}
+
+// openAITools converts internal ToolDef list to OpenAI/Moonshot tools shape.
+func openAITools(defs []ToolDef) []map[string]any {
+	out := make([]map[string]any, 0, len(defs))
+	for _, d := range defs {
+		params := any(map[string]any{"type": "object", "properties": map[string]any{}})
+		if len(d.InputSchema) > 0 {
+			var schema any
+			if err := json.Unmarshal(d.InputSchema, &schema); err == nil {
+				params = schema
+			}
+		}
+		out = append(out, map[string]any{
+			"type": "function",
+			"function": map[string]any{
+				"name":        d.Name,
+				"description": d.Description,
+				"parameters":   params,
+			},
+		})
+	}
+	return out
 }
 
 func isMoonshotEndpoint(baseURL string) bool {

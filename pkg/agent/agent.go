@@ -291,7 +291,29 @@ func (a *ClawdAgent) chatOnce(ctx context.Context, messages []providers.Message,
 		Messages:    messages,
 		MaxTokens:   maxTokens,
 		Temperature: a.config.Temperature,
+		Tools:       a.providerToolDefs(),
 	})
+}
+
+// providerToolDefs maps the agent registry into OpenAI-compatible tool defs
+// so Moonshot/Kimi K3 (and other OpenAI-compat backends) can call tools.
+func (a *ClawdAgent) providerToolDefs() []providers.ToolDef {
+	if a.toolExecutor == nil || a.toolExecutor.registry == nil {
+		return nil
+	}
+	list := a.toolExecutor.registry.List()
+	if len(list) == 0 {
+		return nil
+	}
+	defs := make([]providers.ToolDef, 0, len(list))
+	for _, t := range list {
+		defs = append(defs, providers.ToolDef{
+			Name:        t.Name(),
+			Description: t.Description(),
+			InputSchema: t.InputSchema(),
+		})
+	}
+	return defs
 }
 
 // ── ProcessDirect — convenience for CLI/cron processing ──────────────
