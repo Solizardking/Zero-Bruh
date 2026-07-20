@@ -316,6 +316,7 @@ export default function App() {
   const [packages, setPackages] = useState<PackageInfo[]>([])
   const [envInfo, setEnvInfo] = useState<EnvInfo | null>(null)
   const [ecosystem, setEcosystem] = useState<EcosystemInfo | null>(null)
+  const [rhReadinessRaw, setRhReadinessRaw] = useState<unknown>(null)
   const [cockpit, setCockpit] = useState<CockpitInfo | null>(null)
   const [signal, setSignal] = useState<SignalInfo | null>(null)
   const [backtest, setBacktest] = useState<BacktestInfo | null>(null)
@@ -474,7 +475,7 @@ export default function App() {
 
   const fetchAll = useCallback(async () => {
     const [
-      st, h, conn, pkgs, env, eco, cock, sig, bt, pr, pe, dna,
+      st, h, conn, pkgs, env, eco, rhReady, cock, sig, bt, pr, pe, dna,
       laws, doc, port, opt, ven, trend, size, life, mid, council, vault,
     ] = await Promise.all([
       fetchJSON<StatusInfo>('/api/status'),
@@ -483,6 +484,7 @@ export default function App() {
       fetchJSON<PackageInfo[]>('/api/packages'),
       fetchJSON<EnvInfo>('/api/env'),
       fetchJSON<EcosystemInfo>('/api/ecosystem'),
+      fetchJSON<RhReadinessInfo>('/api/rh/readiness'),
       fetchJSON<CockpitInfo>('/api/trading/cockpit'),
       fetchJSON<SignalInfo>('/api/trading/signal'),
       fetchJSON<BacktestInfo>('/api/trading/backtest'),
@@ -508,6 +510,7 @@ export default function App() {
     if (pkgs) setPackages(pkgs)
     if (env) setEnvInfo(env)
     if (eco) setEcosystem(eco)
+    if (rhReady) setRhReadinessRaw(rhReady)
     if (cock) setCockpit(cock)
     if (sig) setSignal(sig)
     if (bt) setBacktest(bt)
@@ -550,6 +553,8 @@ export default function App() {
   }, [logs])
 
   const healthView = useMemo(() => mapHealth(health), [health])
+  const ecosystemRows = useMemo(() => mapEcosystem(ecosystem), [ecosystem])
+  const rhReadiness = useMemo(() => mapRhReadiness(rhReadinessRaw), [rhReadinessRaw])
   const laws = useMemo(() => mapLaws(lawsRaw), [lawsRaw])
   const doctor = useMemo(() => mapDoctor(doctorRaw), [doctorRaw])
   const portfolio = useMemo(() => mapPortfolio(portfolioRaw), [portfolioRaw])
@@ -587,7 +592,7 @@ export default function App() {
             <span className="brand-mark__claw">🦞</span>
           </div>
           <div>
-            <h1>CLAWDBOT OS</h1>
+            <h1>ZERO CLAWD</h1>
             <div className="sub">Omni agent console · Solana SVM + Robinhood EVM · CLAWD</div>
           </div>
         </div>
@@ -627,7 +632,7 @@ export default function App() {
 
         <div className="hero-strip">
           <div className="stat-card stat-card--sol">
-            <div className="label">Runtime · CLAWD</div>
+            <div className="label">Runtime · Zero Clawd</div>
             <div className="value">{status?.status ?? '…'}</div>
             <div className="hint">{status?.go_version} · {status?.go_os}/{status?.go_arch}</div>
           </div>
@@ -639,9 +644,17 @@ export default function App() {
           <div className="stat-card stat-card--rh">
             <div className="label">Robinhood · EVM</div>
             <div className="value">
-              {cockpit ? `${cockpit.readiness.grade} / ${cockpit.readiness.score}` : '—'}
+              {rhReadinessRaw
+                ? rhReadiness.ready
+                  ? 'READY'
+                  : 'GATED'
+                : cockpit
+                  ? `${cockpit.readiness.grade} / ${cockpit.readiness.score}`
+                  : '—'}
             </div>
-            <div className="hint">chain 4663 · Pons / Uniswap · Blockscout</div>
+            <div className="hint">
+              chain {rhReadiness.metrics.find((m) => m.label === 'Chain')?.value ?? '4663'} · RH readiness
+            </div>
           </div>
           <div className="stat-card">
             <div className="label">Doctor · Omni</div>
@@ -755,17 +768,56 @@ export default function App() {
 
           <section className="panel" id="panel-ecosystem">
             <div className="panel-head"><h3>Ecosystem</h3></div>
-            {ecosystem ? (
+            {ecosystemRows.length ? (
               <div>
-                {Object.entries(ecosystem).map(([key, val]) => (
-                  <div key={key} className="env-row">
-                    <span className="env-key">{key}</span>
-                    <a className="env-val" href={val} target="_blank" rel="noreferrer">{val}</a>
+                {ecosystemRows.map((row) => (
+                  <div key={row.key} className="env-row">
+                    <span className="env-key">{row.primary}</span>
+                    {row.secondary ? (
+                      <a className="env-val" href={row.secondary} target="_blank" rel="noreferrer">
+                        {row.secondary}
+                      </a>
+                    ) : (
+                      <span className="env-val">—</span>
+                    )}
                   </div>
                 ))}
               </div>
             ) : (
               <div className="empty">Loading ecosystem…</div>
+            )}
+          </section>
+
+          <section className="panel" id="panel-rhReadiness">
+            <div className="panel-head">
+              <h3>RH Readiness</h3>
+              {rhReadinessRaw && (
+                <span className={`live-tag ${rhReadiness.ready ? '' : 'warn'}`}>
+                  {rhReadiness.ready ? 'READY' : 'GATED'}
+                </span>
+              )}
+            </div>
+            {rhReadinessRaw ? (
+              <>
+                <div className="metric-grid">
+                  {rhReadiness.metrics.map((m) => (
+                    <div key={m.label} className={`metric ${m.tone === 'ok' ? 'ok' : ''}`}>
+                      <div className="value" style={{ fontSize: '0.95rem' }}>{m.value}</div>
+                      <div className="label">{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  {rhReadiness.rows.map((row) => (
+                    <div key={row.key} className="env-row">
+                      <span className="env-key">{row.primary}</span>
+                      <span className="env-val">{row.secondary ?? row.badge ?? ''}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="empty">Loading RH readiness…</div>
             )}
           </section>
         </div>
