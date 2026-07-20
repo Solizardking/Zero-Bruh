@@ -15,8 +15,11 @@ test("install-npm product line includes zeroclawd + agent hub", () => {
   const src = read("install-npm.sh");
   assert.match(src, /cheshireterminal\.ai\/zeroclawd/);
   assert.match(src, /cheshireterminal\.ai\/agents/);
-  assert.match(src, /cheshireterminal\.ai\/agents\/forge/);
+  assert.match(src, /\/agents\/forge/);
   assert.match(src, /funpump\.ai/);
+  assert.match(src, /Connect from Cheshire Terminal/);
+  assert.match(src, /CLAWDBOT_CORS_ORIGINS=https:\/\/cheshireterminal\.ai/);
+  assert.match(src, /127\.0\.0\.1:18800/);
 });
 
 test("install.sh DNA and env use Zero Clawd product name", () => {
@@ -25,6 +28,10 @@ test("install.sh DNA and env use Zero Clawd product name", () => {
   assert.match(src, /Zero Clawd Environment/);
   assert.doesNotMatch(src, /--agent-name "ClawdBot"/);
   assert.doesNotMatch(src, /# ClawdBot Environment/);
+  assert.match(src, /ZERO_CLAWD_URL/);
+  assert.match(src, /Connect from Cheshire Terminal/);
+  assert.match(src, /CLAWDBOT_CORS_ORIGINS=https:\/\/cheshireterminal\.ai/);
+  assert.match(src, /cheshireterminal\.ai\/zeroclawd/);
 });
 
 test("web and UI chrome titles are Zero Clawd", () => {

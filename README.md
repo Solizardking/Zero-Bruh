@@ -148,31 +148,46 @@ Install both when you need identity forge **and** a local Zero Clawd console.
 
 ### E · Connect from Cheshire Terminal (hosted `/zeroclawd`)
 
-After `npm i clawdbot-go` (or a full oneshot / agents bridge install), start the
-web console and open the public hub:
+**Zero Clawd** (this repo) is the local runtime. **Cheshire Terminal** hosts the
+public install + connect hub that talks to your agent after the one-shots.
+
+| Surface | Where |
+|---------|--------|
+| **Product hub** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Aliases** | `/clawdbot-go` · `/clawdbot` · `/zero-clawd` |
+| **Agent hub / forge** | [/agents](https://cheshireterminal.ai/agents) · [/agents/forge](https://cheshireterminal.ai/agents/forge) |
+| **CT client source** | `cheshire-terminal/client/src` — `pages/ClawdbotGoPage.tsx`, `lib/zeroClawd.ts`, routes in `App.tsx` |
+| **Install scripts** | [`install-npm.sh`](install-npm.sh) · [`install.sh`](install.sh) (printed steps end with the CT connect loop) |
+| **Local console** | `clawdbot web` → `http://127.0.0.1:18800` (`web/backend` + `web/frontend`) |
 
 ```bash
-# Start local agent web console (default :18800)
-npx clawdbot-go install   # if you have not run the full stack yet
-# or from this tree: go run ./web/backend -port 18800   /   clawdbot web
+# One-shots (also the curl lines on the hosted hub)
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
+# from this checkout:
+./install-npm.sh
+./install.sh
 
-# Allow the hosted page to probe your loopback agent (browser-direct):
+# Start agent API/console + allow browser-direct probes from Cheshire
 export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai
+clawdbot web    # or: go run ./web/backend -port 18800
+# → open https://cheshireterminal.ai/zeroclawd and Connect http://127.0.0.1:18800
 ```
 
-Then open **[https://cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd)**
-(aliases: `/clawdbot-go`, `/clawdbot`):
+Hosted probes (browser-direct for loopback; `/api/zeroclawd/probe` for public agents):
 
-1. Confirm install source: [npmjs.com/package/clawdbot-go](https://www.npmjs.com/package/clawdbot-go)
-2. Connect agent base URL (default `http://127.0.0.1:18800`)
-3. Chat with live `/api/health` · `/api/status` · `/api/dna` context
+| Endpoint | Role |
+|----------|------|
+| `GET /api/health` | Liveness · agent **Zero Clawd** · package `clawdbot-go` · product URL |
+| `GET /api/status` | Runtime status (+ `public_links` ecosystem map) |
+| `GET /api/dna` | Starter DNA |
+| `GET /api/ecosystem` | Product/repo surfaces |
+| `GET /api/rh/readiness` | RH 4663 presence gate |
 
-The hosted page also links live registry meta for this package
-(`GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest`).
+Also: live npm meta via Cheshire `GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest`.
 
 Loopback agents are probed **from your browser** (not the Cheshire server).
-Public remote agent hosts may use the same-origin `/api/zeroclawd/probe` bridge
-(SSRF-hardened — private/link-local/loopback targets are blocked server-side).
+Public remote hosts use the same-origin probe bridge (SSRF-hardened — private/link-local/loopback blocked server-side).
 
 | What you get | Path |
 |--------------|------|

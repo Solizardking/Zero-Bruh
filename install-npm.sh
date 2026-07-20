@@ -147,5 +147,17 @@ printf '\n%s%s  🦞 One-shot complete%s\n' "${GREEN}" "${BOLD}" "${RESET}"
 printf '  Skills dir: %s/skills\n' "${INSTALL_DIR}"
 printf '  Env:        %s/.env\n' "${INSTALL_DIR}"
 printf '  export CLAWDBOT_SKILLS_DIR="%s/skills"\n' "${INSTALL_DIR}"
-printf '  Product:    https://cheshireterminal.ai/zeroclawd\n'
-printf '  Surfaces:   https://cheshireterminal.ai/agents · https://cheshireterminal.ai/agents/forge · https://funpump.ai\n\n'
+printf '\n'
+printf '  %sProduct hub:%s  https://cheshireterminal.ai/zeroclawd\n' "${BOLD}" "${RESET}"
+printf '  %sSurfaces:%s     https://cheshireterminal.ai/agents · https://cheshireterminal.ai/agents/forge · https://funpump.ai\n' "${BOLD}" "${RESET}"
+printf '\n'
+printf '  %sConnect from Cheshire Terminal:%s\n' "${BOLD}" "${RESET}"
+printf '  1. Start local console (Go CLI or web backend):\n'
+printf '       clawdbot web\n'
+printf '       # or: go run ./web/backend -port 18800\n'
+printf '  2. Allow hosted page probes (browser-direct to loopback):\n'
+printf '       export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai\n'
+printf '  3. Open https://cheshireterminal.ai/zeroclawd\n'
+printf '       (aliases: /clawdbot-go · /clawdbot · /zero-clawd)\n'
+printf '  4. Connect base URL http://127.0.0.1:18800 → /api/health · /api/status · /api/dna\n'
+printf '\n'
