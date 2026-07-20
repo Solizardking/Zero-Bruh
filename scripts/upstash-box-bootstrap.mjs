@@ -97,10 +97,10 @@ sleep 1
 cat /tmp/clawdbot-box/server.log || true
 `;
 
-console.log("Starting ClawdBot Box install API...");
+console.log("Starting Zero Clawd Box install API...");
 const started = await box.exec.command(startCommand);
 writeRunOutput(started);
-requireSuccessfulRun(started, "ClawdBot Box install API failed to start");
+requireSuccessfulRun(started, "Zero Clawd Box install API failed to start");
 
 console.log("\nBox bootstrap complete.");
 console.log("Use the preview URL on port 3000 as the install surface.");
