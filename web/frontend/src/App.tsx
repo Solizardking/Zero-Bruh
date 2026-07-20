@@ -180,13 +180,110 @@ function LifeCanvas({ cells, rows, cols }: { cells: number[][]; rows: number; co
   }
   return (
     <div
-      className="life-grid"
+      className="life-grid life-grid--omni"
       style={{ gridTemplateColumns: `repeat(${displayRows[0]?.length || 1}, 1fr)` }}
-      aria-label="Game of Life grid"
+      aria-label="Game of Life grid — CLAWD universal computer"
     >
       {displayRows.flatMap((line, ri) =>
-        line.map((on, ci) => <div key={`${ri}-${ci}`} className={`life-cell ${on ? 'on' : ''}`} />),
+        line.map((on, ci) => {
+          // Alternate Solana green vs RH EVM violet alive cells for dual-chain vibe.
+          const rail = (ri + ci) % 2 === 0 ? 'sol' : 'rh'
+          return (
+            <div
+              key={`${ri}-${ci}`}
+              className={`life-cell ${on ? `on on-${rail}` : ''}`}
+            />
+          )
+        }),
       )}
+    </div>
+  )
+}
+
+/** Dual-rail omni animation: Solana SVM + Robinhood EVM + CLAWD core. */
+function OmniChainAnim() {
+  return (
+    <div className="omni-anim" aria-label="Omni-chain CLAWD animation: Solana SVM and Robinhood EVM">
+      <div className="omni-anim__bg" />
+      <div className="omni-anim__field">
+        <svg className="omni-anim__svg" viewBox="0 0 420 180" role="img">
+          <defs>
+            <linearGradient id="omniSol" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#14F195" />
+              <stop offset="100%" stopColor="#9945FF" />
+            </linearGradient>
+            <linearGradient id="omniRh" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#00d4ff" />
+              <stop offset="100%" stopColor="#ff4ecd" />
+            </linearGradient>
+            <filter id="omniGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Dual orbital rails */}
+          <ellipse className="omni-rail omni-rail--sol" cx="210" cy="90" rx="150" ry="58" />
+          <ellipse className="omni-rail omni-rail--rh" cx="210" cy="90" rx="118" ry="42" />
+          <ellipse className="omni-rail omni-rail--core" cx="210" cy="90" rx="72" ry="28" />
+
+          {/* Cross-chain bridge beam */}
+          <path
+            className="omni-bridge"
+            d="M70 90 C120 40, 300 140, 350 90"
+            fill="none"
+          />
+          <path
+            className="omni-bridge omni-bridge--alt"
+            d="M70 90 C120 140, 300 40, 350 90"
+            fill="none"
+          />
+
+          {/* CLAWD core */}
+          <g className="omni-core" filter="url(#omniGlow)">
+            <circle cx="210" cy="90" r="22" className="omni-core__halo" />
+            <circle cx="210" cy="90" r="16" className="omni-core__disc" />
+            <text x="210" y="95" textAnchor="middle" className="omni-core__glyph">🦞</text>
+          </g>
+
+          {/* Solana SVM node (left) */}
+          <g className="omni-node omni-node--sol" filter="url(#omniGlow)">
+            <circle cx="70" cy="90" r="18" className="omni-node__ring" />
+            <circle cx="70" cy="90" r="11" className="omni-node__fill omni-node__fill--sol" />
+            <text x="70" y="94" textAnchor="middle" className="omni-node__label">SOL</text>
+          </g>
+
+          {/* Robinhood EVM node (right) */}
+          <g className="omni-node omni-node--rh" filter="url(#omniGlow)">
+            <circle cx="350" cy="90" r="18" className="omni-node__ring" />
+            <circle cx="350" cy="90" r="11" className="omni-node__fill omni-node__fill--rh" />
+            <text x="350" y="94" textAnchor="middle" className="omni-node__label">RH</text>
+          </g>
+
+          {/* Orbiting packets */}
+          <circle className="omni-packet omni-packet--a" r="3.5" fill="url(#omniSol)" />
+          <circle className="omni-packet omni-packet--b" r="3" fill="url(#omniRh)" />
+          <circle className="omni-packet omni-packet--c" r="2.5" fill="#ffaa00" />
+        </svg>
+
+        <div className="omni-anim__tags">
+          <span className="omni-tag omni-tag--sol">
+            <i /> Solana · SVM
+          </span>
+          <span className="omni-tag omni-tag--clawd">
+            <i /> CLAWD · Omni
+          </span>
+          <span className="omni-tag omni-tag--rh">
+            <i /> Robinhood · EVM 4663
+          </span>
+        </div>
+        <div className="omni-anim__caption">
+          Sense → Think → Strike · trade · earn · pay x402 · get smarter
+        </div>
+      </div>
     </div>
   )
 }
@@ -465,10 +562,14 @@ export default function App() {
     <div className="app">
       <header className="header">
         <div className="brand">
-          <div className="brand-mark" aria-hidden>🦞</div>
+          <div className="brand-mark brand-mark--omni" aria-hidden>
+            <span className="brand-mark__ring brand-mark__ring--sol" />
+            <span className="brand-mark__ring brand-mark__ring--rh" />
+            <span className="brand-mark__claw">🦞</span>
+          </div>
           <div>
             <h1>CLAWDBOT OS</h1>
-            <div className="sub">Sovereign ops console · Solana agent runtime</div>
+            <div className="sub">Omni agent console · Solana SVM + Robinhood EVM · CLAWD</div>
           </div>
         </div>
         <div className="header-right">
@@ -476,6 +577,8 @@ export default function App() {
             <span className={`dot pulse`} />
             {healthView.label}
           </span>
+          <span className="pill pill-sol" title="Solana SVM">SVM</span>
+          <span className="pill pill-rh" title="Robinhood Chain 4663">EVM 4663</span>
           <span className="pill">{status?.version ?? '—'}</span>
           <span className="pill">{status?.mode || 'simulated'}</span>
           <span className="pill">{status?.uptime ?? '…'}</span>
@@ -501,30 +604,32 @@ export default function App() {
       </nav>
 
       <main className="main">
+        <OmniChainAnim />
+
         <div className="hero-strip">
-          <div className="stat-card">
-            <div className="label">Runtime</div>
+          <div className="stat-card stat-card--sol">
+            <div className="label">Runtime · CLAWD</div>
             <div className="value">{status?.status ?? '…'}</div>
             <div className="hint">{status?.go_version} · {status?.go_os}/{status?.go_arch}</div>
           </div>
-          <div className="stat-card">
-            <div className="label">Connectors</div>
+          <div className="stat-card stat-card--sol">
+            <div className="label">Solana · SVM</div>
             <div className="value">{connected}/{total || '—'}</div>
-            <div className="hint">{status?.num_cpu ?? '—'} cores · {status?.goroutines ?? '—'} goroutines</div>
+            <div className="hint">connectors · {status?.num_cpu ?? '—'} cores · {status?.goroutines ?? '—'} g</div>
           </div>
-          <div className="stat-card">
-            <div className="label">Readiness</div>
+          <div className="stat-card stat-card--rh">
+            <div className="label">Robinhood · EVM</div>
             <div className="value">
               {cockpit ? `${cockpit.readiness.grade} / ${cockpit.readiness.score}` : '—'}
             </div>
-            <div className="hint">{cockpit?.watchlist.length ?? 0} watchlist assets</div>
+            <div className="hint">chain 4663 · Pons / Uniswap · Blockscout</div>
           </div>
           <div className="stat-card">
-            <div className="label">Doctor</div>
+            <div className="label">Doctor · Omni</div>
             <div className="value" style={{ color: doctor.ok ? 'var(--neon)' : 'var(--amber)' }}>
               {doctorRaw ? (doctor.ok ? 'PASS' : 'ISSUES') : '…'}
             </div>
-            <div className="hint">{doctor.rows.length} diagnostic checks</div>
+            <div className="hint">{doctor.rows.length} checks · SVM + EVM readiness</div>
           </div>
         </div>
 
@@ -868,7 +973,7 @@ export default function App() {
 
           <section className="panel wide" id="panel-life">
             <div className="panel-head">
-              <h3>Universal Computer · Game of Life</h3>
+              <h3>Universal Computer · CLAWD Life (SVM ⊕ EVM)</h3>
               <button
                 className="btn-action"
                 type="button"
@@ -876,13 +981,18 @@ export default function App() {
                   fetchJSON<unknown>('/api/life?reset=1').then((life) => {
                     if (life) {
                       setLifeRaw(life)
-                      pushLog('life grid reseeded (Gosper gun)')
+                      pushLog('life grid reseeded (Gosper gun · dual-rail palette)')
                     }
                   })
                 }}
               >
                 Reseed
               </button>
+            </div>
+            <div className="life-legend">
+              <span className="life-legend__item life-legend__item--sol">Solana SVM cells</span>
+              <span className="life-legend__item life-legend__item--rh">Robinhood EVM cells</span>
+              <span className="life-legend__item">CLAWD core evolves both rails</span>
             </div>
             {lifeRaw ? (
               <>
