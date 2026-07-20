@@ -4,7 +4,9 @@
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=18&duration=1700&pause=350&color=FFD166&center=true&vCenter=true&width=900&lines=observe+%E2%86%92+orient+%E2%86%92+decide+%E2%86%92+act;market+loop+state+and+TUI+for+agent+control" alt="OODA animated header" />
 </p>
 
-`ooda/` is the local observe-orient-decide-act loop that powers agent pulse checks, journals, and optional TUI output. **Paper-trading and devnet only** — no real funds, no mainnet connections.
+`ooda/` is the **Zero Clawd** observe → orient → decide → act harness: agent pulse checks, journals, and optional TUI. **Paper-trading and devnet only** — no real funds, no mainnet connections.
+
+Product: [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) · runtime repo: [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh)
 
 ## Quickstart
 

@@ -1,7 +1,7 @@
-# 🦞 Clawd Spinners
+# 🦞 Zero Clawd Spinners
 
-Install themed spinner verb packs for Clawd agents directly from the solana-clawd repository.
-Powered by [x402.wtf](https://x402.wtf) · $CLAWD: `8cHzQHUS2s2h8TzCmfqPKYiM4dSt4roa3n7MyRLApump`
+Themed spinner verb packs for **Zero Clawd** / Clawd agents. Also installable from the solana-clawd skill hub.
+Powered by [x402.wtf](https://x402.wtf) · product: [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) · $CLAWD: `8cHzQHUS2s2h8TzCmfqPKYiM4dSt4roa3n7MyRLApump`
 
 ## Installation
 

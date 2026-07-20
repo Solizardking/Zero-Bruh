@@ -37,7 +37,7 @@ const server = createServer(async (req, res) => {
       const origin = publicOrigin(req);
       text(
         res,
-        `ClawdBot Box install surface\n\ncurl -fsSL ${origin}/install.sh | bash\n\nPOST ${origin}/api/install\n`,
+        `Zero Clawd Box install surface\n\ncurl -fsSL ${origin}/install.sh | bash\n\nPOST ${origin}/api/install\n`,
       );
       return;
     }

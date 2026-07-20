@@ -85,7 +85,7 @@ func Run(options Options) Report {
 
 func Format(report Report) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "ClawdBot doctor report (%s)\n", report.GeneratedAt)
+	fmt.Fprintf(&b, "Zero Clawd doctor report (%s)\n", report.GeneratedAt)
 	if report.OK {
 		b.WriteString("overall: pass\n")
 	} else {

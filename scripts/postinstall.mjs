@@ -49,9 +49,10 @@ async function main() {
     if (process.env.CLAWDBOT_SKIP_SKILLS === "1") {
       if (!silent) {
         console.log("");
-        console.log("  🦞 clawdbot-go installed (skills prepackage skipped).");
+        console.log("  🦞 Zero Clawd (clawdbot-go) installed — skills prepackage skipped.");
         console.log("  One-shot skills:  npx clawdbot-go install --skip-go --skip-birth --skip-automaton");
         console.log("  Full stack:       npx clawdbot-go install");
+        console.log("  Product:          https://cheshireterminal.ai/zeroclawd");
         console.log("");
       }
       return;
@@ -66,7 +67,7 @@ async function main() {
 
     if (!silent) {
       console.log("");
-      console.log("  🦞 clawdbot-go — skill pack prepackaged (one-shot)");
+      console.log("  🦞 Zero Clawd — skill pack prepackaged (npm clawdbot-go)");
       console.log(`  Skills: ${result.skillCount} → ${result.skillsDir}`);
       console.log(`  Linked: ${result.linked} agent skill entries`);
       console.log(`  export CLAWDBOT_SKILLS_DIR="${result.skillsDir}"`);
@@ -74,6 +75,7 @@ async function main() {
       console.log(
         "  Curl oneshot: curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash",
       );
+      console.log("  Product: https://cheshireterminal.ai/zeroclawd");
       console.log("");
     }
   } catch (err) {

@@ -106,7 +106,7 @@ func InstallBirthSources(ctx context.Context, sources []BirthSource, w io.Writer
 
 func FormatBirthManifest(manifest BirthManifest) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "ClawdBot birth skill seed (%s)\n", manifest.GeneratedAt)
+	fmt.Fprintf(&b, "Zero Clawd birth skill seed (%s)\n", manifest.GeneratedAt)
 	for _, source := range manifest.Sources {
 		fmt.Fprintf(&b, "- %s: %s (%s)\n", source.Name, source.URL, source.Reason)
 	}

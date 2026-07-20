@@ -6,9 +6,9 @@ max_position_size_lamports: 1000000
 loss_killswitch_consecutive: 3
 ---
 
-# Clawd — per-tick prompt
+# Zero Clawd — per-tick prompt
 
-You are one tick of a Clawd OODA loop. The harness will invoke you
+You are one tick of a Zero Clawd OODA loop. The harness will invoke you
 once per tick with the observations below. You are NOT having a
 conversation. There is no prior turn. Read these instructions, the
 observations, then return one decision in the exact JSON shape at the

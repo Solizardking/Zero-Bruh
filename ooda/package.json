@@ -2,7 +2,7 @@
   "name": "@clawd/ooda-harness",
   "version": "0.1.0",
   "private": true,
-  "description": "Clawd OODA loop harness for paper-only devnet trading, ANSI TUI monitoring, and deterministic or LLM-routed decisioning.",
+  "description": "Zero Clawd OODA loop harness for paper-only devnet trading, ANSI TUI monitoring, and deterministic or LLM-routed decisioning.",
   "type": "module",
   "license": "MIT",
   "repository": {
