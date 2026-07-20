@@ -58,6 +58,7 @@ type AgentConfig struct {
 type ClawdAgent struct {
 	config       AgentConfig
 	provider     providers.LLMProvider
+	toolRegistry *tools.Registry
 	toolExecutor *ToolExecutor
 	systemPrompt string
 	memEngine    *memory.MemoryEngine
@@ -113,6 +114,7 @@ func NewClawdAgent(cfg AgentConfig) (*ClawdAgent, error) {
 	return &ClawdAgent{
 		config:       cfg,
 		provider:     cfg.Provider,
+		toolRegistry: registry,
 		toolExecutor: executor,
 		systemPrompt: systemPrompt,
 		memEngine:    cfg.MemoryEngine,
@@ -298,10 +300,10 @@ func (a *ClawdAgent) chatOnce(ctx context.Context, messages []providers.Message,
 // providerToolDefs maps the agent registry into OpenAI-compatible tool defs
 // so Moonshot/Kimi K3 (and other OpenAI-compat backends) can call tools.
 func (a *ClawdAgent) providerToolDefs() []providers.ToolDef {
-	if a.toolExecutor == nil || a.toolExecutor.registry == nil {
+	if a.toolRegistry == nil {
 		return nil
 	}
-	list := a.toolExecutor.registry.List()
+	list := a.toolRegistry.List()
 	if len(list) == 0 {
 		return nil
 	}
