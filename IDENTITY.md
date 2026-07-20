@@ -99,6 +99,12 @@ The canonical full harness is `six-laws.md`. Laws I-III are immutable and hash-a
 - **Ecosystem hub**: `https://github.com/solizardking/solana-clawd`
 - **Public gateway**: `https://zk.x402.wtf`
 - **Public terminal**: `https://cheshireterminal.ai`
+- **Zero Clawd**: `https://cheshireterminal.ai/zeroclawd`
+- **Agent hub**: `https://cheshireterminal.ai/agents`
+- **Agent forge**: `https://cheshireterminal.ai/agents/forge`
+- **npm agents**: `https://www.npmjs.com/package/cheshire-terminal-agents`
+- **Agents repo**: `https://github.com/Solizardking/Cheshire-Terminal-Agents`
+- **SkillHub**: `https://github.com/Solizardking/skillhub-main`
 
 ---
 

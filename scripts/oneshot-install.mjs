@@ -488,6 +488,7 @@ export function runOneshot(options = {}) {
   console.log(`  ${BOLD}Skills:${RESET}   ${skillResult.skillCount} in ${skillResult.skillsDir}`);
   console.log(`  ${BOLD}Full Go:${RESET}  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash`);
   console.log(`  ${BOLD}npm package:${RESET} npm i -g clawdbot-go && clawdbot-go install`);
+  console.log(`  ${BOLD}Agents SDK:${RESET}  npm i cheshire-terminal-agents`);
   console.log(`  ${BOLD}SkillHub:${RESET}     npx github:Solizardking/skills install cheshire-terminal-agents --force`);
   console.log();
   console.log(`  🦞 $CLAWD :: Droids Lead The Way`);
