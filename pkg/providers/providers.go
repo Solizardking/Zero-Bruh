@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -56,7 +57,10 @@ type ChatOptions struct {
 	FrequencyPenalty  float64   `json:"frequency_penalty,omitempty"`
 	PresencePenalty   float64   `json:"presence_penalty,omitempty"`
 	RepetitionPenalty float64   `json:"repetition_penalty,omitempty"`
-	Tools             []ToolDef `json:"tools,omitempty"`
+	// ReasoningEffort is Kimi K3 thinking effort: low | high | max.
+	// Empty means omit (non-Kimi providers ignore).
+	ReasoningEffort string    `json:"reasoning_effort,omitempty"`
+	Tools           []ToolDef `json:"tools,omitempty"`
 }
 
 type ToolDef struct {
@@ -107,26 +111,37 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 		messages[i] = orMessage{Role: m.Role, Content: m.Content}
 	}
 
+	// Moonshot Kimi K3 fixes temperature/top_p/penalties server-side — omit them.
+	// See https://platform.kimi.ai/docs/guide/kimi-k3-quickstart
+	moonshot := isMoonshotEndpoint(p.baseURL) || isKimiK3Model(opts.Model)
 	payload := map[string]any{
-		"model":       opts.Model,
-		"messages":    messages,
-		"max_tokens":  opts.MaxTokens,
-		"temperature": opts.Temperature,
+		"model":      opts.Model,
+		"messages":   messages,
+		"max_tokens": opts.MaxTokens,
 	}
-	if opts.TopP > 0 {
-		payload["top_p"] = opts.TopP
+	if !moonshot {
+		payload["temperature"] = opts.Temperature
+		if opts.TopP > 0 {
+			payload["top_p"] = opts.TopP
+		}
+		if opts.TopK > 0 {
+			payload["top_k"] = opts.TopK
+		}
+		if opts.FrequencyPenalty != 0 {
+			payload["frequency_penalty"] = opts.FrequencyPenalty
+		}
+		if opts.PresencePenalty != 0 {
+			payload["presence_penalty"] = opts.PresencePenalty
+		}
+		if opts.RepetitionPenalty > 0 && opts.RepetitionPenalty != 1 {
+			payload["repetition_penalty"] = opts.RepetitionPenalty
+		}
 	}
-	if opts.TopK > 0 {
-		payload["top_k"] = opts.TopK
-	}
-	if opts.FrequencyPenalty != 0 {
-		payload["frequency_penalty"] = opts.FrequencyPenalty
-	}
-	if opts.PresencePenalty != 0 {
-		payload["presence_penalty"] = opts.PresencePenalty
-	}
-	if opts.RepetitionPenalty > 0 && opts.RepetitionPenalty != 1 {
-		payload["repetition_penalty"] = opts.RepetitionPenalty
+	if effort := strings.TrimSpace(opts.ReasoningEffort); effort != "" {
+		payload["reasoning_effort"] = effort
+	} else if moonshot && isKimiK3Model(opts.Model) {
+		// K3 always thinks; default effort is max on the platform.
+		payload["reasoning_effort"] = "max"
 	}
 
 	body, err := json.Marshal(payload)
@@ -161,7 +176,8 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 	var orResp struct {
 		Choices []struct {
 			Message struct {
-				Content string `json:"content"`
+				Content          string `json:"content"`
+				ReasoningContent string `json:"reasoning_content"`
 			} `json:"message"`
 			FinishReason string `json:"finish_reason"`
 		} `json:"choices"`
@@ -182,10 +198,22 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 	}
 	if len(orResp.Choices) > 0 {
 		result.Content = orResp.Choices[0].Message.Content
+		result.Thinking = orResp.Choices[0].Message.ReasoningContent
 		result.StopReason = orResp.Choices[0].FinishReason
 	}
 
 	return result, nil
+}
+
+func isMoonshotEndpoint(baseURL string) bool {
+	u := strings.ToLower(baseURL)
+	return strings.Contains(u, "moonshot.ai") || strings.Contains(u, "moonshot.cn") || strings.Contains(u, "kimi.ai")
+}
+
+func isKimiK3Model(model string) bool {
+	m := strings.ToLower(strings.TrimSpace(model))
+	// Accept bare "kimi-k3" and vendor-prefixed "moonshot/kimi-k3".
+	return m == "kimi-k3" || strings.HasSuffix(m, "/kimi-k3") || strings.HasPrefix(m, "kimi-k3")
 }
 
 // ── Fallback Chain ───────────────────────────────────────────────────
