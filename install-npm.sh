@@ -147,4 +147,5 @@ printf '\n%s%s  🦞 One-shot complete%s\n' "${GREEN}" "${BOLD}" "${RESET}"
 printf '  Skills dir: %s/skills\n' "${INSTALL_DIR}"
 printf '  Env:        %s/.env\n' "${INSTALL_DIR}"
 printf '  export CLAWDBOT_SKILLS_DIR="%s/skills"\n' "${INSTALL_DIR}"
-printf '  Product:    https://funpump.ai · https://cheshireterminal.ai/agents/forge\n\n'
+printf '  Product:    https://cheshireterminal.ai/zeroclawd\n'
+printf '  Surfaces:   https://cheshireterminal.ai/agents · https://cheshireterminal.ai/agents/forge · https://funpump.ai\n\n'
