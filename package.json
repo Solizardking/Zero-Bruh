@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/Solizardking/clawdbot-go.git"
   },
-  "homepage": "https://cheshireterminal.ai",
+  "homepage": "https://cheshireterminal.ai/zeroclawd",
   "bugs": {
     "url": "https://github.com/Solizardking/clawdbot-go/issues"
   },
@@ -22,6 +22,8 @@
     "agent-skills",
     "erc-8004",
     "cheshire",
+    "cheshire-terminal-agents",
+    "skillhub",
     "omnichain",
     "one-shot"
   ],

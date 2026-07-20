@@ -234,7 +234,13 @@ func showLaunchPanel(app *tview.Application, _ tview.Primitive) {
 func showRegistriesPanel(app *tview.Application, _ tview.Primitive) {
 	text := fmt.Sprintf(`[%s]Cheshire agent registries[%s]  ERC-8004 · RH 4663
 
+  Zero Clawd:  %s
+  Agent hub:   %s
   Forge:       %s
+  Terminal:    %s
+  npm:         %s
+  GitHub:      %s
+  SkillHub:    %s
 
   Identity:    %s
   Reputation:  %s
@@ -246,7 +252,9 @@ func showRegistriesPanel(app *tview.Application, _ tview.Primitive) {
           cheshire-agent-registries · cheshire-zk-omni
 
   Deploy JSON: robinhood-agents/deployments/agent-registries-mainnet-4663.json
-`, clawdGreen, "", hostForge, addrIdentity, addrReputation, addrValidation)
+`, clawdGreen, "", hostZeroClawd, hostAgentHub, hostForge, hostCheshire,
+		hostAgentsNpm, hostAgentsRepo, hostSkillHubRepo,
+		addrIdentity, addrReputation, addrValidation)
 	app.Stop()
 	fmt.Print(colorizeConsole(text))
 }

@@ -1,8 +1,8 @@
 const DEFAULT_UPSTREAM =
-  "https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh";
+  "https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh";
 const DEFAULT_NPM_UPSTREAM =
-  "https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh";
-const DEFAULT_PROJECT_REPO = "https://github.com/Solizardking/clawdbot-go";
+  "https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh";
+const DEFAULT_PROJECT_REPO = "https://github.com/Solizardking/Zero-Bruh";
 const DEFAULT_ECOSYSTEM_HUB = "https://github.com/solizardking/solana-clawd";
 const DEFAULT_X402_GATEWAY = "https://zk.x402.wtf";
 const DEFAULT_TERMINAL_URL = "https://cheshireterminal.ai";

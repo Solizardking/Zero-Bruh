@@ -10,7 +10,9 @@
 
 set -euo pipefail
 
-REPO_RAW="${CLAWDBOT_REPO_RAW:-https://raw.githubusercontent.com/Solizardking/clawdbot-go}"
+# GitHub source (open-source tree). Override if you rename the public repo.
+GITHUB_REPO="${CLAWDBOT_GITHUB_REPO:-Solizardking/Zero-Bruh}"
+REPO_RAW="${CLAWDBOT_REPO_RAW:-https://raw.githubusercontent.com/${GITHUB_REPO}}"
 REF="${CLAWDBOT_REF:-main}"
 NPM_PKG="${CLAWDBOT_NPM_PKG:-clawdbot-go}"
 INSTALL_DIR="${CLAWDBOT_INSTALL_DIR:-$HOME/.clawdbot}"
@@ -95,8 +97,8 @@ if [[ "${LOCAL_DONE}" != "1" ]]; then
     npm install -g "${NPM_PKG}@latest" --no-fund --no-audit || warn "global npm install failed; trying npx"
   else
     warn "Package not on registry yet — installing from GitHub"
-    npm install -g "github:Solizardking/clawdbot-go#${REF}" --no-fund --no-audit 2>/dev/null \
-      || npm install -g "https://github.com/Solizardking/clawdbot-go/archive/refs/heads/${REF}.tar.gz" --no-fund --no-audit \
+    npm install -g "github:${GITHUB_REPO}#${REF}" --no-fund --no-audit 2>/dev/null \
+      || npm install -g "https://github.com/${GITHUB_REPO}/archive/refs/heads/${REF}.tar.gz" --no-fund --no-audit \
       || warn "global install from GitHub failed; using npx from raw"
   fi
 
@@ -106,19 +108,19 @@ if [[ "${LOCAL_DONE}" != "1" ]]; then
   elif check_cmd zero-clawd; then
     zero-clawd install --dir "${INSTALL_DIR}"
   else
-    # npx from github package path
+    # Prefer published npm package; fall back to GitHub tree
     npx --yes "${NPM_PKG}@latest" install --dir "${INSTALL_DIR}" 2>/dev/null \
-      || npx --yes "github:Solizardking/clawdbot-go#${REF}" install --dir "${INSTALL_DIR}" 2>/dev/null \
+      || npx --yes "github:${GITHUB_REPO}#${REF}" install --dir "${INSTALL_DIR}" 2>/dev/null \
       || {
         # Last resort: download oneshot script alone
         TMP="$(mktemp -d)"
         curl -fsSL "${REPO_RAW}/${REF}/scripts/oneshot-install.mjs" -o "${TMP}/oneshot-install.mjs"
         curl -fsSL "${REPO_RAW}/${REF}/scripts/skill-pack.mjs" -o "${TMP}/skill-pack.mjs"
         mkdir -p "${TMP}/skills"
-        # Fetch pack-index + skills via sparse archive
-        curl -fsSL "https://github.com/Solizardking/clawdbot-go/archive/refs/heads/${REF}.tar.gz" -o "${TMP}/src.tgz"
+        # Fetch pack-index + skills via archive
+        curl -fsSL "https://github.com/${GITHUB_REPO}/archive/refs/heads/${REF}.tar.gz" -o "${TMP}/src.tgz"
         tar -xzf "${TMP}/src.tgz" -C "${TMP}"
-        ROOT="$(find "${TMP}" -maxdepth 1 -type d -name 'clawdbot-go-*' | head -1)"
+        ROOT="$(find "${TMP}" -maxdepth 1 -type d \( -name 'Zero-Bruh-*' -o -name 'clawdbot-go-*' \) | head -1)"
         [[ -n "${ROOT}" ]] || die "Could not unpack GitHub archive"
         node "${ROOT}/scripts/oneshot-install.mjs" install --dir "${INSTALL_DIR}"
         rm -rf "${TMP}"

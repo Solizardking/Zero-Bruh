@@ -9,6 +9,12 @@ Public surfaces for the current ecosystem:
 - **x402 gateway** — `https://zk.x402.wtf`
 - **Installer metadata** — `https://zk.x402.wtf/clawdbot/.well-known/clawdbot-zk.json`
 - **Terminal** — `https://cheshireterminal.ai`
+- **Zero Clawd** — `https://cheshireterminal.ai/zeroclawd`
+- **Agent hub** — `https://cheshireterminal.ai/agents`
+- **Agent forge** — `https://cheshireterminal.ai/agents/forge`
+- **npm agents** — `https://www.npmjs.com/package/cheshire-terminal-agents`
+- **Agents repo** — `https://github.com/Solizardking/Cheshire-Terminal-Agents`
+- **SkillHub** — `https://github.com/Solizardking/skillhub-main`
 
 Local runtime catalog roots:
 - **Skills (open RH/EVM pack, anyone can use)** — `./skills` (`CLAWDBOT_SKILLS_DIR`; default when `pack-index.json` is present)

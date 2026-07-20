@@ -460,7 +460,7 @@ export function runOneshot(options = {}) {
     agentsNpm: "https://www.npmjs.com/package/cheshire-terminal-agents",
     agentsRepo: "https://github.com/Solizardking/Cheshire-Terminal-Agents",
     skillHubRepo: "https://github.com/Solizardking/skillhub-main",
-    oneShot: "curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash",
+    oneShot: "curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash",
   };
   writeFileSync(join(installDir, "oneshot-receipt.json"), JSON.stringify(receipt, null, 2));
 
@@ -486,9 +486,9 @@ export function runOneshot(options = {}) {
   console.log(`    GitHub       https://github.com/Solizardking/Cheshire-Terminal-Agents`);
   console.log(`    SkillHub     https://github.com/Solizardking/skillhub-main`);
   console.log(`  ${BOLD}Skills:${RESET}   ${skillResult.skillCount} in ${skillResult.skillsDir}`);
-  console.log(`  ${BOLD}Full Go:${RESET}  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash`);
-  console.log(`  ${BOLD}SkillHub oneshot:${RESET} npx github:Solizardking/skills install cheshire-terminal-agents --force`);
-  console.log(`  ${BOLD}npm agents SDK:${RESET} npm i cheshire-terminal-agents`);
+  console.log(`  ${BOLD}Full Go:${RESET}  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash`);
+  console.log(`  ${BOLD}npm package:${RESET} npm i -g clawdbot-go && clawdbot-go install`);
+  console.log(`  ${BOLD}SkillHub:${RESET}     npx github:Solizardking/skills install cheshire-terminal-agents --force`);
   console.log();
   console.log(`  🦞 $CLAWD :: Droids Lead The Way`);
   console.log();
