@@ -19,6 +19,15 @@ const (
 	HubRepoURL      = "https://github.com/solizardking/solana-clawd"
 	GatewayURL      = "https://zk.x402.wtf"
 	TerminalURL     = "https://cheshireterminal.ai"
+	// Hosted product surfaces on the Cheshire Terminal site.
+	AgentHubURL   = "https://cheshireterminal.ai/agents"
+	AgentForgeURL = "https://cheshireterminal.ai/agents/forge"
+	ZeroClawdURL  = "https://cheshireterminal.ai/zeroclawd"
+	// Open agent catalog + dual-chain forge package (skills + SDK, not this Go binary).
+	CheshireAgentsNpmURL  = "https://www.npmjs.com/package/cheshire-terminal-agents"
+	CheshireAgentsRepoURL = "https://github.com/Solizardking/Cheshire-Terminal-Agents"
+	// Broader Solizardking installable skills library for agent hosts.
+	SkillHubRepoURL = "https://github.com/Solizardking/skillhub-main"
 	ZkRouterBaseURL = "https://clawdrouter-zk.fly.dev/v1"
 	PublicRPCURL    = "https://zk.x402.wtf/api/solana/rpc-public"
 

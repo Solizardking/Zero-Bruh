@@ -260,7 +260,13 @@ function installSkillPack({ installDir, force }) {
           packIndexCount: fromIndex.length,
           skills: ids,
           productHost: pack.productHost || "https://funpump.ai",
+          terminalHost: pack.terminalHost || "https://cheshireterminal.ai",
+          agentHub: pack.agentHub || "https://cheshireterminal.ai/agents",
           forgeHost: pack.forgeHost || "https://cheshireterminal.ai/agents/forge",
+          zeroClawdHost: pack.zeroClawdHost || "https://cheshireterminal.ai/zeroclawd",
+          agentsNpm: pack.agentsNpm || "https://www.npmjs.com/package/cheshire-terminal-agents",
+          agentsRepo: pack.agentsRepo || "https://github.com/Solizardking/Cheshire-Terminal-Agents",
+          skillHubRepo: pack.skillHubRepo || "https://github.com/Solizardking/skillhub-main",
         },
         null,
         2,
@@ -447,7 +453,13 @@ export function runOneshot(options = {}) {
     packId: skillResult.packId,
     go: go.ok ? go.path : null,
     productHost: "https://funpump.ai",
+    terminalHost: "https://cheshireterminal.ai",
+    agentHub: "https://cheshireterminal.ai/agents",
     forgeHost: "https://cheshireterminal.ai/agents/forge",
+    zeroClawdHost: "https://cheshireterminal.ai/zeroclawd",
+    agentsNpm: "https://www.npmjs.com/package/cheshire-terminal-agents",
+    agentsRepo: "https://github.com/Solizardking/Cheshire-Terminal-Agents",
+    skillHubRepo: "https://github.com/Solizardking/skillhub-main",
     oneShot: "curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash",
   };
   writeFileSync(join(installDir, "oneshot-receipt.json"), JSON.stringify(receipt, null, 2));
@@ -464,7 +476,15 @@ export function runOneshot(options = {}) {
   console.log(`  ${CYAN}clawdbot catalog skills${RESET}             # if Go binary present`);
   console.log(`  ${CYAN}# Set BLOCKSCOUT_API_KEY + RH_RPC_URL for RH 4663${RESET}`);
   console.log();
-  console.log(`  ${BOLD}Surfaces:${RESET} funpump.ai · cheshireterminal.ai/agents/forge`);
+  console.log(`  ${BOLD}Surfaces:${RESET}`);
+  console.log(`    Zero Clawd   https://cheshireterminal.ai/zeroclawd`);
+  console.log(`    Agent hub    https://cheshireterminal.ai/agents`);
+  console.log(`    Agent forge  https://cheshireterminal.ai/agents/forge`);
+  console.log(`    FunPump      https://funpump.ai`);
+  console.log(`  ${BOLD}Open agents:${RESET}`);
+  console.log(`    npm          https://www.npmjs.com/package/cheshire-terminal-agents`);
+  console.log(`    GitHub       https://github.com/Solizardking/Cheshire-Terminal-Agents`);
+  console.log(`    SkillHub     https://github.com/Solizardking/skillhub-main`);
   console.log(`  ${BOLD}Skills:${RESET}   ${skillResult.skillCount} in ${skillResult.skillsDir}`);
   console.log(`  ${BOLD}Full Go:${RESET}  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash`);
   console.log(`  ${BOLD}SkillHub oneshot:${RESET} npx github:Solizardking/skills install cheshire-terminal-agents --force`);

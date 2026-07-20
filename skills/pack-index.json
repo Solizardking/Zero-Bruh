@@ -6,7 +6,13 @@
   "license": "MIT",
   "anyoneCanUse": true,
   "productHost": "https://funpump.ai",
+  "terminalHost": "https://cheshireterminal.ai",
+  "agentHub": "https://cheshireterminal.ai/agents",
   "forgeHost": "https://cheshireterminal.ai/agents/forge",
+  "zeroClawdHost": "https://cheshireterminal.ai/zeroclawd",
+  "agentsNpm": "https://www.npmjs.com/package/cheshire-terminal-agents",
+  "agentsRepo": "https://github.com/Solizardking/Cheshire-Terminal-Agents",
+  "skillHubRepo": "https://github.com/Solizardking/skillhub-main",
   "skillCount": 23,
   "coreEnv": [
     "BLOCKSCOUT_API_KEY",
