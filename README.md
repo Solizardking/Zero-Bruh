@@ -6,24 +6,50 @@
 
 # ZERO CLAWD
 
-### 🦞 Sovereign Solana + Robinhood Omni Agent Runtime
-
-**Autonomous OODA · Agent DNA · ZK Primitives · Solana SVM · Robinhood EVM (4663) · FunPump Launch · Uniswap · Blockscout · Helius DAS · Vulcan/Phoenix · Jupiter · Hardware I2C · Web Console**
+### 🦞 Open-source agent runtime for Solana (and Robinhood Chain)
 
 [![Go](https://img.shields.io/badge/Go-1.26.4+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev)
 [![npm](https://img.shields.io/badge/npm-clawdbot--go-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/clawdbot-go)
 [![Solana](https://img.shields.io/badge/Solana-Mainnet-14F195?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com)
 [![Robinhood](https://img.shields.io/badge/Robinhood_Chain-4663-00d4ff?style=for-the-badge)](https://robinhoodchain.blockscout.com)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![License](https://img.shields.io/badge/License-MIT-9945FF?style=for-the-badge)](LICENSE)
 
-**Solana-first · RH/EVM skill pack (23 skills) · ~53 Go packages · ~24K Go lines · 3 binaries**
-
-<sub><strong>~0.67 MB</strong> slim source archive (<code>make package</code>) · <strong>~10 MB</strong> stripped CLI · Grok-first runtime · FunPump + Cheshire forge surfaces</sub>
-
-[Quick Start](#-quick-start) · [RH Skill Pack](#-robinhood-crypto-agent-open-stack-anyone-can-use) · [Architecture](#-architecture) · [The Six Laws](#-the-six-law-harness) · [CLI Reference](#-cli-reference) · [Security](SECURITY.md) · [Release](docs/OPEN_SOURCE_RELEASE.md)
+[Product](https://cheshireterminal.ai/zeroclawd) · [Agent hub](https://cheshireterminal.ai/agents) · [npm](https://www.npmjs.com/package/clawdbot-go) · [Security](SECURITY.md) · [Release checklist](docs/OPEN_SOURCE_RELEASE.md)
 
 </div>
+
+**Zero Clawd** is a small, self-hostable runtime for AI agents that need to work on **Solana** — trading loops, wallets, market data, skills, and a local web console — without a heavy cloud stack.
+
+It is **Solana-first**. Robinhood Chain / EVM support is additive through an open skill pack (token launch, Uniswap, registries, payments). You bring your own keys and risk limits; live money paths stay opt-in.
+
+### What you get
+
+| Piece | What it is |
+|-------|------------|
+| **CLI** (`clawdbot`) | Go binary for agent chat, OODA loops, catalog, doctor, status, web console |
+| **npm package** (`clawdbot-go`) | One-shot install + RH skill pack into `~/.clawdbot` (and common agent skill dirs) |
+| **Skill pack** | 23 open skills under `skills/` — FunPump launch, swaps, LP, Cheshire registries, zk-omni |
+| **Web console** | Local dashboard/API (default `127.0.0.1:18800`) you can also wire to [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Laws + DNA** | Six-law harness, onchain-oriented identity, and starter agent DNA at install |
+
+### Names (so the repo is less confusing)
+
+| You see… | Means… |
+|----------|--------|
+| **Zero Clawd** | Product name (docs, DNA, UI, install banners) |
+| **`clawdbot` / `clawdbot-go`** | CLI binary and npm package (kept for compatibility) |
+| **Zero-Bruh** | This GitHub repository |
+| **`cheshire-terminal-agents`** | Separate npm package: agent catalog + dual-chain forge SDK (not the Go runtime) |
+
+### At a glance
+
+- **Solana** market/trading tools (Jupiter, Helius, Birdeye, Vulcan/Phoenix perps, and more when configured)
+- **Robinhood Chain 4663** via the open skill pack + FunPump product APIs
+- **ZK primitives** tree for nullifiers / attestations (observer by default; live writes are delegated)
+- **Lightweight footprint** — slim source archive via `make package`, stripped CLI on the order of ~10 MB
+- **Grok-first** model defaults, with other providers via env
+
+Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
 
 ---
 
