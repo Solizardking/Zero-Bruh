@@ -6,7 +6,7 @@ Use this checklist before pushing a public release.
 
 | Surface | Canonical value |
 |---------|-----------------|
-| Product name | **Zero Clawd** |
+| Product name | **Zero Clawd** (default DNA `agent-name`, web titles, banners, install receipts) |
 | GitHub runtime | https://github.com/Solizardking/Zero-Bruh |
 | npm package / CLIs | `clawdbot-go` · bins `clawdbot-go` / `zero-clawd` · Go bin `clawdbot` |
 | Go module path | `github.com/8bitlabs/clawdbot` (stable; not the GitHub URL) |
@@ -16,6 +16,8 @@ Use this checklist before pushing a public release.
 | SkillHub | https://github.com/Solizardking/skillhub-main |
 | Terminal | https://cheshireterminal.ai |
 | Ecosystem hub | https://github.com/solizardking/solana-clawd |
+
+**Technical aliases (not product titles):** binary names `clawdbot` / `clawdbot-go`, npm package `clawdbot-go`, and Go import path `github.com/8bitlabs/clawdbot` remain for CLI/module compatibility. User-facing chrome (HTML titles, boot banners, installer product lines, default agent DNA name) must say **Zero Clawd**.
 
 Do **not** hardcode machine paths (`/Users/...`). Prefer `~/…`, `./skills`, or env vars.
 

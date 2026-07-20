@@ -141,7 +141,7 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("HTTP-Referer", "https://clawdbot.dev")
-	req.Header.Set("X-Title", "ClawdBot Go")
+	req.Header.Set("X-Title", "Zero Clawd")
 
 	resp, err := p.client.Do(req)
 	if err != nil {

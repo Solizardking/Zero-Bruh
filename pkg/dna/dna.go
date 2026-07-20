@@ -105,7 +105,7 @@ func DefaultPath(workspace string) string {
 func Generate(opts Options) (AgentDNA, error) {
 	name := strings.TrimSpace(opts.AgentName)
 	if name == "" {
-		name = "ClawdBot"
+		name = "Zero Clawd"
 	}
 	role := strings.TrimSpace(opts.Role)
 	if role == "" {

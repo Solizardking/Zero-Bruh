@@ -1,9 +1,9 @@
-// Package constants defines ClawdBot system constants.
-// ClawdBot Go runtime constants.
+// Package constants defines Zero Clawd system constants.
+// Runtime package path remains github.com/8bitlabs/clawdbot for import stability.
 package constants
 
 const (
-	AppName    = "ClawdBot"
+	AppName    = "Zero Clawd"
 	AppVersion = "1.0.0"
 	AppTagline = "Sovereign Solana Trading Intelligence"
 

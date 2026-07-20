@@ -73,7 +73,8 @@
     "skills:list": "node -e \"import('./scripts/skill-pack.mjs').then(m=>console.log(m.listSkillIds().join('\\n')))\"",
     "skills:inspect": "node -e \"import('./scripts/skill-pack.mjs').then(m=>console.log(JSON.stringify(m.inspectPack(),null,2)))\"",
     "test:oneshot": "node --test scripts/oneshot-install.test.mjs",
-    "check": "node --check bin/clawdbot-go.mjs && node --check scripts/oneshot-install.mjs && node --check scripts/skill-pack.mjs && node --check scripts/postinstall.mjs && npm run test:oneshot"
+    "test:branding": "node --test scripts/branding-check.mjs",
+    "check": "node --check bin/clawdbot-go.mjs && node --check scripts/oneshot-install.mjs && node --check scripts/skill-pack.mjs && node --check scripts/postinstall.mjs && npm run test:oneshot && npm run test:branding"
   },
   "preferGlobal": true
 }
