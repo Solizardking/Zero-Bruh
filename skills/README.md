@@ -51,6 +51,19 @@ Current **skillCount:** see `pack-index.json` (23 skills).
 | `pay-with-any-token` / `pay-with-app` | HTTP 402 / MPP payments |
 | `web3-dev` | Blockscout PRO multichain |
 
+## One-shot install (Grok Build style)
+
+```bash
+# npm stack — skills + ~/.agents links + env (recommended)
+curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+
+# or pure npx
+npx clawdbot-go install
+```
+
+This copies the pack to `~/.clawdbot/skills`, links into `~/.agents/skills`,
+and writes `CLAWDBOT_SKILLS_DIR` in `~/.clawdbot/.env`.
+
 ## Point clawdbot at this pack
 
 ```bash

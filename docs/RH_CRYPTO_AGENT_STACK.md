@@ -35,6 +35,14 @@ Go runtime loads both via `pkg/config` (`RobinhoodConfig`) and exposes presence-
 
 ## Install / resolve (clean clone)
 
+**One-shot (npm / curl — Grok Build style):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+# or: npx clawdbot-go install
+# installs pack → ~/.clawdbot/skills + agent skill dirs + .env
+```
+
 ```bash
 cd go-bot   # this repository
 
