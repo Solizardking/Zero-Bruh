@@ -22,11 +22,12 @@ func TestAssessReadiness(t *testing.T) {
 		t.Fatalf("chain = %d", empty.ChainID)
 	}
 
-	full := AssessReadiness(config.RobinhoodConfig{
+	fullCfg := config.RobinhoodConfig{
 		ChainID:          4663,
 		BlockscoutAPIKey: "proapi_x",
 		RPCURL:           "https://rpc.private/rh",
-	})
+	}
+	full := AssessReadiness(fullCfg)
 	if !full.Ready {
 		t.Fatalf("full should be ready: %s", full.Message)
 	}
@@ -36,21 +37,16 @@ func TestAssessReadiness(t *testing.T) {
 	if err := RequireReadiness(config.RobinhoodConfig{}); err == "" {
 		t.Fatal("RequireReadiness should error when empty")
 	}
-	if err := RequireReadiness(full.asConfig()); err != "" {
+	if err := RequireReadiness(fullCfg); err != "" {
 		t.Fatalf("unexpected require error: %s", err)
 	}
 }
 
-// helper: rebuild config from readiness inputs for Require on full set
-func (r Readiness) asConfig() config.RobinhoodConfig {
-	cfg := config.RobinhoodConfig{ChainID: r.ChainID}
-	if r.BlockscoutConfigured {
-		cfg.BlockscoutAPIKey = "set"
+func TestRequireReadinessMessage(t *testing.T) {
+	msg := RequireReadiness(config.RobinhoodConfig{})
+	if !strings.Contains(msg, "BLOCKSCOUT_API_KEY") || !strings.Contains(msg, "RH_RPC_URL") {
+		t.Fatalf("msg = %s", msg)
 	}
-	if r.RHRpcConfigured {
-		cfg.RPCURL = r.ResolvedRPC
-	}
-	return cfg
 }
 
 func containsAll(have []string, want ...string) bool {
@@ -64,11 +60,4 @@ func containsAll(have []string, want ...string) bool {
 		}
 	}
 	return true
-}
-
-func TestRequireReadinessMessage(t *testing.T) {
-	msg := RequireReadiness(config.RobinhoodConfig{})
-	if !strings.Contains(msg, "BLOCKSCOUT_API_KEY") || !strings.Contains(msg, "RH_RPC_URL") {
-		t.Fatalf("msg = %s", msg)
-	}
 }

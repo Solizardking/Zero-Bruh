@@ -40,6 +40,7 @@ import (
 	"github.com/8bitlabs/clawdbot/pkg/laws"
 	"github.com/8bitlabs/clawdbot/pkg/middleout"
 	"github.com/8bitlabs/clawdbot/pkg/release"
+	"github.com/8bitlabs/clawdbot/pkg/rh"
 	"github.com/8bitlabs/clawdbot/pkg/solana"
 	"github.com/8bitlabs/clawdbot/pkg/strategy"
 	"github.com/8bitlabs/clawdbot/pkg/trading"

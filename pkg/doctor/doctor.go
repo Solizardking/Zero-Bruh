@@ -14,6 +14,7 @@ import (
 	"github.com/8bitlabs/clawdbot/pkg/config"
 	dnaPkg "github.com/8bitlabs/clawdbot/pkg/dna"
 	"github.com/8bitlabs/clawdbot/pkg/laws"
+	rhPkg "github.com/8bitlabs/clawdbot/pkg/rh"
 	"github.com/8bitlabs/clawdbot/pkg/trading"
 )
 
@@ -212,43 +213,28 @@ func connectorsCheck(cfg *config.Config) Check {
 // Missing keys are StatusWarn (not fail) so Solana-only installs still doctor clean.
 // Presence is boolean-only in Details — never secret values.
 func robinhoodCheck(cfg *config.Config) Check {
-	rh := cfg.Robinhood
-	missing := []string{}
-	if !rh.HasBlockscoutKey() {
-		missing = append(missing, "BLOCKSCOUT_API_KEY")
-	}
-	if !rh.HasCustomRPC() {
-		// Public RPC is usable for read; still report so launch/deploy agents know
-		// to set RH_RPC_URL for production writes.
-		missing = append(missing, "RH_RPC_URL")
-	}
+	ready := rhPkg.AssessReadiness(cfg.Robinhood)
 	details := map[string]any{
-		"chainId":              rh.ChainID,
-		"blockscoutConfigured": rh.HasBlockscoutKey(),
-		"rhRpcConfigured":      rh.HasCustomRPC(),
-		"usingPublicRpcRead":   !rh.HasCustomRPC(),
-		"missing":              missing,
+		"chainId":              ready.ChainID,
+		"blockscoutConfigured": ready.BlockscoutConfigured,
+		"rhRpcConfigured":      ready.RHRpcConfigured,
+		"usingPublicRpcRead":   ready.UsingPublicRPCRead,
+		"missing":              ready.Missing,
 	}
-	if len(missing) == 0 {
+	if ready.Ready {
 		return Check{
 			ID:      "connectors.robinhood",
 			Label:   "Robinhood Chain (Blockscout + RPC)",
 			Status:  StatusPass,
-			Message: "BLOCKSCOUT_API_KEY and RH_RPC_URL are configured for RH launch/deploy/trade",
+			Message: ready.Message,
 			Details: details,
 		}
-	}
-	msg := "Robinhood omni flows need BLOCKSCOUT_API_KEY and RH_RPC_URL"
-	if rh.HasBlockscoutKey() && !rh.HasCustomRPC() {
-		msg = "RH_RPC_URL unset — using public read RPC only (not deploy-safe)"
-	} else if !rh.HasBlockscoutKey() && rh.HasCustomRPC() {
-		msg = "BLOCKSCOUT_API_KEY missing — explorer/indexing disabled for RH"
 	}
 	return Check{
 		ID:      "connectors.robinhood",
 		Label:   "Robinhood Chain (Blockscout + RPC)",
 		Status:  StatusWarn,
-		Message: msg,
+		Message: ready.Message,
 		Details: details,
 	}
 }

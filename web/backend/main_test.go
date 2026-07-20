@@ -146,6 +146,25 @@ func TestConnectorsAPIIncludesRobinhoodEntries(t *testing.T) {
 	}
 }
 
+func TestLoadRuntimeConfig_appliesRobinhoodEnv(t *testing.T) {
+	t.Setenv("BLOCKSCOUT_API_KEY", "proapi_runtime_cfg")
+	t.Setenv("RH_RPC_URL", "https://runtime.cfg/rh")
+	// Missing config file → defaults + env
+	cfg, err := loadRuntimeConfig(filepath.Join(t.TempDir(), "nope.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg.Robinhood.BlockscoutAPIKey != "proapi_runtime_cfg" {
+		t.Fatalf("blockscout = %q", cfg.Robinhood.BlockscoutAPIKey)
+	}
+	if cfg.Robinhood.RPCURL != "https://runtime.cfg/rh" {
+		t.Fatalf("rpc = %q", cfg.Robinhood.RPCURL)
+	}
+	if cfg.Robinhood.ChainID != 4663 {
+		t.Fatalf("chain = %d", cfg.Robinhood.ChainID)
+	}
+}
+
 func TestPackageAPIHandler_oneButton(t *testing.T) {
 	// Drive the real package path: POST builds slim archive, GET reports it, download streams it.
 	cwd, err := os.Getwd()

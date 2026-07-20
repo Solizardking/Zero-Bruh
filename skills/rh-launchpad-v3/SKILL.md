@@ -10,6 +10,22 @@ description: >
 
 # RH Launchpad V3 — curve → Uniswap V3 graduate
 
+## Core env (go-bot / clawdbot)
+
+| Variable | Role |
+|----------|------|
+| `RH_RPC_URL` | Chain **4663** JSON-RPC. Required for agent-signed deploy/broadcast; public RPC is read fallback only. |
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO for tx/receipt/token verification after launch (`proapi_…`). |
+
+Preflight: `clawdbot doctor` (`connectors.robinhood`) or `GET /api/rh/readiness`.  
+Do not hardcode explorer bases — use Blockscout PRO with `chain_id=4663` via skill `web3-dev` / `pkg/rh`.
+
+```ts
+// Prefer env over hardcoded public RPC for wallet clients
+const rpc = process.env.RH_RPC_URL || "https://rpc.mainnet.chain.robinhood.com";
+// transport: http(rpc)
+```
+
 ## Product truth
 
 | | |
@@ -92,7 +108,11 @@ const RH = defineChain({
   id: 4663,
   name: "Robinhood Chain",
   nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  rpcUrls: { default: { http: ["https://rpc.mainnet.chain.robinhood.com"] } },
+  rpcUrls: {
+    default: {
+      http: [process.env.RH_RPC_URL || "https://rpc.mainnet.chain.robinhood.com"],
+    },
+  },
 });
 
 // 1) Call FunPump prepare API (or encode createToken locally from skill)

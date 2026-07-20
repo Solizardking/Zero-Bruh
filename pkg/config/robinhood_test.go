@@ -81,3 +81,16 @@ func TestDefaultConfig_RobinhoodCore(t *testing.T) {
 		t.Fatal("default RPCURL must be empty (read fallback only via ResolvedRPCURL)")
 	}
 }
+
+func TestApplyEnvOverrides_Exported(t *testing.T) {
+	t.Setenv("BLOCKSCOUT_API_KEY", "proapi_export_test")
+	t.Setenv("RH_RPC_URL", "https://export.test/rpc")
+	cfg := DefaultConfig()
+	ApplyEnvOverrides(cfg)
+	if cfg.Robinhood.BlockscoutAPIKey != "proapi_export_test" {
+		t.Fatalf("key = %q", cfg.Robinhood.BlockscoutAPIKey)
+	}
+	if cfg.Robinhood.RPCURL != "https://export.test/rpc" {
+		t.Fatalf("rpc = %q", cfg.Robinhood.RPCURL)
+	}
+}

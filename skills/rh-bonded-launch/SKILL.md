@@ -11,6 +11,25 @@ description: >
 
 # RH Bonded Launch — permissionless `createToken`
 
+## Core env (go-bot / clawdbot)
+
+Agents running inside Zero Clawd **must not invent** RPC or explorer URLs.
+Load these first (or fail readiness):
+
+| Variable | Role |
+|----------|------|
+| `RH_RPC_URL` | Robinhood Chain JSON-RPC for reads + broadcast. Public `https://rpc.mainnet.chain.robinhood.com` is **read-only fallback** — set a private/paid RPC for deploy. |
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO (`proapi_…`) for chain **4663** verification, receipts, holders. Free: https://dev.blockscout.com |
+
+Check: `clawdbot doctor` → `connectors.robinhood`, or `GET /api/rh/readiness` (presence only).  
+Go helpers: `pkg/rh.AssessReadiness` / `rh.FromConfig(cfg.Robinhood)`.  
+On-chain data skill: `web3-dev`.
+
+```bash
+export RH_RPC_URL="${RH_RPC_URL:-https://rpc.mainnet.chain.robinhood.com}"  # replace for deploy
+export BLOCKSCOUT_API_KEY=proapi_…   # required for explorer verification
+```
+
 ## Product truth (do not dilute)
 
 **Anyone can launch a token.** No `$CLAWD` holder login. No factory allowlist.  

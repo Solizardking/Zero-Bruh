@@ -31,7 +31,7 @@ Pack metadata: `skills/pack-index.json` · flat catalog: `skills/catalog.json`.
 | `BLOCKSCOUT_API_KEY` | Blockscout PRO key (`proapi_…`) for chain **4663** explorer data. Free tier: [dev.blockscout.com](https://dev.blockscout.com) |
 | `RH_RPC_URL` | Robinhood Chain JSON-RPC. Public `https://rpc.mainnet.chain.robinhood.com` is a **read-only** fallback when unset — set a private RPC for deploy/broadcast. |
 
-Go runtime loads both via `pkg/config` (`RobinhoodConfig`) and exposes presence-only status on `/api/connectors` + `clawdbot doctor`. Thin clients: `pkg/rh`.
+Go runtime loads both via `pkg/config` (`RobinhoodConfig`) and exposes presence-only status on `/api/connectors`, **`GET /api/rh/readiness`**, and `clawdbot doctor` (`connectors.robinhood`). Thin clients + gate: `pkg/rh` (`FromConfig`, `AssessReadiness`, `RequireReadiness`).
 
 ## Install / resolve (clean clone)
 

@@ -2,25 +2,55 @@
 name: cheshire-zk-omni
 description: >
   Zero-knowledge omnichain messaging (msgType 4) between Robinhood Chain and
-  Solana via CheshireZkOmniMessenger — LayerZero V2 peers, nullifier anti-replay,
-  optional identity authorization. Use for sendZkOmni, quoteSend, nullifiers,
-  zk-omni relayer. Source: contracts/zk-omni/CheshireZkOmniMessenger.sol.
+  Solana via CheshireZkOmniMessenger — LayerZero V2 peers, Ed25519 proof of
+  knowledge, nullifier anti-replay, zk-omni-relayer. Use for sendZkOmni,
+  zero zkomni plan/oneshot, nullifiers. Source: robinhood-agents contracts/zk-omni
+  + programs/zk_omni + Zero Clawd pkg/zkomni.
 ---
 
-# CheshireZkOmniMessenger (zk-omni)
+# Cheshire ZK Omnichain (Zero Clawd)
 
-Cross-chain messenger for **Robinhood Chain ↔ Solana** with **domain-separated nullifiers** (anti-replay). LayerZero authenticates peers; this contract enforces peer allowlist, nullifier uniqueness, expiry, and optional agent identity auth on send.
+Cross-chain messenger **Robinhood Chain (EID 30416) ↔ Solana (EID 30168)** with:
 
-## Source
+- **Ed25519 PoK** of a secret (secret never on-chain)
+- **Nullifier** bound to `proofPubkey` + payload binding
+- LayerZero peer auth + Solana `receive_zk_omni` (nullifier PDA + Ed25519 precompile)
 
-```text
-cheshire-terminal/robinhood-agents/contracts/zk-omni/
-  CheshireZkOmniMessenger.sol
-  ILayerZeroEndpointV2.sol
-  MockLzEndpoint.sol   # local tests only
+## Zero Clawd one-shot (user-friendly)
+
+```bash
+# Native Go plan (no Node required)
+clawdbot zero zkomni plan --action attest --memo demo
+clawdbot zero zkomni oneshot --action publish_attestation --memo oneshot
+
+# Natural language (routes via pkg/zero intent router, no model call)
+clawdbot zero ask "zk-omni message attest demo"
+clawdbot zero ask "send cross-chain message robinhood to solana"
 ```
 
-Also mirrored by skill `zk-omni-messaging` (CLI / relayer). Prefer that skill for relayer ops; this skill is the **contract surface**.
+Package: `pkg/zkomni` — same crypto as `cheshire-terminal/robinhood-agents/src/zkOmni/proof.js`.
+
+## Node relayer / full surface
+
+```bash
+cd cheshire-terminal/robinhood-agents
+npm run test:zk-omni
+npm start --prefix . -- zk-omni-oneshot --action publish_attestation   # via cli.js
+# or
+npx robinhood-agents zk-omni-plan --action attest --memo demo
+npx robinhood-agents zk-omni-oneshot --action publish_attestation
+npm run zk-omni:relayer -- --port 8787
+```
+
+## Source map
+
+| Surface | Path |
+|---------|------|
+| RH messenger | `cheshire-terminal/robinhood-agents/contracts/zk-omni/CheshireZkOmniMessenger.sol` |
+| Solana receiver | `robinhood-agents/programs/zk_omni` (`Hfbc3tAGYE5nBUa5UncjSV6hoWd3JoVKdA49jPcreXFJ`) |
+| Codec / relayer | `robinhood-agents/src/zkOmni/` |
+| Zero Clawd | `go-bot/pkg/zkomni` + `clawdbot zero zkomni` |
+| Docs | `robinhood-agents/docs/ZK_OMNI.md` |
 
 ## Constants
 
@@ -29,57 +59,25 @@ Also mirrored by skill `zk-omni-messaging` (CLI / relayer). Prefer that skill fo
 | `MSG_ZK_OMNI` | `4` |
 | `SOLANA_EID` | `30168` |
 | `ROBINHOOD_EID` | `30416` |
-| Max action / memo | 64 / 200 chars |
+| Solana program | `Hfbc3tAGYE5nBUa5UncjSV6hoWd3JoVKdA49jPcreXFJ` |
 
-## Payload (`abi.encode`)
+## Payload (msgType 4)
 
 ```text
-uint16  msgType            // = 4
-bytes32 agentId
-bytes32 controller
-bytes32 nullifier          // unique; consumedNullifier[nullifier]
-bytes32 payloadCommitment
-bytes32 modelHash
-uint64  expiresAt
-string  action
-string  memo
+uint16  msgType, bytes32 agentId, bytes32 controller, bytes32 nullifier,
+bytes32 payloadCommitment, bytes32 modelHash, bytes32 proofPubkey,
+uint64  expiresAt, string action, string memo, bytes proof  // 64-byte Ed25519
 ```
-
-## Key functions
-
-| Function | Role |
-|----------|------|
-| `constructor(endpoint, owner, identityRegistry)` | endpoint must have code; optional identity |
-| `setPeer(eid, peer)` | owner — LZ peer bytes32 |
-| `setIdentityRegistry(registry)` | owner — optional `isAuthorized` gate |
-| `quoteSend(...)` | fee quote |
-| `sendZkOmni(...)` | payable send; may require identity auth |
-| `lzReceive(...)` | LZ callback — peer + nullifier + expiry checks |
-
-Events: `PeerSet`, `IdentityRegistrySet`, `ZkOmniSent`, `ZkOmniReceived`.
-
-## Errors (agent-facing)
-
-`UnauthorizedPeer`, `UnauthorizedAgent`, `InvalidNullifier`, `NullifierReplay`, `IntentExpired`, `InvalidMessageType`, `IntentTextTooLong`, `FeeTooLow`, …
 
 ## Operator notes
 
-1. Deploy once with a live LayerZero Endpoint V2; never use `MockLzEndpoint` on mainnet.
-2. Set peers for Solana EID `30168` and RH EID `30416` before production sends.
-3. If `identityRegistry` is set, senders must be authorized for `agentId`.
-4. Always derive a fresh nullifier per intent; never reuse.
-5. Product / UX hosts: FunPump `https://funpump.ai` · Cheshire forge `https://cheshireterminal.ai`.
-
-## CLI / relayer (package)
-
-```bash
-npx robinhood-agents zk-omni-plan --action attest --memo "demo"
-npx robinhood-agents zk-omni-nullifier --context "zk-omni:attest:v1"
-npx robinhood-agents zk-omni-oneshot --action publish_attestation --memo "one-shot"
-```
+1. Fresh nullifier per intent — never reuse.
+2. Live deliver needs `RH_RPC_URL` + messenger + key, or `ZK_OMNI_SIMULATE=1`.
+3. Solana receive: Ed25519Program ix **then** `receive_zk_omni` in the same tx.
+4. Product hosts: FunPump · cheshireterminal.ai · install surfaces on x402.wtf.
 
 ## Related
 
-- Suite overview: `cheshire-agent-registries`
-- Identity auth gate: `cheshire-agent-identity-registry`
-- Full messaging skill: `zk-omni-messaging`
+- `cheshire-omni-mint` — dual-rail identity + optional zk-omni link
+- `cheshire-agent-registries` — ERC-8004 suite
+- `zk-omni-messaging` skill in robinhood-agents

@@ -13,6 +13,21 @@ metadata:
 
 Plan and generate deep links for token swaps on Uniswap across all supported chains.
 
+### Robinhood Chain (4663) — go-bot core env
+
+When the user targets **Robinhood Chain / RH / chain 4663**, use go-bot core env
+instead of inventing RPC/explorer URLs:
+
+| Variable | Use |
+|----------|-----|
+| `RH_RPC_URL` | On-chain verify (`eth_getCode`) and any cast/curl RPC |
+| `BLOCKSCOUT_API_KEY` | Token/tx verification via Blockscout PRO (`web3-dev` skill) |
+
+```bash
+rpc_url="${RH_RPC_URL:-https://rpc.mainnet.chain.robinhood.com}"
+# Explorer: skill web3-dev + BLOCKSCOUT_API_KEY (chain_id=4663)
+```
+
 > **Runtime Compatibility:** This skill uses `AskUserQuestion` for interactive prompts. If `AskUserQuestion` is not available in your runtime, collect the same parameters through natural language conversation instead.
 
 ## Overview
