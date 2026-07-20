@@ -182,6 +182,23 @@ func main() {
 		json.NewEncoder(w).Encode(connectors)
 	})
 
+	// RH readiness (presence-only) for launch/deploy/trade agent gates.
+	mux.HandleFunc("/api/rh/readiness", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		cfg, err := loadRuntimeConfig(absPath)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		// Never echo secrets — AssessReadiness only uses presence + public RPC string.
+		ready := rh.AssessReadiness(cfg.Robinhood)
+		// Redact custom RPC paths that may embed API keys.
+		if ready.RHRpcConfigured {
+			ready.ResolvedRPC = "<configured>"
+		}
+		json.NewEncoder(w).Encode(ready)
+	})
+
 	mux.HandleFunc("/api/ecosystem", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]any{
@@ -829,7 +846,9 @@ func loadRuntimeConfig(path string) (*config.Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return config.DefaultConfig(), nil
+			cfg := config.DefaultConfig()
+			config.ApplyEnvOverrides(cfg)
+			return cfg, nil
 		}
 		return nil, err
 	}
@@ -837,6 +856,9 @@ func loadRuntimeConfig(path string) (*config.Config, error) {
 	if err := json.Unmarshal(data, cfg); err != nil {
 		return nil, err
 	}
+	// Env wins so BLOCKSCOUT_API_KEY / RH_RPC_URL (and Solana keys) from
+	// .env.local / process are first-class even when config.json is sparse.
+	config.ApplyEnvOverrides(cfg)
 	return cfg, nil
 }
 

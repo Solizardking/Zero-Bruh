@@ -287,6 +287,11 @@ func updateStatus(view *tview.TextView) {
   Launch V3: %s…
   Identity:  %s…
 
+[%s]Robinhood Chain (4663)[%s]
+  Blockscout: %s
+  RH RPC:     %s
+  Skills:     web3-dev · rh-launchpad-v3 · swap-*
+
 [%s]Hardware[%s]
   Target:    NVIDIA Orin Nano
   I2C Bus:   /dev/i2c-1
@@ -312,6 +317,9 @@ func updateStatus(view *tview.TextView) {
 		clawdGreen, "",
 		shortAddr(addrLaunchpadV3),
 		shortAddr(addrIdentity),
+		clawdAmber, "",
+		envStatus("BLOCKSCOUT_API_KEY"),
+		envStatus("RH_RPC_URL"),
 		clawdTeal, "",
 		clawdPurple, "",
 		skillsPathHint(),

@@ -569,6 +569,16 @@ func writeFileIfMissing(path string, data []byte, perm os.FileMode) error {
 
 // ── Env Overrides ────────────────────────────────────────────────────
 
+// ApplyEnvOverrides fills config fields from process environment.
+// Safe to call after loading a JSON config file so BLOCKSCOUT_API_KEY,
+// RH_RPC_URL, HELIUS_*, and other operator keys win over file defaults.
+func ApplyEnvOverrides(cfg *Config) {
+	if cfg == nil {
+		return
+	}
+	applyEnvOverrides(cfg)
+}
+
 func applyEnvOverrides(cfg *Config) {
 	if v := os.Getenv("HELIUS_API_KEY"); v != "" {
 		cfg.Solana.HeliusAPIKey = v
