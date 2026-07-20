@@ -5,13 +5,17 @@
   "description": "Open-source Robinhood Chain / Uniswap EVM skill pack anyone can use with clawdbot-go. Covers bonded launch, LaunchpadV3, swaps, LP, DCA, copy-trade, payments, viem, Blockscout web3-dev, and Cheshire agent registry skills. Core env: BLOCKSCOUT_API_KEY + RH_RPC_URL.",
   "license": "MIT",
   "anyoneCanUse": true,
-  "skillCount": 22,
-  "coreEnv": ["BLOCKSCOUT_API_KEY", "RH_RPC_URL"],
+  "skillCount": 23,
+  "coreEnv": [
+    "BLOCKSCOUT_API_KEY",
+    "RH_RPC_URL"
+  ],
   "skills": [
     "cheshire-agent-identity-registry",
     "cheshire-agent-registries",
     "cheshire-agent-reputation-registry",
     "cheshire-agent-validation-registry",
+    "cheshire-omni-mint",
     "cheshire-zk-omni",
     "copy-trade",
     "dca-bot",
