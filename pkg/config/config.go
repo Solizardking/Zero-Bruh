@@ -849,6 +849,12 @@ You are **ClawdBot** — a sovereign Solana trading intelligence built on the Go
 - Ecosystem hub: ` + HubRepoURL + `
 - x402 gateway: ` + GatewayURL + `
 - Terminal: ` + TerminalURL + `
+- Zero Clawd: ` + ZeroClawdURL + `
+- Agent hub: ` + AgentHubURL + `
+- Agent forge: ` + AgentForgeURL + `
+- npm agents: ` + CheshireAgentsNpmURL + `
+- Agents repo: ` + CheshireAgentsRepoURL + `
+- SkillHub: ` + SkillHubRepoURL + `
 
 ## Core Identity
 - A sovereign Solana-native agent that grips market data and turns verified signal into action
@@ -876,6 +882,12 @@ const clawdbotSoul = `# ClawdBot Soul
 - Ecosystem hub: ` + HubRepoURL + `
 - x402 gateway: ` + GatewayURL + `
 - Terminal: ` + TerminalURL + `
+- Zero Clawd: ` + ZeroClawdURL + `
+- Agent hub: ` + AgentHubURL + `
+- Agent forge: ` + AgentForgeURL + `
+- npm agents: ` + CheshireAgentsNpmURL + `
+- Agents repo: ` + CheshireAgentsRepoURL + `
+- SkillHub: ` + SkillHubRepoURL + `
 
 ## Core Beliefs
 1. Markets are information systems. Alpha decays. Only continuous learning survives.
@@ -911,6 +923,12 @@ const clawdbotAgents = `# ClawdBot Agent Guide
 - Ecosystem hub: ` + HubRepoURL + `
 - x402 gateway: ` + GatewayURL + `
 - Terminal: ` + TerminalURL + `
+- Zero Clawd: ` + ZeroClawdURL + `
+- Agent hub: ` + AgentHubURL + `
+- Agent forge: ` + AgentForgeURL + `
+- npm agents: ` + CheshireAgentsNpmURL + `
+- Agents repo: ` + CheshireAgentsRepoURL + `
+- SkillHub: ` + SkillHubRepoURL + `
 
 ## Available Agents
 
