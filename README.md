@@ -117,14 +117,39 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install
 # Skill Hub pack (same Cheshire/RH suite as catalog skills)
 npx github:Solizardking/skills install cheshire-terminal-agents --force
 
-# Agents SDK + forge + registries (npm)
+# Agents SDK + forge + registries (npm) — catalog/identity, NOT this Go runtime
 npm i cheshire-terminal-agents
 ```
 
+**[`cheshire-terminal-agents`](https://www.npmjs.com/package/cheshire-terminal-agents)**
+(v1.48+) ships an **optional bridge** to this package — it does **not** hard-depend
+on `clawdbot-go` and does **not** run Zero Clawd on its postinstall:
+
+```bash
+# From the agents package: discover + install Zero Clawd (invokes npx clawdbot-go …)
+npx cheshire-terminal-agents clawdbot-info
+npx cheshire-terminal-agents clawdbot-install --dry-run
+npx cheshire-terminal-agents clawdbot-install              # → npx clawdbot-go install
+npx cheshire-terminal-agents clawdbot-install --skills-only
+npx cheshire-terminal-agents clawdbot-install --global     # → npm i -g clawdbot-go
+
+# External catalog entry (discoverable, not vendored under agents packages/)
+npx cheshire-terminal-agents packages-list
+# → packages: clawd-agent-tui, headless-agent, …
+# → external: ["clawdbot-go"]  (npmUrl → https://www.npmjs.com/package/clawdbot-go)
+```
+
+| Package | npm | Role |
+|---------|-----|------|
+| **This runtime** | [clawdbot-go](https://www.npmjs.com/package/clawdbot-go) | Skills oneshot, CLI bins, web console `:18800` |
+| **Agents / forge** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) | Catalog, dual-chain forge, nested TS packages + optional `clawdbot-install` bridge |
+
+Install both when you need identity forge **and** a local Zero Clawd console.
+
 ### E · Connect from Cheshire Terminal (hosted `/zeroclawd`)
 
-After `npm i clawdbot-go` (or a full oneshot), start the web console and open
-the public hub:
+After `npm i clawdbot-go` (or a full oneshot / agents bridge install), start the
+web console and open the public hub:
 
 ```bash
 # Start local agent web console (default :18800)
@@ -142,6 +167,9 @@ Then open **[https://cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/
 2. Connect agent base URL (default `http://127.0.0.1:18800`)
 3. Chat with live `/api/health` · `/api/status` · `/api/dna` context
 
+The hosted page also links live registry meta for this package
+(`GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest`).
+
 Loopback agents are probed **from your browser** (not the Cheshire server).
 Public remote agent hosts may use the same-origin `/api/zeroclawd/probe` bridge
 (SSRF-hardened — private/link-local/loopback targets are blocked server-side).
@@ -152,6 +180,7 @@ Public remote agent hosts may use the same-origin `/api/zeroclawd/probe` bridge
 | Pack manifest | `~/.clawdbot/skills/.clawdbot-prepackaged.json` |
 | Env template | `~/.clawdbot/.env` (`CLAWDBOT_SKILLS_DIR`, RH hooks) |
 | npm package | [clawdbot-go](https://www.npmjs.com/package/clawdbot-go) · `npm i clawdbot-go` |
+| Agents bridge | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) · `npx cheshire-terminal-agents clawdbot-install` (optional; not a hard dep) |
 | CLI binaries | `clawdbot-go` / `zero-clawd` (npm) · `clawdbot` (Go, via install.sh) |
 | Hosted connect | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 | Product | [zeroclawd](https://cheshireterminal.ai/zeroclawd) · [agents](https://cheshireterminal.ai/agents) · [forge](https://cheshireterminal.ai/agents/forge) · [funpump.ai](https://funpump.ai) |
