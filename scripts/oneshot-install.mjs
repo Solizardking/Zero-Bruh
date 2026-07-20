@@ -198,54 +198,21 @@ function installSkillPack({ installDir, force }) {
     join(homedir(), ".codex", "skills"),
   ];
 
+  // Link into agent hosts via `ln -sfn` in a child process — never use Node
+  // fs.equivalent/rmSync across volumes (macOS aborts with uncatchable
+  // filesystem_error on some ~/.agents paths).
   let linked = 0;
-  for (const root of agentRoots) {
-    try {
-      ensureDir(root);
-    } catch {
-      continue;
-    }
-    for (const id of ids) {
-      const src = join(destSkills, id);
-      const dst = join(root, id);
-      try {
-        if (!existsSync(src) || !statSync(src).isDirectory()) continue;
-      } catch {
-        continue;
-      }
-      // Safe link: prefer symlink; never crash the oneshot on FS quirks (macOS
-      // "equivalent: Operation not supported" when comparing cross-volume paths).
-      try {
-        // lstat via existsSync can throw on dangling multi-volume links — probe carefully
-        let destExists = false;
-        try {
-          destExists = existsSync(dst);
-        } catch {
-          destExists = false;
-        }
-        if (destExists) {
-          if (!force) continue;
-          try {
-            rmSync(dst, { recursive: true, force: true });
-          } catch {
-            continue;
-          }
-        }
-        try {
-          symlinkSync(src, dst, "dir");
-          linked += 1;
-          continue;
-        } catch {
-          /* fall through to copy */
-        }
-        try {
-          cpSync(src, dst, { recursive: true, force: true, errorOnExist: false });
-          linked += 1;
-        } catch {
-          /* skip single skill */
-        }
-      } catch {
-        /* never fail oneshot on agent skill linking */
+  if (process.env.CLAWDBOT_SKIP_AGENT_LINKS !== "1") {
+    for (const root of agentRoots) {
+      const mkdir = spawnSync("mkdir", ["-p", root], { encoding: "utf8" });
+      if (mkdir.status !== 0) continue;
+      for (const id of ids) {
+        const src = join(destSkills, id);
+        const dst = join(root, id);
+        const check = spawnSync("test", ["-d", src]);
+        if (check.status !== 0) continue;
+        const ln = spawnSync("ln", ["-sfn", src, dst], { encoding: "utf8" });
+        if (ln.status === 0) linked += 1;
       }
     }
   }
@@ -447,6 +414,8 @@ export function runOneshot(options = {}) {
   console.log(`  ${BOLD}Surfaces:${RESET} funpump.ai · cheshireterminal.ai/agents/forge`);
   console.log(`  ${BOLD}Skills:${RESET}   ${skillResult.skillCount} in ${skillResult.skillsDir}`);
   console.log(`  ${BOLD}Full Go:${RESET}  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash`);
+  console.log(`  ${BOLD}SkillHub oneshot:${RESET} npx github:Solizardking/skills install cheshire-terminal-agents --force`);
+  console.log(`  ${BOLD}npm agents SDK:${RESET} npm i cheshire-terminal-agents`);
   console.log();
   console.log(`  🦞 $CLAWD :: Droids Lead The Way`);
   console.log();
@@ -460,11 +429,18 @@ function printHelp() {
 Usage:
   npx clawdbot-go install
   npx clawdbot-go oneshot [--dir ~/.clawdbot] [--skip-go] [--skip-birth] [--skip-automaton] [--force]
+  npx clawdbot-go skills-install          # skills only (same as default npm postinstall)
+
+  # Prepackage ALL bundled skills on npm install (default postinstall):
+  npm install clawdbot-go
+  # Full stack in postinstall:
+  CLAWDBOT_ONESHOT=1 npm install clawdbot-go
 
   curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
 
 Commands:
   install | oneshot   Full stack install (default)
+  skills-install      Prepackage skills only → ~/.clawdbot/skills + agent roots
   skills              List skill ids from pack-index
   inspect             Validate pack SKILL.md files
   skills-dir          Print absolute skills directory
@@ -491,6 +467,26 @@ export function main(argv = process.argv.slice(2)) {
   }
   if (cmd === "skills-dir") {
     console.log(SKILLS_DIR);
+    return;
+  }
+  if (cmd === "skills-install" || cmd === "prepackage-skills") {
+    const flags = parseArgs(argv.slice(1));
+    const installDir =
+      flags.dir || process.env.CLAWDBOT_INSTALL_DIR || join(homedir(), ".clawdbot");
+    const result = installSkillPackOnly({ installDir, force: flags.force });
+    console.log(
+      JSON.stringify(
+        {
+          ok: true,
+          skillsDir: result.skillsDir,
+          skillCount: result.skillCount,
+          linked: result.linked,
+          packId: result.packId,
+        },
+        null,
+        2,
+      ),
+    );
     return;
   }
 
