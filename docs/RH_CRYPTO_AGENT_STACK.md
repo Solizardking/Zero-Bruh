@@ -75,17 +75,25 @@ clawdbot catalog skills rh       # filter query example
   commit private keys (see `SECURITY.md` and Clawd Guard patterns).
 - Bonded launch factories may be source-verified but unaudited — use small amounts.
 
-## Relationship to ClawdBrowser and cheshire-terminal-agents
+## Relationship to ClawdBrowser, npm, and SkillHub
 
 The same skill content is developed under ClawdBrowser `.agents/skills/` and
 vendored into `go-bot/skills/` so the open runtime can be cloned standalone.
 
-**Cheshire Terminal Agents** redistributes this pack (not the Go binary) at
-`skills/rh-crypto-agent/` in the `cheshire-terminal-agents` npm package.
-
-From ClawdBrowser:
+| Surface | URL | What you get |
+|---------|-----|----------------|
+| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) | RH crypto-agent skills pack (skills only — not the Go binary); often under `skills/rh-crypto-agent/` |
+| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) | Broader Solizardking installable skills library for agent hosts |
+| **Go runtime** | this repo `skills/` | Authoritative pack for `clawdbot catalog` when `pack-index.json` is present |
 
 ```bash
+# npm
+npm i cheshire-terminal-agents
+
+# SkillHub (skills CLI)
+npx skills add https://github.com/Solizardking/skillhub-main --all
+
+# From ClawdBrowser monorepo — sync go-bot skills into Cheshire packaging
 node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
 # unit: node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
 ```

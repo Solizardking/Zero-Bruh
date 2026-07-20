@@ -100,6 +100,9 @@ function installCommands(origin, base) {
   return {
     complete: `curl -fsSL ${origin}${base} | bash`,
     raw: `curl -fsSL ${origin}${base}/install.sh | bash`,
+    /** Grok Build–style npm oneshot: skills pack + agent dirs + env */
+    npm: `curl -fsSL ${origin}${base}/install-npm.sh | bash`,
+    npmNpx: `npx clawdbot-go install`,
     coreAI: `curl -fsSL ${origin}${base}/core-ai | bash`,
     zkMetadata: `curl -fsSL ${origin}${base}/.well-known/clawdbot-zk.json`,
   };
@@ -127,6 +130,16 @@ function routes(origin, base) {
     {
       path: `${base}/install.sh`,
       behavior: "raw upstream installer proxy",
+    },
+    {
+      path: `${base}/install-npm.sh`,
+      behavior: "npm oneshot installer (skills + agents + env)",
+      command: `curl -fsSL ${origin}${base}/install-npm.sh | bash`,
+    },
+    {
+      path: `${base}/npm`,
+      behavior: "npm oneshot installer alias",
+      command: `curl -fsSL ${origin}${base}/install-npm.sh | bash`,
     },
     {
       path: `${base}/raw`,
