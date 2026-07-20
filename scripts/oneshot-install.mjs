@@ -169,7 +169,19 @@ function writeEnvTemplate(envPath, values) {
 }
 
 /**
+ * Skills-only prepackage (used by npm postinstall + `npx clawdbot-go skills-install`).
+ * Copies the full bundled skills tree and links every SKILL.md into agent roots.
+ */
+export function installSkillPackOnly({ installDir, force = false } = {}) {
+  return installSkillPack({
+    installDir: installDir || join(homedir(), ".clawdbot"),
+    force,
+  });
+}
+
+/**
  * Copy skill pack into installDir/skills and symlink each skill into agents dirs.
+ * Installs pack-index skills plus any extra on-disk SKILL.md directories.
  */
 function installSkillPack({ installDir, force }) {
   const destSkills = join(installDir, "skills");
@@ -191,7 +203,20 @@ function installSkillPack({ installDir, force }) {
   });
 
   const pack = loadPackIndex();
-  const ids = listSkillIds();
+  const fromIndex = listSkillIds();
+  // Union pack-index + every directory that actually has SKILL.md
+  const onDisk = readdirSync(destSkills)
+    .filter((name) => {
+      const dir = join(destSkills, name);
+      try {
+        return statSync(dir).isDirectory() && existsSync(join(dir, "SKILL.md"));
+      } catch {
+        return false;
+      }
+    })
+    .sort();
+  const ids = [...new Set([...fromIndex, ...onDisk])];
+
   const agentRoots = [
     join(homedir(), ".agents", "skills"),
     join(homedir(), ".claude", "skills"),
@@ -215,6 +240,27 @@ function installSkillPack({ installDir, force }) {
         if (ln.status === 0) linked += 1;
       }
     }
+  }
+
+  try {
+    writeFileSync(
+      join(destSkills, ".clawdbot-prepackaged.json"),
+      JSON.stringify(
+        {
+          prepackagedAt: new Date().toISOString(),
+          packId: pack.id,
+          skillCount: ids.length,
+          packIndexCount: fromIndex.length,
+          skills: ids,
+          productHost: pack.productHost || "https://funpump.ai",
+          forgeHost: pack.forgeHost || "https://cheshireterminal.ai/agents/forge",
+        },
+        null,
+        2,
+      ),
+    );
+  } catch {
+    /* non-fatal */
   }
 
   return {
