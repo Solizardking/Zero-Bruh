@@ -1,49 +1,91 @@
 # Robinhood Crypto Agent Open Stack
 
-Open-source skill pack for **anyone** building Robinhood Chain / EVM trading and launch agents with Zero Clawd (`go-bot` / `clawdbot`).
+Open-source skill pack for **anyone** building **FunPump** / Robinhood Chain / EVM trading and agent tooling with Zero Clawd (`go-bot` / `clawdbot`).
 
-This pack is redistributable with the go-bot tree. No private monorepo paths required.
+**Product host:** [https://funpump.ai](https://funpump.ai)  
+**Agent forge:** [https://cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge)  
+**Do not use** `clawdcode.net` — launches and public APIs are on **funpump.ai**.
 
-**Also redistributed** (skills only, not the Go binary) into the npm package
-`cheshire-terminal-agents` as `skills/rh-crypto-agent/`. From ClawdBrowser:
+This pack ships with the go-bot tree (`pack-index.json` + `catalog.json` + one folder per skill). No private monorepo paths required.
 
-```bash
-node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
-node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
-```
+## Pack files
 
-## Skills (see `pack-index.json` for authoritative list)
+| File | Role |
+|------|------|
+| `pack-index.json` | Authoritative skill id list + product hosts |
+| `catalog.json` | Flat catalog (slug, description, category, tags) for loaders |
+| `*/SKILL.md` | Agent skill bodies |
 
-Core open stack includes RH launch (`rh-bonded-launch`, `rh-launchpad-v3`), Uniswap
-swap/LP/v4 skills, strategy bots (`copy-trade`, `dca-bot`, `index-bot`), payments,
-`viem-integration`, Blockscout `web3-dev`, plus Cheshire agent-registry skills
-(`cheshire-agent-*`, `cheshire-zk-omni`).
+Current **skillCount:** see `pack-index.json` (23 skills).
 
-**Core env for RH omni launch/deploy/trade:** `BLOCKSCOUT_API_KEY` + `RH_RPC_URL`
-(chain id **4663**). See `.env.example` and `docs/RH_CRYPTO_AGENT_STACK.md`.
+## Skills
+
+### FunPump launch (RH 4663)
+
+| Skill | Role |
+|-------|------|
+| `rh-launchpad-v3` | Bonding curve → **Uniswap V3** · factory `0x27f27F998fdBa2a38C136Bb3E7a8BA43155798Cd` · API `https://funpump.ai/api/launchpad/v3` |
+| `rh-bonded-launch` | Bonding `createToken` · active factory `0x6344a4c108b8fe03e9d79523ab0ac588a45cd092` · UI `https://funpump.ai/launch` |
+
+### Cheshire agent registries (ERC-8004)
+
+| Skill | Role |
+|-------|------|
+| `cheshire-agent-registries` | Suite overview + mainnet pins |
+| `cheshire-agent-identity-registry` | RHAGENT ERC-721 · `0x70361a37951d66f8c44cfb45873df2ba8b9fc950` |
+| `cheshire-agent-reputation-registry` | Client feedback · `0x8a4154a6c1ee44b4b790948f9613e3fb934628ff` |
+| `cheshire-agent-validation-registry` | Validation request/response · `0x020d053040da31195e5f9a992b8eda663dbb073b` |
+| `cheshire-omni-mint` | Dual-rail Solana Metaplex + RH identity + zk-omni link |
+| `cheshire-zk-omni` | LayerZero msgType 4 nullifier messenger |
+
+### Trading / Uniswap / strategy
+
+| Skill | Role |
+|-------|------|
+| `swap-planner` / `swap-integration` | Swaps |
+| `liquidity-planner` / `lp-integration` | LP positions |
+| `v4-hook-generator` / `v4-sdk-integration` / `v4-security-foundations` | Uniswap v4 |
+| `viem-integration` | EVM client patterns |
+| `copy-trade` / `dca-bot` / `index-bot` | Strategy bots |
+| `deployer` | CCA factory deploy |
+| `pay-with-any-token` / `pay-with-app` | HTTP 402 / MPP payments |
+| `web3-dev` | Blockscout PRO multichain |
 
 ## Point clawdbot at this pack
 
-From the go-bot checkout:
-
 ```bash
+cd go-bot
 export CLAWDBOT_SKILLS_DIR="$(pwd)/skills"
 clawdbot catalog skills
 # or
 go run ./cmd/clawdbot catalog skills --skills-dir ./skills
 ```
 
-When `CLAWDBOT_SKILLS_DIR` is unset, go-bot prefers this bundled `./skills` directory if present (walked from the current working directory), then falls back to `~/skills/skills`.
+When `CLAWDBOT_SKILLS_DIR` is unset, go-bot prefers this bundled `./skills` directory if `pack-index.json` is present.
 
-Solana-first catalogs remain usable: set `CLAWDBOT_SKILLS_DIR` to your Solana skill library; the bundled RH/EVM pack is still merged into `catalog` reports when discovered.
+## Redistribute to Cheshire / npm
 
-## Robinhood use cases
+```bash
+# From ClawdBrowser monorepo root
+node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
+node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
+```
 
-- Permissionless bonded token launch (`rh-bonded-launch`) and V3 graduation (`rh-launchpad-v3`)
-- Swaps / LP / Uniswap v4 hooks via the Uniswap-oriented skills
-- DCA, index baskets, and copy-trade strategy skills
-- EVM reads/writes with `viem-integration`
-- Multichain explorer data via Blockscout PRO (`web3-dev`, requires `BLOCKSCOUT_API_KEY`)
+Also mirrored under `cheshire-terminal/robinhood-agents/skills/` for many skills.
+
+## Core env (RH)
+
+| Var | Purpose |
+|-----|---------|
+| `RH_RPC_URL` | Robinhood mainnet RPC (chain **4663**) |
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO (`web3-dev`) |
+
+See `.env.example` and `docs/RH_CRYPTO_AGENT_STACK.md`.
+
+## TUI
+
+- Go launcher: `go-bot/cmd/clawdbot-tui` (FunPump / registries panels)
+- TypeScript ZK Shark: `cheshire-terminal/packages/clawd-agent-tui` (`/skills` `/launch` `/registries` `/omni`)
 
 ## License
 
