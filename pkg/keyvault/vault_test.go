@@ -103,6 +103,8 @@ func TestUpsertEnvFile_allowlistAndPresence(t *testing.T) {
 		"HELIUS_API_KEY":     "new-helius",
 		"XAI_API_KEY":        "xai-secret",
 		"OPENROUTER_API_KEY": "", // clear / skip create
+		"BLOCKSCOUT_API_KEY": "proapi_test_secret",
+		"RH_RPC_URL":         "https://rpc.example.com/rh",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -122,6 +124,12 @@ func TestUpsertEnvFile_allowlistAndPresence(t *testing.T) {
 	if !strings.Contains(body, "XAI_API_KEY=xai-secret") {
 		t.Fatalf("append missing:\n%s", body)
 	}
+	if !strings.Contains(body, "BLOCKSCOUT_API_KEY=proapi_test_secret") {
+		t.Fatalf("blockscout key missing:\n%s", body)
+	}
+	if !strings.Contains(body, "RH_RPC_URL=https://rpc.example.com/rh") {
+		t.Fatalf("rh rpc missing:\n%s", body)
+	}
 	if !strings.Contains(body, "# keep me") {
 		t.Fatalf("comment lost:\n%s", body)
 	}
@@ -132,12 +140,20 @@ func TestUpsertEnvFile_allowlistAndPresence(t *testing.T) {
 	if os.Getenv("HELIUS_API_KEY") != "new-helius" {
 		t.Fatalf("env not applied: %q", os.Getenv("HELIUS_API_KEY"))
 	}
+	if os.Getenv("BLOCKSCOUT_API_KEY") != "proapi_test_secret" {
+		t.Fatalf("blockscout env not applied: %q", os.Getenv("BLOCKSCOUT_API_KEY"))
+	}
+	if os.Getenv("RH_RPC_URL") != "https://rpc.example.com/rh" {
+		t.Fatalf("rh rpc env not applied: %q", os.Getenv("RH_RPC_URL"))
+	}
 
 	presence, err := ListManagedKeyPresence(path)
 	if err != nil {
 		t.Fatal(err)
 	}
 	foundHelius := false
+	foundBlockscout := false
+	foundRHRPC := false
 	for _, p := range presence {
 		if p.Name == "HELIUS_API_KEY" {
 			foundHelius = true
@@ -146,12 +162,45 @@ func TestUpsertEnvFile_allowlistAndPresence(t *testing.T) {
 			}
 			// Never leak values in presence struct JSON shape — Set only
 		}
+		if p.Name == "BLOCKSCOUT_API_KEY" {
+			foundBlockscout = true
+			if !p.Set {
+				t.Fatal("BLOCKSCOUT_API_KEY should be set")
+			}
+			if p.Group != "robinhood" {
+				t.Fatalf("blockscout group = %q", p.Group)
+			}
+		}
+		if p.Name == "RH_RPC_URL" {
+			foundRHRPC = true
+			if !p.Set {
+				t.Fatal("RH_RPC_URL should be set")
+			}
+		}
 		if p.Name == "OPENROUTER_API_KEY" && p.Set && p.Source == "file" {
 			t.Fatal("cleared openrouter should not be file-set")
 		}
 	}
 	if !foundHelius {
 		t.Fatal("HELIUS missing from presence list")
+	}
+	if !foundBlockscout {
+		t.Fatal("BLOCKSCOUT_API_KEY missing from presence list")
+	}
+	if !foundRHRPC {
+		t.Fatal("RH_RPC_URL missing from presence list")
+	}
+}
+
+func TestManagedAPIKeys_includesRobinhoodCore(t *testing.T) {
+	if !IsManagedKey("BLOCKSCOUT_API_KEY") {
+		t.Fatal("BLOCKSCOUT_API_KEY must be allowlisted")
+	}
+	if !IsManagedKey("RH_RPC_URL") {
+		t.Fatal("RH_RPC_URL must be allowlisted")
+	}
+	if IsManagedKey("NOT_A_REAL_KEY") {
+		t.Fatal("unknown key must not be managed")
 	}
 }
 

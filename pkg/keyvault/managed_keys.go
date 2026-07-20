@@ -32,6 +32,11 @@ var ManagedAPIKeys = []ManagedKey{
 	{Name: "JUPITER_API_KEY", Label: "Jupiter", Group: "solana", Hint: "portal.jup.ag", Placeholder: "…"},
 	{Name: "ASTER_API_KEY", Label: "Aster API key", Group: "perps", Hint: "Aster DEX", Placeholder: "…"},
 	{Name: "ASTER_API_SECRET", Label: "Aster API secret", Group: "perps", Hint: "HMAC secret", Placeholder: "…"},
+	// Robinhood Chain / Blockscout — required for omni launch, deploy, Pons + Uniswap RH flows.
+	// RH_RPC_URL is an endpoint URL (not a secret token) but still managed so the Connectors
+	// popup can set it without a second secret path. Public RPC is a read-only fallback only.
+	{Name: "BLOCKSCOUT_API_KEY", Label: "Blockscout PRO", Group: "robinhood", Hint: "dev.blockscout.com", Placeholder: "proapi_…"},
+	{Name: "RH_RPC_URL", Label: "Robinhood RPC", Group: "robinhood", Hint: "rpc.mainnet.chain.robinhood.com or Alchemy", Placeholder: "https://…"},
 	{Name: "TELEGRAM_BOT_TOKEN", Label: "Telegram bot", Group: "channels", Hint: "@BotFather", Placeholder: "123456:ABC…"},
 	{Name: "DISCORD_BOT_TOKEN", Label: "Discord bot", Group: "channels", Hint: "Discord developer portal", Placeholder: "…"},
 	{Name: "BROWSERUSE_API_KEY", Label: "Browser Use", Group: "browser", Hint: "cloud.browser-use.com", Placeholder: "bu_…"},

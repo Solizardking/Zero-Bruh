@@ -27,6 +27,13 @@ const (
 
 	DeepSeekBaseURL      = "https://api.deepseek.com"
 	DeepSeekDefaultModel = "deepseek-v4-pro"
+
+	// Robinhood Chain (Arbitrum Orbit L2). Public RPC is a read-only fallback —
+	// do not treat it as deploy-safe; set RH_RPC_URL for production write traffic.
+	RobinhoodChainID       = 4663
+	RobinhoodPublicRPCURL  = "https://rpc.mainnet.chain.robinhood.com"
+	BlockscoutPROBaseURL   = "https://api.blockscout.com"
+	RobinhoodExplorerURL   = "https://robinhoodchain.blockscout.com"
 )
 
 // ── Config Structure ─────────────────────────────────────────────────
@@ -42,13 +49,50 @@ type Config struct {
 	Gateway   GatewayConfig   `json:"gateway"`
 
 	// ClawdBot-specific
-	Solana    SolanaConfig    `json:"solana"`
-	Vulcan    VulcanConfig    `json:"vulcan"`
-	ClawdCode ClawdCodeConfig `json:"clawd_code"`
-	GodMode   GodModeConfig   `json:"god_mode"`
-	OODA      OODAConfig      `json:"ooda"`
-	Supabase  SupabaseConfig  `json:"supabase"`
-	Strategy  StrategyConfig  `json:"strategy"`
+	Solana     SolanaConfig     `json:"solana"`
+	Robinhood  RobinhoodConfig  `json:"robinhood"`
+	Vulcan     VulcanConfig     `json:"vulcan"`
+	ClawdCode  ClawdCodeConfig  `json:"clawd_code"`
+	GodMode    GodModeConfig    `json:"god_mode"`
+	OODA       OODAConfig       `json:"ooda"`
+	Supabase   SupabaseConfig   `json:"supabase"`
+	Strategy   StrategyConfig   `json:"strategy"`
+}
+
+// ── ClawdBot: Robinhood Chain / EVM ──────────────────────────────────
+
+// RobinhoodConfig holds first-class RH chain settings for launch/deploy/trade
+// agent flows (Pons, Uniswap, Blockscout indexing). Secrets load only from env.
+type RobinhoodConfig struct {
+	// ChainID is always 4663 (Robinhood Chain mainnet) unless overridden.
+	ChainID int `json:"chain_id"`
+	// RPCURL is the JSON-RPC endpoint. When empty after env apply, ResolvedRPCURL
+	// falls back to RobinhoodPublicRPCURL for read-only use.
+	RPCURL string `json:"rpc_url"`
+	// BlockscoutAPIKey is the PRO API key (proapi_…). Never expose in status APIs.
+	BlockscoutAPIKey string `json:"blockscout_api_key"`
+	// BlockscoutBase is the PRO API host (default https://api.blockscout.com).
+	BlockscoutBase string `json:"blockscout_base,omitempty"`
+}
+
+// ResolvedRPCURL returns RH_RPC_URL when set, otherwise the public read fallback.
+// Callers that broadcast txs should require an explicit RH_RPC_URL (not public).
+func (r RobinhoodConfig) ResolvedRPCURL() string {
+	if strings.TrimSpace(r.RPCURL) != "" {
+		return strings.TrimSpace(r.RPCURL)
+	}
+	return RobinhoodPublicRPCURL
+}
+
+// HasCustomRPC reports whether an operator-supplied RH_RPC_URL is configured
+// (as opposed to relying on the public read fallback).
+func (r RobinhoodConfig) HasCustomRPC() bool {
+	return strings.TrimSpace(r.RPCURL) != ""
+}
+
+// HasBlockscoutKey reports whether BLOCKSCOUT_API_KEY is configured.
+func (r RobinhoodConfig) HasBlockscoutKey() bool {
+	return strings.TrimSpace(r.BlockscoutAPIKey) != ""
 }
 
 // ── Agent Defaults ───────────────────────────────────────────────────
@@ -319,6 +363,11 @@ func DefaultConfig() *Config {
 			JupiterEndpoint:      "https://api.jup.ag",
 			MaxPositionSOL:       0.5,
 			PhoenixAPIURL:        "https://perp-api.phoenix.trade",
+		},
+		Robinhood: RobinhoodConfig{
+			ChainID:        RobinhoodChainID,
+			RPCURL:         "", // env RH_RPC_URL; empty → public read fallback only
+			BlockscoutBase: BlockscoutPROBaseURL,
 		},
 		Vulcan: VulcanConfig{
 			Binary:               "vulcan",
@@ -621,6 +670,33 @@ func applyEnvOverrides(cfg *Config) {
 	// Phoenix perps API
 	if v := os.Getenv("PHOENIX_API_URL"); v != "" {
 		cfg.Solana.PhoenixAPIURL = v
+	}
+	// Robinhood Chain / Blockscout PRO — first-class env for omni launch/deploy/trade
+	if v := os.Getenv("RH_RPC_URL"); v != "" {
+		cfg.Robinhood.RPCURL = v
+	}
+	if v := os.Getenv("BLOCKSCOUT_API_KEY"); v != "" {
+		cfg.Robinhood.BlockscoutAPIKey = v
+	}
+	// Alias accepted by Blockscout skill docs; prefer BLOCKSCOUT_API_KEY when both set.
+	if cfg.Robinhood.BlockscoutAPIKey == "" {
+		if v := os.Getenv("BLOCKSCOUT_PRO_API_KEY"); v != "" {
+			cfg.Robinhood.BlockscoutAPIKey = v
+		}
+	}
+	if v := os.Getenv("BLOCKSCOUT_BASE_URL"); v != "" {
+		cfg.Robinhood.BlockscoutBase = v
+	}
+	if v := os.Getenv("RH_CHAIN_ID"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 {
+			cfg.Robinhood.ChainID = n
+		}
+	}
+	if cfg.Robinhood.ChainID == 0 {
+		cfg.Robinhood.ChainID = RobinhoodChainID
+	}
+	if strings.TrimSpace(cfg.Robinhood.BlockscoutBase) == "" {
+		cfg.Robinhood.BlockscoutBase = BlockscoutPROBaseURL
 	}
 	if v := os.Getenv("VULCAN_BIN"); v != "" {
 		cfg.Vulcan.Binary = v

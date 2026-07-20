@@ -2,11 +2,16 @@
   "name": "Robinhood Crypto Agent Open Stack",
   "id": "rh-crypto-agent",
   "version": 1,
-  "description": "Open-source Robinhood Chain / Uniswap EVM skill pack anyone can use with clawdbot-go. Covers bonded launch, LaunchpadV3, swaps, LP, DCA, copy-trade, payments, and viem.",
+  "description": "Open-source Robinhood Chain / Uniswap EVM skill pack anyone can use with clawdbot-go. Covers bonded launch, LaunchpadV3, swaps, LP, DCA, copy-trade, payments, viem, and Cheshire agent registry skills.",
   "license": "MIT",
   "anyoneCanUse": true,
-  "skillCount": 16,
+  "skillCount": 21,
   "skills": [
+    "cheshire-agent-identity-registry",
+    "cheshire-agent-registries",
+    "cheshire-agent-reputation-registry",
+    "cheshire-agent-validation-registry",
+    "cheshire-zk-omni",
     "copy-trade",
     "dca-bot",
     "deployer",
@@ -22,26 +27,6 @@
     "v4-hook-generator",
     "v4-sdk-integration",
     "v4-security-foundations",
-    "viem-integration",
-    {
-      "name": "cheshire-agent-identity-registry",
-      "path": "cheshire-agent-identity-registry"
-    },
-    {
-      "name": "cheshire-agent-registries",
-      "path": "cheshire-agent-registries"
-    },
-    {
-      "name": "cheshire-agent-reputation-registry",
-      "path": "cheshire-agent-reputation-registry"
-    },
-    {
-      "name": "cheshire-agent-validation-registry",
-      "path": "cheshire-agent-validation-registry"
-    },
-    {
-      "name": "cheshire-zk-omni",
-      "path": "cheshire-zk-omni"
-    }
+    "viem-integration"
   ]
 }

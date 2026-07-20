@@ -65,7 +65,27 @@ clawdbot catalog skills rh       # filter query example
   commit private keys (see `SECURITY.md` and Clawd Guard patterns).
 - Bonded launch factories may be source-verified but unaudited — use small amounts.
 
-## Relationship to ClawdBrowser
+## Relationship to ClawdBrowser and cheshire-terminal-agents
 
 The same skill content is developed under ClawdBrowser `.agents/skills/` and
 vendored into `go-bot/skills/` so the open runtime can be cloned standalone.
+
+**Cheshire Terminal Agents** redistributes this pack (not the Go binary) at
+`skills/rh-crypto-agent/` in the `cheshire-terminal-agents` npm package.
+
+From ClawdBrowser:
+
+```bash
+node scripts/sync-go-bot-rh-skills-to-robinhood-agents.mjs
+# unit: node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.ts
+```
+
+Operators:
+
+```bash
+export CLAWDBOT_SKILLS_DIR="$(npm root)/cheshire-terminal-agents/skills/rh-crypto-agent"
+clawdbot catalog skills
+```
+
+Out of scope for the npm package (stay in go-bot): `cmd/`, `pkg/`, `build/`,
+`dist/`, `web/`, `ui/`, `ooda/`, `automaton-main/`, `zk-primitives/`, binaries.
