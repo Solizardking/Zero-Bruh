@@ -21,6 +21,7 @@ type ManagedKey struct {
 // ManagedAPIKeys is the allowlist of env vars the one-click API key popup may set.
 // Unknown names are rejected on write so the UI cannot inject arbitrary env keys.
 var ManagedAPIKeys = []ManagedKey{
+	{Name: "MOONSHOT_API_KEY", Label: "Moonshot Kimi K3", Group: "llm", Hint: "platform.kimi.ai/console/api-keys", Placeholder: "sk-…"},
 	{Name: "XAI_API_KEY", Label: "xAI Grok", Group: "llm", Hint: "console.x.ai", Placeholder: "xai-…"},
 	{Name: "OPENROUTER_API_KEY", Label: "OpenRouter", Group: "llm", Hint: "openrouter.ai/keys", Placeholder: "sk-or-…"},
 	{Name: "DEEPSEEK_API_KEY", Label: "DeepSeek", Group: "llm", Hint: "platform.deepseek.com", Placeholder: "sk-…"},

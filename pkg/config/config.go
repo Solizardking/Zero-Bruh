@@ -37,6 +37,11 @@ const (
 	DeepSeekBaseURL      = "https://api.deepseek.com"
 	DeepSeekDefaultModel = "deepseek-v4-pro"
 
+	// Moonshot / Kimi Open Platform (OpenAI-compatible).
+	// Docs: https://platform.kimi.ai/docs/guide/kimi-k3-quickstart
+	MoonshotBaseURL      = "https://api.moonshot.ai/v1"
+	MoonshotDefaultModel = "kimi-k3"
+
 	// Robinhood Chain (Arbitrum Orbit L2). Public RPC is a read-only fallback —
 	// do not treat it as deploy-safe; set RH_RPC_URL for production write traffic.
 	RobinhoodChainID      = 4663
@@ -162,6 +167,7 @@ type ProvidersConfig struct {
 	NVIDIA     ProviderEntry `json:"nvidia"`
 	XAI        ProviderEntry `json:"xai"`
 	DeepSeek   ProviderEntry `json:"deepseek"`
+	Moonshot   ProviderEntry `json:"moonshot"`
 }
 
 type ProviderEntry struct {
@@ -660,9 +666,23 @@ func applyEnvOverrides(cfg *Config) {
 	if v := os.Getenv("ZKROUTER_BASE_URL"); v != "" && len(cfg.ModelList) > 0 {
 		cfg.ModelList[0].APIBase = v
 	}
-	// XAI_API_KEY / DEEPSEEK_API_KEY — when set, these take priority over the
-	// free zkrouter default so agent calls land on a real, known-good model.
+	// MOONSHOT_API_KEY / XAI_API_KEY / DEEPSEEK_API_KEY — when set, these take
+	// priority over the free zkrouter default so agent calls land on a real model.
+	// Moonshot (Kimi K3) is first when present so MOONSHOT_API_KEY installs
+	// default to the flagship Kimi agent.
 	var directProviders []ModelEntry
+	if v := os.Getenv("MOONSHOT_API_KEY"); v != "" {
+		base := firstNonEmptyEnv("MOONSHOT_BASE_URL", MoonshotBaseURL)
+		model := firstNonEmptyEnv("MOONSHOT_MODEL", MoonshotDefaultModel)
+		cfg.Providers.Moonshot = ProviderEntry{APIKey: v, APIBase: base}
+		directProviders = append(directProviders, ModelEntry{
+			ModelName:     "kimi-k3",
+			Model:         model,
+			APIKey:        v,
+			APIBase:       base,
+			ThinkingLevel: firstNonEmptyEnv("MOONSHOT_REASONING_EFFORT", "max"),
+		})
+	}
 	if v := os.Getenv("XAI_API_KEY"); v != "" {
 		base := firstNonEmptyEnv("XAI_BASE_URL", XAIBaseURL)
 		cfg.Providers.XAI = ProviderEntry{APIKey: v, APIBase: base}
@@ -685,6 +705,10 @@ func applyEnvOverrides(cfg *Config) {
 	}
 	if len(directProviders) > 0 {
 		cfg.ModelList = append(directProviders, cfg.ModelList...)
+		// Prefer the first direct provider as the agent default model name.
+		if directProviders[0].ModelName != "" {
+			cfg.Agents.Defaults.ModelName = directProviders[0].ModelName
+		}
 	}
 	// Phoenix perps API
 	if v := os.Getenv("PHOENIX_API_URL"); v != "" {
