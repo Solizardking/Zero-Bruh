@@ -50,7 +50,7 @@ Skip skill prepackage: `CLAWDBOT_SKIP_SKILLS=1 npm install clawdbot-go`
 ### B · Full stack via curl/npm (skills + env + optional Go/birth/automaton)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 
 # same as:
 npx clawdbot-go install
@@ -63,7 +63,7 @@ CLAWDBOT_ONESHOT=1 npm install -g clawdbot-go
 Also seeds the RH skill pack into `~/.clawdbot/skills` and agent skill roots:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
 # or from this checkout:
 ./install.sh
 ```

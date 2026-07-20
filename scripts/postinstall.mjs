@@ -72,7 +72,7 @@ async function main() {
       console.log(`  export CLAWDBOT_SKILLS_DIR="${result.skillsDir}"`);
       console.log("  Full stack (Go + birth):  npx clawdbot-go install");
       console.log(
-        "  Curl oneshot: curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash",
+        "  Curl oneshot: curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash",
       );
       console.log("");
     }

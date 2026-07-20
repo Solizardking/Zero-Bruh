@@ -7,11 +7,14 @@
   "author": "Zero Clawd / Cheshire Terminal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Solizardking/clawdbot-go.git"
+    "url": "git+https://github.com/Solizardking/Zero-Bruh.git"
   },
-  "homepage": "https://cheshireterminal.ai/zeroclawd",
+  "homepage": "https://github.com/Solizardking/Zero-Bruh",
   "bugs": {
-    "url": "https://github.com/Solizardking/clawdbot-go/issues"
+    "url": "https://github.com/Solizardking/Zero-Bruh/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "clawdbot",

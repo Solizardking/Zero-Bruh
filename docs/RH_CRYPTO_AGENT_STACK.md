@@ -90,8 +90,12 @@ vendored into `go-bot/skills/` so the open runtime can be cloned standalone.
 
 | Surface | URL | What you get |
 |---------|-----|----------------|
-| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) | RH crypto-agent skills pack (skills only — not the Go binary); often under `skills/rh-crypto-agent/` |
-| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) | Broader Solizardking installable skills library for agent hosts |
+| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) | Agent catalog + dual-chain forge SDK + RH crypto-agent skills (skills only — not the Go binary); often under `skills/rh-crypto-agent/` |
+| **Agents source** | [Solizardking/Cheshire-Terminal-Agents](https://github.com/Solizardking/Cheshire-Terminal-Agents) | Canonical source for the npm package |
+| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main) | Broader Solizardking installable skills library for agent hosts |
+| **Agent hub** | [cheshireterminal.ai/agents](https://cheshireterminal.ai/agents) | Hosted catalog + live agent feed |
+| **Agent forge** | [cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge) | Dual-chain identity forge UI |
+| **Zero Clawd** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) | Product surface for this Go runtime |
 | **Go runtime** | this repo `skills/` | Authoritative pack for `clawdbot catalog` when `pack-index.json` is present |
 
 ```bash

@@ -2,7 +2,7 @@
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  Zero Clawd — npm one-shot (Grok Build style)                                ║
 # ║                                                                              ║
-# ║  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+# ║  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 # ║                                                                              ║
 # ║  Installs: RH skill pack (23) · agents skill dirs · env · optional packages  ║
 # ║  For Go binary + full source, this also chains the classic install.sh.       ║

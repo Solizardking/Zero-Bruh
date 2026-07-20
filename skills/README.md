@@ -3,6 +3,8 @@
 Open-source skill pack for **anyone** building **FunPump** / Robinhood Chain / EVM trading and agent tooling with Zero Clawd (`go-bot` / `clawdbot`).
 
 **Product host:** [https://funpump.ai](https://funpump.ai)  
+**Zero Clawd:** [https://cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd)  
+**Agent hub:** [https://cheshireterminal.ai/agents](https://cheshireterminal.ai/agents)  
 **Agent forge:** [https://cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge)  
 **Do not use** `clawdcode.net` — launches and public APIs are on **funpump.ai**.
 
@@ -80,8 +82,11 @@ When `CLAWDBOT_SKILLS_DIR` is unset, go-bot prefers this bundled `./skills` dire
 
 | Surface | URL |
 |---------|-----|
-| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) — RH crypto-agent skills pack (skills only, not the Go binary) |
-| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main/tree/main) — broader Solizardking installable skills library |
+| **npm** | [cheshire-terminal-agents](https://www.npmjs.com/package/cheshire-terminal-agents) — agent catalog + forge SDK + RH skill pack (skills only, not the Go binary) |
+| **Agents source** | [Solizardking/Cheshire-Terminal-Agents](https://github.com/Solizardking/Cheshire-Terminal-Agents) |
+| **SkillHub** | [Solizardking/skillhub-main](https://github.com/Solizardking/skillhub-main) — broader Solizardking installable skills library |
+| **Agent hub** | [cheshireterminal.ai/agents](https://cheshireterminal.ai/agents) |
+| **Zero Clawd** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
 
 ```bash
 # npm consumers
