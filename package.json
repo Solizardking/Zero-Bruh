@@ -77,5 +77,8 @@
     "test:branding": "node --test scripts/branding-check.mjs",
     "check": "node --check bin/clawdbot-go.mjs && node --check scripts/oneshot-install.mjs && node --check scripts/skill-pack.mjs && node --check scripts/postinstall.mjs && npm run test:oneshot && npm run test:branding"
   },
-  "preferGlobal": true
+  "preferGlobal": true,
+  "dependencies": {
+    "cheshire-terminal-agents": "^1.48.0"
+  }
 }
