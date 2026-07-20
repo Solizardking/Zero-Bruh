@@ -6,50 +6,52 @@
 
 # ZERO CLAWD
 
-### 🦞 Sovereign Solana Trading Intelligence
+### 🦞 Sovereign Solana + Robinhood Omni Agent Runtime
 
-**Autonomous OODA Agent · Agent DNA · ZK Primitives · Privacy by Default · Helius DAS · Vulcan/Phoenix Perpetuals · Jupiter Swaps · Hardware I2C · Web Console**
+**Autonomous OODA · Agent DNA · ZK Primitives · Solana SVM · Robinhood EVM (4663) · FunPump Launch · Uniswap · Blockscout · Helius DAS · Vulcan/Phoenix · Jupiter · Hardware I2C · Web Console**
 
 [![Go](https://img.shields.io/badge/Go-1.26.4+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev)
 [![Solana](https://img.shields.io/badge/Solana-Mainnet-14F195?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com)
+[![Robinhood](https://img.shields.io/badge/Robinhood_Chain-4663-00d4ff?style=for-the-badge)](https://robinhoodchain.blockscout.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![License](https://img.shields.io/badge/License-MIT-9945FF?style=for-the-badge)](LICENSE)
 
-**Solana-first · beats Zero on footprint · 81 Go source files · 45 Go packages · 24,166 Go lines · 3 binaries**
+**Solana-first · RH/EVM skill pack (23 skills) · ~53 Go packages · ~24K Go lines · 3 binaries**
 
-<sub><strong>~0.67 MB</strong> slim source archive (<code>make package</code>) · <strong>~3.8 MB</strong> exportable source tree · <strong>~10 MB</strong> stripped CLI · Grok-first runtime · GLM-5.2 model surface</sub>
+<sub><strong>~0.67 MB</strong> slim source archive (<code>make package</code>) · <strong>~10 MB</strong> stripped CLI · Grok-first runtime · FunPump + Cheshire forge surfaces</sub>
 
-[Quick Start](#-quick-start) · [Architecture](#-architecture) · [The Six Laws](#-the-six-law-harness) · [CLI Reference](#-cli-reference) · [Security](SECURITY.md) · [Release](docs/OPEN_SOURCE_RELEASE.md)
+[Quick Start](#-quick-start) · [RH Skill Pack](#-robinhood-crypto-agent-open-stack-anyone-can-use) · [Architecture](#-architecture) · [The Six Laws](#-the-six-law-harness) · [CLI Reference](#-cli-reference) · [Security](SECURITY.md) · [Release](docs/OPEN_SOURCE_RELEASE.md)
 
 </div>
 
 ---
 
-## 🆕 What's New — Live Data + Hardened Trading Engine + Zero
+## 🆕 What's New — Omni RH Pack + Live Markets + Hardened Trading
 
-This release turns the goal directory into a working, verifiable trading agent —
-not just a dashboard. Every item below builds clean and is covered by tests
-(`go test ./...`).
+This tree is a working, verifiable trading agent — not just a dashboard.
+Solana runtime stays first-class; Robinhood Chain / EVM is additive via the
+bundled skill pack and `pkg/rh`.
 
-**Live market data.** The web console now pulls real prices through key-less
-Jupiter (`/api/market/prices`), with Birdeye perps open interest
-(`/api/market/perps`, hyperliquid) and trending (`/api/market/trending`) wired in
-and degrading gracefully when a key is throttled or unentitled. New console
-panels: **Live Market**, **Perps Open Interest**, and a live **Strategy Engine**
-readout with a backtest equity sparkline.
+**Robinhood Crypto Agent Open Stack (v2 · 23 skills).** Vendored under
+[`skills/`](skills/) for FunPump launch, Uniswap, strategy bots, payments,
+Cheshire ERC-8004 registries, omni mint, zk-omni, and Blockscout `web3-dev`.
+Product host: [funpump.ai](https://funpump.ai) · forge:
+[cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge).
+Core operator env: **`BLOCKSCOUT_API_KEY`** + **`RH_RPC_URL`** (chain **4663**).
+See [docs/RH_CRYPTO_AGENT_STACK.md](docs/RH_CRYPTO_AGENT_STACK.md) and
+[skills/README.md](skills/README.md).
 
-**Trading engine, hardened.**
+**RH readiness in the Go runtime.** `pkg/config` loads RH settings;
+`pkg/rh` builds JSON-RPC + Blockscout PRO requests; `clawdbot doctor` reports
+`connectors.robinhood`; web console exposes `/api/connectors` and
+`GET /api/rh/readiness` (presence only — never secret values).
 
-- **Risk-based position sizing** (`strategy.RiskAdjustedSize`) — every trade
-  risks a fixed fraction of equity, so size scales inversely with stop distance
-  and by signal confidence. Wired into the OODA loop via `risk_per_trade_pct`.
-- **Portfolio risk guard** (`trading.PortfolioLimits`) — account-level gate with
-  max concurrent positions, total/per-asset exposure caps, a **drawdown circuit
-  breaker**, and a daily-loss limit.
-- **Backtest harness** (`strategy.Backtest`) — replays the *same* `Evaluate()`
-  the live loop uses, returning win rate, total return, max drawdown, profit
-  factor, Sharpe, and an equity curve.
-- **Two real bug fixes**: the strategy's entry rule was effectively
+**Live market data.** Web console pulls Jupiter prices (`/api/market/prices`),
+Birdeye perps OI and trending when keys allow, plus strategy / backtest panels.
+
+**Trading engine.** Risk-based position sizing, portfolio limits (drawdown
+circuit breaker), and a backtest harness that replays the same `Evaluate()` as
+the live OODA loop.
 
 ---
 
@@ -123,6 +125,8 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 | `https://github.com/solizardking/solana-clawd` | Canonical ecosystem hub |
 | `https://zk.x402.wtf` | Public x402/zk gateway and install surface |
 | `https://cheshireterminal.ai` | Public terminal surface |
+| `https://funpump.ai` | FunPump product host — RH launch UI + public launchpad APIs |
+| `https://cheshireterminal.ai/agents/forge` | Cheshire agent forge |
 | `https://huggingface.co/ordlibrary/Clawd-GLM-5.2` | Public Clawd model surface |
 
 ### Core Capabilities
@@ -132,13 +136,15 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 | **OODA Trading Loop** | Autonomous Observe → Orient → Decide → Act cycle with RSI/EMA/ATR strategy engine, auto-optimization, ClawVault memory journaling, and hardware I2C controls |
 | **Birdeye v3 Analytics** | 22 API endpoints, 19 LLM-callable agent tools — token overview, OHLCV, trade feeds, security audits, trending, wallet analytics |
 | **Helius DAS + RPC** | Digital Asset Standard queries (get-asset, owner-assets, search), SPL token operations (balance, supply, largest holders), raw RPC forwarding |
+| **Robinhood / EVM skill pack** | 23 open skills under `skills/` — FunPump bonded + V3 launch, Uniswap swap/LP/v4, strategy bots, HTTP 402 payments, Cheshire ERC-8004 registries, omni mint, zk-omni, Blockscout `web3-dev` |
+| **RH runtime (`pkg/rh`)** | Chain **4663** JSON-RPC + Blockscout PRO helpers; readiness via doctor / `GET /api/rh/readiness`; env **`RH_RPC_URL`** + **`BLOCKSCOUT_API_KEY`** |
 | **ZK + Privacy Primitives** | Nullifiers, attestations, encrypted state commitments, and privacy-preserving proof flows under `zk-primitives/` |
 | **ZK Omnichain (RH ↔ Solana)** | msgType-4 LayerZero messages with Ed25519 PoK — `pkg/zkomni`, `clawdbot zero zkomni`, skill `cheshire-zk-omni` (pairs with cheshire-terminal `robinhood-agents`) |
 | **Cloudflare Edge Installer** | Branded install routes plus read-only ZK metadata at `/.well-known/clawdbot-zk.json` |
 | **Aster DEX Perpetuals** | HMAC-signed futures trading — market/limit orders, position management, stop-loss/take-profit, account analytics |
 | **Jupiter Aggregator** | Best-route spot swaps with slippage protection |
 | **Hardware I2C** | Arduino Modulino® sensor cluster — RGB LEDs, buzzer alerts, physical buttons, rotary knob, IMU, temp/humidity, proximity |
-| **Web Console** | React 19 + Vite dashboard — real-time status, Go packages viewer, connector health, environment variables |
+| **Web Console** | React + Vite dashboard — omni-chain hero, connectors (incl. Blockscout + RH RPC), keys popup, doctor, market panels |
 | **Multi-Provider LLM** | OpenRouter, Anthropic, OpenAI abstraction with tool-use agent loop |
 | **Dual Memory** | Local ClawVault (file-based, 7 categories) + Supabase MemoryEngine (PostgreSQL) |
 | **Grok-First** | Default provider is xAI Grok — code/repl/trade, research, image, voice, fast modes |
@@ -343,12 +349,19 @@ clawdbot-go/
 │   ├── aster/                   Aster DEX perps (HMAC-signed)
 │   │  └─────────────────────────────────────────────────────┘
 │   │
+│   │  ┌─ Robinhood / EVM ───────────────────────────────────┐
+│   ├── rh/                      RH JSON-RPC + Blockscout PRO + readiness
+│   ├── zkomni/                  RH↔Solana ZK omnichain (msgType 4)
+│   │  └─────────────────────────────────────────────────────┘
+│   │
 │   │  ┌─ Infrastructure ───────────────────────────────────-┐
-│   ├── config/                  Config loading, env overrides
+│   ├── config/                  Config + RH env (BLOCKSCOUT_API_KEY, RH_RPC_URL)
+│   ├── keyvault/                Managed API keys allowlist + .env.local vault
+│   ├── doctor/                  Runtime diagnostics (incl. connectors.robinhood)
 │   ├── hardware/                I2C Modulino® adapter + drivers
 │   ├── providers/               LLM abstraction (OpenRouter, etc.)
 │   ├── channels/                Telegram, Discord, WebSocket
-│   ├── catalog/                 Skills + agents + ZK index
+│   ├── catalog/                 Skills + agents + ZK index (RH pack discovery)
 │   ├── mcp/                     Model Context Protocol server
 │   ├── auth/                    Authentication + pairing
 │   ├── bus/                     Event bus (pub/sub)
@@ -356,9 +369,20 @@ clawdbot-go/
 │   ├── tools/                   Tool interface + registry
 │   └── ...                      health, heartbeat, logger, identity, etc.
 │
-├── pkg/zkomni/                  RH↔Solana ZK omnichain (msgType 4 Ed25519 PoK)
-│   ├── proof.go                 Plan/verify nullifier + proof (matches robinhood-agents)
-│   └── proof_test.go
+├── skills/                      RH Crypto Agent Open Stack (pack-index v2, 23 skills)
+│   ├── pack-index.json          Authoritative skill ids + funpump.ai / forge hosts
+│   ├── catalog.json             Flat catalog for loaders
+│   ├── README.md                Pack overview
+│   ├── rh-bonded-launch/        FunPump bonding createToken (RH 4663)
+│   ├── rh-launchpad-v3/         Curve → Uniswap V3 graduate
+│   ├── web3-dev/                Blockscout PRO multichain (chain_id=4663)
+│   ├── cheshire-agent-*/        ERC-8004 identity / reputation / validation
+│   ├── cheshire-omni-mint/      Dual-rail Solana + RH identity mint
+│   ├── cheshire-zk-omni/        LayerZero msgType-4 messenger skill
+│   ├── swap-*/ liquidity-*/ v4-*/  Uniswap trade + LP + v4
+│   ├── copy-trade/ dca-bot/ index-bot/  Strategy bots
+│   ├── pay-with-*/              HTTP 402 / MPP payments
+│   └── viem-integration/        EVM client patterns
 │
 ├── zk-primitives/               ZK agent, TypeScript client, Anchor program
 │   ├── docs/EDGE_DISTRIBUTION.md     ← Cloudflare metadata surface
@@ -370,13 +394,12 @@ clawdbot-go/
 │   ├── programs/                clawd-zk Anchor program
 │   └── tests/                   Off-chain and on-chain test notes
 │
-├── skills/cheshire-zk-omni/     Skill for zk-omni messenger + Zero CLI
-│
 ├── cloudflare/                  Branded install Worker and tests
 │   ├── install-worker.js        Worker routes, wrappers, metadata
 │   ├── install-worker.test.mjs  Local route/metadata tests
 │   └── README.md                Deployment and smoke-test guide
 │
+├── docs/RH_CRYPTO_AGENT_STACK.md  RH pack install + core env
 ├── docs/CLOUDFLARE_ZK_SURFACE.md Cloudflare + ZK runtime handoff
 ├── docs/PiedPiper-master/       Historical archive (vs666/MinMax)
 │   ├── Compression/             Huffman, Arithmetic, BWT+RLE, Audio, Video
@@ -530,16 +553,51 @@ This repository vendors an **open-source Robinhood Chain / EVM skill pack** unde
 [`skills/`](skills/) so anyone can build launch + trade agents without private
 monorepo paths. Solana-first behavior is unchanged; the RH pack is additive.
 
-Includes `rh-bonded-launch`, `rh-launchpad-v3`, Uniswap swap/LP/v4 skills,
-`copy-trade`, `dca-bot`, `index-bot`, payments, and `viem-integration`.
+| | |
+|--|--|
+| **Pack id** | `rh-crypto-agent` (see `skills/pack-index.json`, version **2**, **23** skills) |
+| **Product host** | [https://funpump.ai](https://funpump.ai) |
+| **Agent forge** | [https://cheshireterminal.ai/agents/forge](https://cheshireterminal.ai/agents/forge) |
+| **Chain** | Robinhood mainnet **4663** |
+| **Deep guide** | [docs/RH_CRYPTO_AGENT_STACK.md](docs/RH_CRYPTO_AGENT_STACK.md) · [skills/README.md](skills/README.md) |
+
+#### Skill areas (full list in `pack-index.json`)
+
+| Area | Skills |
+|------|--------|
+| **FunPump launch (RH 4663)** | `rh-bonded-launch`, `rh-launchpad-v3` |
+| **Swaps / Uniswap** | `swap-planner`, `swap-integration`, `v4-sdk-integration`, `v4-hook-generator`, `v4-security-foundations` |
+| **Liquidity** | `liquidity-planner`, `lp-integration` |
+| **Strategy bots** | `copy-trade`, `dca-bot`, `index-bot` |
+| **Auctions / CCA** | `deployer` |
+| **Payments (HTTP 402)** | `pay-with-any-token`, `pay-with-app` |
+| **EVM primitives** | `viem-integration` |
+| **On-chain data** | `web3-dev` (Blockscout PRO, multichain incl. 4663) |
+| **Cheshire registries (ERC-8004)** | `cheshire-agent-registries`, `cheshire-agent-identity-registry`, `cheshire-agent-reputation-registry`, `cheshire-agent-validation-registry` |
+| **Omni + zk** | `cheshire-omni-mint`, `cheshire-zk-omni` |
+
+#### Core env (RH launch / deploy / trade)
+
+| Variable | Role |
+|----------|------|
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO key (`proapi_…`) for chain **4663**. Free: [dev.blockscout.com](https://dev.blockscout.com) |
+| `RH_RPC_URL` | Robinhood JSON-RPC. Public `https://rpc.mainnet.chain.robinhood.com` is a **read-only fallback** when unset — **not deploy-safe**; set a private/paid RPC for broadcast |
+
+Placeholders in [`.env.example`](.env.example). Runtime: `pkg/config` (`RobinhoodConfig`),
+`pkg/rh` (`FromConfig`, `AssessReadiness`), `clawdbot doctor` → `connectors.robinhood`,
+web `GET /api/rh/readiness` and connectors **Blockscout** / **Robinhood RPC** (presence only).
 
 ```bash
-export CLAWDBOT_SKILLS_DIR="$(pwd)/skills"   # or rely on default ./skills discovery
+# Discover the pack (default: bundled ./skills when pack-index.json is present)
+export CLAWDBOT_SKILLS_DIR="$(pwd)/skills"   # optional explicit pin
 clawdbot catalog skills
+clawdbot catalog skills web3                 # filter example
 go run ./cmd/clawdbot catalog skills --skills-dir ./skills
-```
 
-Full guide: [docs/RH_CRYPTO_AGENT_STACK.md](docs/RH_CRYPTO_AGENT_STACK.md).
+# Readiness (no secrets in output)
+clawdbot doctor
+# GET http://127.0.0.1:18800/api/rh/readiness   # when web console is up
+```
 
 ### Game of Life (PiedPiper Inheritance)
 
@@ -805,10 +863,11 @@ ssh user@orin-nano './clawdbot ooda --hw-bus 1 --interval 60'
 
 | Metric | Value |
 |:-------|:------|
-| Go source files | 81 |
-| Packages | 45 |
-| Total Go lines | 24,166+ |
-| CLI commands | 58 |
+| Go source files (non-test) | ~92 |
+| Packages under `pkg/` | ~53 |
+| Total Go lines (non-test) | ~24K+ |
+| CLI commands | 58+ |
+| RH / EVM skill pack | **23** skills (`skills/pack-index.json` v2) |
 | Birdeye API methods | 22 |
 | Birdeye agent tools | 19 |
 | Helius DAS commands | 6 |
@@ -818,7 +877,7 @@ ssh user@orin-nano './clawdbot ooda --hw-bus 1 --interval 60'
 | Binaries | `clawdbot`, `clawdbot-tui`, `clawdbot-web` |
 | Runtime RAM | < 10 MB |
 | Boot time | < 1 second |
-| Default model provider | xAI Grok (Grok-4.3) |
+| Default model provider | xAI Grok |
 | **PiedPiper modules integrated** | **5** (gameoflife, middleout, weissman, zero, routing) |
 | **ZK adaptations of classical algorithms** | **7** |
 
@@ -842,10 +901,12 @@ Zero Clawd is the reference implementation of the **Clawd Constitution** — the
 
 ## 🔐 Security
 
-- **`.env` is ignored by the repo** — never commit API keys
+- **`.env` / `.env.local` are ignored by the repo** — never commit API keys
 - **No hardcoded secrets** in any source file — all credentials via environment variables
 - **No wallet keypairs** stored in the repository — generated or imported at runtime
-- **Minimum required key** for operation: `BIRDEYE_API_KEY` for market data
+- **Solana market data** — `BIRDEYE_API_KEY` / `HELIUS_API_KEY` for full market + DAS surfaces
+- **Robinhood omni ops** — set `BLOCKSCOUT_API_KEY` + `RH_RPC_URL` for launch/deploy/trade readiness; public RH RPC is read-only fallback only
+- **Status APIs** return presence booleans only — never secret values (`/api/keys`, `/api/rh/readiness`, vault status)
 - **Progressive trust model** — Observer → Dry-Run → Delegated → Autonomous → Sovereign
 - **On-Chain Law I** — Never harm. Never rug. Never front-run. Never extract from those who don't understand the trade.
 
