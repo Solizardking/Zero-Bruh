@@ -113,9 +113,13 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 
 	// Moonshot Kimi K3 fixes temperature/top_p/penalties server-side — omit them.
 	// See https://platform.kimi.ai/docs/guide/kimi-k3-quickstart
+	modelID := opts.Model
 	moonshot := isMoonshotEndpoint(p.baseURL) || isKimiK3Model(opts.Model)
+	if moonshot {
+		modelID = stripProviderPrefix(opts.Model, "moonshot")
+	}
 	payload := map[string]any{
-		"model":      opts.Model,
+		"model":      modelID,
 		"messages":   messages,
 		"max_tokens": opts.MaxTokens,
 	}
@@ -139,7 +143,7 @@ func (p *OpenRouterProvider) Chat(ctx context.Context, opts ChatOptions) (*Respo
 	}
 	if effort := strings.TrimSpace(opts.ReasoningEffort); effort != "" {
 		payload["reasoning_effort"] = effort
-	} else if moonshot && isKimiK3Model(opts.Model) {
+	} else if moonshot && isKimiK3Model(modelID) {
 		// K3 always thinks; default effort is max on the platform.
 		payload["reasoning_effort"] = "max"
 	}
@@ -212,8 +216,20 @@ func isMoonshotEndpoint(baseURL string) bool {
 
 func isKimiK3Model(model string) bool {
 	m := strings.ToLower(strings.TrimSpace(model))
-	// Accept bare "kimi-k3" and vendor-prefixed "moonshot/kimi-k3".
-	return m == "kimi-k3" || strings.HasSuffix(m, "/kimi-k3") || strings.HasPrefix(m, "kimi-k3")
+	if i := strings.LastIndex(m, "/"); i >= 0 {
+		m = m[i+1:]
+	}
+	// kimi-k3 and future variants like kimi-k3-preview.
+	return m == "kimi-k3" || strings.HasPrefix(m, "kimi-k3-")
+}
+
+func stripProviderPrefix(model, provider string) string {
+	m := strings.TrimSpace(model)
+	prefix := provider + "/"
+	if strings.HasPrefix(strings.ToLower(m), strings.ToLower(prefix)) {
+		return m[len(prefix):]
+	}
+	return m
 }
 
 // ── Fallback Chain ───────────────────────────────────────────────────
