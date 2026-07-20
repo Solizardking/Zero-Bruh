@@ -2426,6 +2426,17 @@ func newClawdAgent(cfg *config.Config) (*agent.ClawdAgent, error) {
 	}
 	mcp.RegisterBlockscoutTools(registry, key)
 
+	// Solana spot (Jupiter) quote + swap — swap is approval-gated.
+	jupEndpoint := "https://api.jup.ag"
+	jupKey := ""
+	if cfg != nil {
+		if cfg.Solana.JupiterEndpoint != "" {
+			jupEndpoint = cfg.Solana.JupiterEndpoint
+		}
+		jupKey = cfg.Solana.JupiterAPIKey
+	}
+	solana.RegisterSpotTools(registry, solana.NewJupiterClient(jupEndpoint, jupKey))
+
 	return agent.NewClawdAgent(agent.AgentConfig{
 		Model:         model,
 		Provider:      buildProvider(cfg),

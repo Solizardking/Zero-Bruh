@@ -602,10 +602,19 @@ func NewJupiterClient(endpoint, apiKey string) *JupiterClient {
 }
 
 func (j *JupiterClient) GetQuote(inputMint, outputMint string, amount uint64, slippageBps int) (*SwapQuote, error) {
-	url := fmt.Sprintf("%s/v6/quote?inputMint=%s&outputMint=%s&amount=%d&slippageBps=%d",
+	if inputMint == "" || outputMint == "" {
+		return nil, fmt.Errorf("inputMint and outputMint required")
+	}
+	if amount == 0 {
+		return nil, fmt.Errorf("amount must be > 0")
+	}
+	if slippageBps < 0 {
+		slippageBps = 50
+	}
+	reqURL := fmt.Sprintf("%s/v6/quote?inputMint=%s&outputMint=%s&amount=%d&slippageBps=%d",
 		j.endpoint, inputMint, outputMint, amount, slippageBps)
 
-	resp, err := j.httpClient.Get(url)
+	resp, err := j.httpClient.Get(reqURL)
 	if err != nil {
 		return nil, fmt.Errorf("jupiter quote: %w", err)
 	}
@@ -615,12 +624,77 @@ func (j *JupiterClient) GetQuote(inputMint, outputMint string, amount uint64, sl
 	if err != nil {
 		return nil, fmt.Errorf("read quote: %w", err)
 	}
+	if resp.StatusCode != 200 {
+		snippet := string(body)
+		if len(snippet) > 200 {
+			snippet = snippet[:200]
+		}
+		return nil, fmt.Errorf("jupiter quote HTTP %d: %s", resp.StatusCode, snippet)
+	}
 
-	var quote SwapQuote
-	if err := json.Unmarshal(body, &quote); err != nil {
+	// Jupiter v6 returns more fields; map the ones we care about.
+	var raw map[string]any
+	if err := json.Unmarshal(body, &raw); err != nil {
 		return nil, fmt.Errorf("parse quote: %w", err)
 	}
-	return &quote, nil
+	quote := &SwapQuote{
+		InputMint:  stringField(raw, "inputMint"),
+		OutputMint: stringField(raw, "outputMint"),
+		InAmount:   stringField(raw, "inAmount"),
+		OutAmount:  stringField(raw, "outAmount"),
+	}
+	if quote.InputMint == "" {
+		quote.InputMint = inputMint
+	}
+	if quote.OutputMint == "" {
+		quote.OutputMint = outputMint
+	}
+	if quote.InAmount == "" {
+		quote.InAmount = fmt.Sprintf("%d", amount)
+	}
+	if routes, ok := raw["routePlan"].([]any); ok {
+		quote.Routes = len(routes)
+	} else if n, ok := raw["routesCount"].(float64); ok {
+		quote.Routes = int(n)
+	}
+	return quote, nil
+}
+
+// BuildSwapPlan produces a swap plan from a quote. When simulate is true (default
+// agent path), no transaction is broadcast — the result is a structured dry-run.
+// Live broadcast requires wallet signing (not performed here).
+func (j *JupiterClient) BuildSwapPlan(quote *SwapQuote, simulate bool) (*SwapResult, error) {
+	if quote == nil {
+		return nil, fmt.Errorf("quote is required")
+	}
+	if !simulate {
+		return nil, fmt.Errorf("live swap broadcast is not enabled in this runtime; set simulate=true or use an approved wallet signing path")
+	}
+	return &SwapResult{
+		Signature:    "SIMULATED",
+		InputMint:    quote.InputMint,
+		OutputMint:   quote.OutputMint,
+		InAmount:     quote.InAmount,
+		OutAmount:    quote.OutAmount,
+		WalletPubkey: "",
+	}, nil
+}
+
+func stringField(m map[string]any, key string) string {
+	v, ok := m[key]
+	if !ok || v == nil {
+		return ""
+	}
+	switch t := v.(type) {
+	case string:
+		return t
+	case float64:
+		return fmt.Sprintf("%.0f", t)
+	case json.Number:
+		return t.String()
+	default:
+		return fmt.Sprint(t)
+	}
 }
 
 // ── Aster DEX Client ─────────────────────────────────────────────────
