@@ -118,3 +118,99 @@ func TestIsKimiK3Model(t *testing.T) {
 		t.Fatal("kimi-k2.7-code should not match kimi-k3")
 	}
 }
+
+func TestMoonshotKimiK3SendsToolsAndParsesToolCalls(t *testing.T) {
+	payloads := make(chan map[string]any, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.Header.Get("Authorization"); got != "Bearer sk-ms-test" {
+			t.Fatalf("Authorization = %q", got)
+		}
+		var payload map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+			t.Fatalf("decode: %v", err)
+		}
+		payloads <- payload
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{
+			"choices":[{
+				"message":{
+					"content":"",
+					"reasoning_content":"need quote",
+					"tool_calls":[{
+						"id":"call_1",
+						"type":"function",
+						"function":{
+							"name":"get_quote",
+							"arguments":"{\"input_mint\":\"So111\",\"output_mint\":\"EPjF\",\"amount\":\"1000000\",\"slippage_bps\":50}"
+						}
+					}]
+				},
+				"finish_reason":"tool_calls"
+			}],
+			"usage":{"prompt_tokens":10,"completion_tokens":20}
+		}`))
+	}))
+	defer server.Close()
+
+	provider := NewOpenAICompatProvider("sk-ms-test", server.URL)
+	schema := json.RawMessage(`{"type":"object","properties":{"input_mint":{"type":"string"}},"required":["input_mint"]}`)
+	resp, err := provider.Chat(context.Background(), ChatOptions{
+		Model:     "kimi-k3",
+		Messages:  []Message{{Role: "user", Content: "quote SOL->USDC"}},
+		MaxTokens: 1024,
+		Tools: []ToolDef{
+			{Name: "get_quote", Description: "Get Jupiter quote", InputSchema: schema},
+			{Name: "swap", Description: "Swap tokens", InputSchema: json.RawMessage(`{"type":"object","properties":{}}`)},
+		},
+	})
+	if err != nil {
+		t.Fatalf("Chat: %v", err)
+	}
+	if resp.StopReason != "tool_calls" {
+		t.Fatalf("StopReason = %q", resp.StopReason)
+	}
+	if resp.Thinking != "need quote" {
+		t.Fatalf("Thinking = %q", resp.Thinking)
+	}
+	if len(resp.ToolCalls) != 1 {
+		t.Fatalf("ToolCalls = %#v", resp.ToolCalls)
+	}
+	if resp.ToolCalls[0].Name != "get_quote" {
+		t.Fatalf("name = %q", resp.ToolCalls[0].Name)
+	}
+	if got, _ := resp.ToolCalls[0].Input["input_mint"].(string); got != "So111" {
+		t.Fatalf("input_mint = %v", resp.ToolCalls[0].Input)
+	}
+
+	payload := <-payloads
+	if got, _ := payload["model"].(string); got != "kimi-k3" {
+		t.Fatalf("model = %v", got)
+	}
+	tools, ok := payload["tools"].([]any)
+	if !ok || len(tools) != 2 {
+		t.Fatalf("tools missing or wrong: %#v", payload["tools"])
+	}
+	first, _ := tools[0].(map[string]any)
+	fn, _ := first["function"].(map[string]any)
+	if fn["name"] != "get_quote" {
+		t.Fatalf("tool function = %#v", first)
+	}
+}
+
+func TestOpenAICompatParsesStopContent(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"done","reasoning_content":"ok"},"finish_reason":"stop"}],"usage":{"prompt_tokens":1,"completion_tokens":2}}`))
+	}))
+	defer server.Close()
+	p := NewOpenAICompatProvider("k", server.URL)
+	resp, err := p.Chat(context.Background(), ChatOptions{
+		Model: "kimi-k3", Messages: []Message{{Role: "user", Content: "hi"}}, MaxTokens: 16,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.Content != "done" || resp.Thinking != "ok" || len(resp.ToolCalls) != 0 {
+		t.Fatalf("%#v", resp)
+	}
+}
