@@ -14,7 +14,7 @@ test("metadata includes install commands and ZK primitive surface", async () => 
   const response = await worker.fetch(
     new Request("https://x402.wtf/clawdbot/.well-known/clawdbot-install.json"),
     {
-      PROJECT_REPO: "https://github.com/Solizardking/clawdbot-go",
+      PROJECT_REPO: "https://github.com/Solizardking/Zero-Bruh",
       ZK_AGENT_PACKAGE: "@clawd/zk-shark-agent",
       ZK_CLIENT_PACKAGE: "@clawd/zk-client",
     },

@@ -15,8 +15,8 @@ The runtime defaults to these local roots:
 
 | Surface | Default | Override |
 |---|---|---|
-| Skills | `/Users/8bit/skills/skills` | `CLAWDBOT_SKILLS_DIR` |
-| Agents | `/Users/8bit/agents/agents/src` | `CLAWDBOT_AGENTS_DIR` |
+| Skills | `~/skills/skills` | `CLAWDBOT_SKILLS_DIR` |
+| Agents | `~/agents/agents/src` | `CLAWDBOT_AGENTS_DIR` |
 | ZK primitives | `./zk-primitives` | `CLAWDBOT_ZK_PRIMITIVES_DIR` |
 
 Use:

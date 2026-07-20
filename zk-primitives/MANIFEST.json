@@ -5,7 +5,7 @@
   "status": "scaffold-production-facing",
   "category": "infrastructure",
   "description": "Nullifiers, Groth16 proof preparation, and Light Protocol compressed-state helpers for Solana-native Clawd and ZK Shark agents.",
-  "integratedFrom": "/Users/8bit/zk-router/zk-primitives",
+  "integratedFrom": "zk-router/zk-primitives",
   "packageManager": "pnpm",
   "docs": {
     "readme": "README.md",
@@ -93,8 +93,8 @@
     "skillsRootEnv": "CLAWDBOT_SKILLS_DIR",
     "agentsRootEnv": "CLAWDBOT_AGENTS_DIR",
     "zkRootEnv": "CLAWDBOT_ZK_PRIMITIVES_DIR",
-    "defaultSkillsRoot": "/Users/8bit/skills/skills",
-    "defaultAgentsRoot": "/Users/8bit/agents/agents/src"
+    "defaultSkillsRoot": "~/skills/skills",
+    "defaultAgentsRoot": "~/agents/agents/src"
   },
   "trustGate": {
     "default": "observer",

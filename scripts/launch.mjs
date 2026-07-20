@@ -12,7 +12,7 @@ import https from 'https';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const RUNTIME_REPO = 'https://github.com/Solizardking/clawdbot-go';
+const RUNTIME_REPO = 'https://github.com/Solizardking/Zero-Bruh';
 const HUB_REPO = 'https://github.com/solizardking/solana-clawd';
 const GATEWAY_URL = 'https://zk.x402.wtf';
 const TERMINAL_URL = 'https://cheshireterminal.ai';

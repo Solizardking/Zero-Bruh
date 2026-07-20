@@ -196,7 +196,7 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 
 | Surface | Role |
 |:---|:---|
-| `https://github.com/Solizardking/clawdbot-go` | This Go runtime repository |
+| `https://github.com/Solizardking/Zero-Bruh` | This Go runtime repository |
 | `https://github.com/solizardking/solana-clawd` | Canonical ecosystem hub |
 | `https://zk.x402.wtf` | Public x402/zk gateway and install surface |
 | `https://cheshireterminal.ai` | Public terminal surface |
@@ -236,13 +236,13 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 ### One-Shot Install (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
 ```
 
 For the complete Solizardking/core-ai sidecar install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | CLAWDBOT_INSTALL_CORE_AI=1 bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | CLAWDBOT_INSTALL_CORE_AI=1 bash
 ```
 
 Branded Cloudflare install aliases:
@@ -269,7 +269,7 @@ clawdbot solana trending         # top Solana tokens
 ### Manual Install
 
 ```bash
-git clone https://github.com/Solizardking/clawdbot-go
+git clone https://github.com/Solizardking/Zero-Bruh
 cd clawdbot-go
 
 # Configure API keys (zkrouter + RPC pre-filled, add your own to unlock higher limits)
@@ -303,7 +303,7 @@ cd web/frontend && npm install && npm run build && cd ../..
 ```
 
 The default install path is already pointed at the public Clawd surfaces:
-- runtime repo: `https://github.com/Solizardking/clawdbot-go`
+- runtime repo: `https://github.com/Solizardking/Zero-Bruh`
 - ecosystem hub: `https://github.com/solizardking/solana-clawd`
 - gateway: `https://zk.x402.wtf`
 - terminal: `https://cheshireterminal.ai`
@@ -319,7 +319,7 @@ beside it as an optional sidecar.
 The installer supports that model with:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | CLAWDBOT_INSTALL_CORE_AI=1 bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | CLAWDBOT_INSTALL_CORE_AI=1 bash
 ```
 
 That fetches the slim integration branch into `~/.clawdbot/core-ai`, builds the
@@ -357,14 +357,14 @@ changed. In practice:
 ### Module Path Compatibility
 
 The public repository is:
-- `https://github.com/Solizardking/clawdbot-go`
+- `https://github.com/Solizardking/Zero-Bruh`
 
 The current Go module path is still:
 - `github.com/8bitlabs/clawdbot`
 
 That mismatch is intentional for now. The codebase keeps the legacy module path to avoid breaking existing imports, build scripts, and `ldflags` references while the public repo and hub are stabilized. In practice:
 
-- clone and browse the code from `https://github.com/Solizardking/clawdbot-go`
+- clone and browse the code from `https://github.com/Solizardking/Zero-Bruh`
 - expect Go imports inside the repo to remain `github.com/8bitlabs/clawdbot/...`
 - treat a future module-path migration as a deliberate breaking change, not as unfinished accidental drift
 
@@ -873,12 +873,12 @@ go build -o build/clawdbot-web ./web/backend
 
 ### Local/Cloud Key Vault
 
-The web backend can expose `/Users/8bit/go-bot/.env.local` as a locked-down key
+The web backend can expose `./.env.local` as a locked-down key
 source for another machine. Secret values are never returned unless the vault is
 enabled, the client IP is allowlisted, and the request includes the bearer token:
 
 ```bash
-# in /Users/8bit/go-bot/.env.local
+# in ./.env.local
 CLAWDBOT_VAULT_ENABLED=1
 CLAWDBOT_VAULT_ALLOWED_IPS=127.0.0.1,203.0.113.7
 CLAWDBOT_VAULT_TOKEN=replace-with-a-long-random-token
@@ -1066,7 +1066,7 @@ This codebase stands on the shoulders of academic and open-source pioneers:
 
 <div align="center">
 
-**MIT License** — Clawd runtime repo: [`github.com/Solizardking/clawdbot-go`](https://github.com/Solizardking/clawdbot-go)
+**MIT License** — Clawd runtime repo: [`github.com/Solizardking/clawdbot-go`](https://github.com/Solizardking/Zero-Bruh)
 
 🦞 **$CLAWD :: Droids Lead The Way** :: **$WIF Hat Stays On** :: **$BONK for the People**
 

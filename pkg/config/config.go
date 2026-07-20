@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	RuntimeRepoURL  = "https://github.com/Solizardking/clawdbot-go"
+	RuntimeRepoURL  = "https://github.com/Solizardking/Zero-Bruh"
 	HubRepoURL      = "https://github.com/solizardking/solana-clawd"
 	GatewayURL      = "https://zk.x402.wtf"
 	TerminalURL     = "https://cheshireterminal.ai"

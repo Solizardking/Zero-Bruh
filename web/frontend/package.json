@@ -6,11 +6,11 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Solizardking/clawdbot-go"
+    "url": "https://github.com/Solizardking/Zero-Bruh"
   },
-  "homepage": "https://github.com/Solizardking/clawdbot-go/tree/main/web/frontend",
+  "homepage": "https://github.com/Solizardking/Zero-Bruh/tree/main/web/frontend",
   "bugs": {
-    "url": "https://github.com/Solizardking/clawdbot-go/issues"
+    "url": "https://github.com/Solizardking/Zero-Bruh/issues"
   },
   "scripts": {
     "dev": "vite",

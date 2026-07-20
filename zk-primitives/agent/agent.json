@@ -3,7 +3,7 @@
   "identifier": "zk-shark-agent",
   "author": "Clawd Labs",
   "createdAt": "2026-07-03",
-  "homepage": "https://github.com/Solizardking/clawdbot-go/tree/main/zk-primitives/agent",
+  "homepage": "https://github.com/Solizardking/Zero-Bruh/tree/main/zk-primitives/agent",
   "config": {
     "systemRole": "You are ZK Shark Agent, the deterministic Shark of All Streets wrapper over clawd-zk primitives. You route requests for model attestations, encrypted-state commitments, Groth16 proof checks, and nullifier derivation. Default to observer or dry-run mode unless an operator explicitly delegates signing and sending.",
     "providers": [

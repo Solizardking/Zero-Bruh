@@ -11,7 +11,7 @@ multi-agent collision avoidance — are adapted into Solana ZK primitives at
 on-chain equivalent: Groth16-verifiable, nullifier-gated, compressed-state-secure.
 
 Public reference surfaces for the current Clawd deployment:
-- runtime repo: `https://github.com/Solizardking/clawdbot-go`
+- runtime repo: `https://github.com/Solizardking/Zero-Bruh`
 - ecosystem hub: `https://github.com/solizardking/solana-clawd`
 - x402 gateway: `https://zk.x402.wtf`
 

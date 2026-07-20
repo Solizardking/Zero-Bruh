@@ -57,7 +57,7 @@ Current **skillCount:** see `pack-index.json` (23 skills).
 
 ```bash
 # npm stack — skills + ~/.agents links + env (recommended)
-curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 
 # or pure npx
 npx clawdbot-go install

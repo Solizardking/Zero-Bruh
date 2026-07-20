@@ -95,7 +95,7 @@ The canonical full harness is `six-laws.md`. Laws I-III are immutable and hash-a
 - **Token**: $CLAWD
 - **Discovery**: `/.well-known/agent.json`, `/.well-known/did.json`
 - **Runtime**: OpenClawd agent harness
-- **Runtime repo**: `https://github.com/Solizardking/clawdbot-go`
+- **Runtime repo**: `https://github.com/Solizardking/Zero-Bruh`
 - **Ecosystem hub**: `https://github.com/solizardking/solana-clawd`
 - **Public gateway**: `https://zk.x402.wtf`
 - **Public terminal**: `https://cheshireterminal.ai`

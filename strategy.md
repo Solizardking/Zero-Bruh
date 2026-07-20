@@ -1,7 +1,7 @@
 # Zero Clawd Strategy
 
 This is the active strategy state for the Go runtime repository
-`https://github.com/Solizardking/clawdbot-go`. It is intentionally runtime-local:
+`https://github.com/Solizardking/Zero-Bruh`. It is intentionally runtime-local:
 the broader ecosystem hub is `https://github.com/solizardking/solana-clawd`,
 and public user-facing access routes through `https://zk.x402.wtf`
 and `https://cheshireterminal.ai`.

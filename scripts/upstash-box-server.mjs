@@ -8,7 +8,7 @@ import { spawn } from "node:child_process";
 
 const RAW_INSTALL =
   process.env.CLAWDBOT_RAW_INSTALL_URL ||
-  "https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh";
+  "https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh";
 const PORT = Number(process.env.PORT || process.env.CLAWDBOT_BOX_PORT || "3000");
 const DATA_DIR = process.env.CLAWDBOT_BOX_DATA_DIR || "/tmp/clawdbot-box";
 const INSTALL_LEDGER =

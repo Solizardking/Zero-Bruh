@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  Zero Clawd — One-Shot Installer (CLI binary: clawdbot)                     ║
-# ║  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash
+# ║  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
 # ║  Branded edge aliases can serve this script from onchainai.fund / x402.wtf. ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 set -euo pipefail
 
-REPO="https://github.com/Solizardking/clawdbot-go"
+REPO="https://github.com/Solizardking/Zero-Bruh"
 HUB_REPO="https://github.com/solizardking/solana-clawd"
 TERMINAL_URL="https://cheshireterminal.ai"
 INSTALL_API="${CLAWDBOT_INSTALL_API:-https://zk.x402.wtf/api/install}"

@@ -4,7 +4,7 @@
 > This document serves as the authoritative index of agent capabilities, deployment targets, and trust gates.
 
 Public surfaces for the current ecosystem:
-- **Runtime repo** — `https://github.com/Solizardking/clawdbot-go`
+- **Runtime repo** — `https://github.com/Solizardking/Zero-Bruh`
 - **Ecosystem hub** — `https://github.com/solizardking/solana-clawd`
 - **x402 gateway** — `https://zk.x402.wtf`
 - **Installer metadata** — `https://zk.x402.wtf/clawdbot/.well-known/clawdbot-zk.json`

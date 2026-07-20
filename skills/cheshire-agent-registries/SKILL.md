@@ -84,6 +84,6 @@ cheshire-terminal/robinhood-agents/contracts/
 ## Install
 
 ```bash
-cp -R /Users/8bit/ClawdBrowser/go-bot/skills/cheshire-agent-registries \
+cp -R ./skills/cheshire-agent-registries \
   ~/.agents/skills/cheshire-agent-registries
 ```

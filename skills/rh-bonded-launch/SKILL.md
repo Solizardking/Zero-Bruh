@@ -271,12 +271,12 @@ cast call "$LAUNCHPAD_ADDRESS" "tokenCount()(uint256)" \
 
 ```bash
 # Into another agent skills dir
-cp -R /Users/8bit/ClawdBrowser/.agents/skills/rh-bonded-launch \
+cp -R ~/.agents/skills/rh-bonded-launch \
   ~/.agents/skills/rh-bonded-launch
 
 # Or Cheshire skills tree
-cp -R /Users/8bit/ClawdBrowser/.agents/skills/rh-bonded-launch \
-  /Users/8bit/cheshire-terminal/skills/rh-bonded-launch
+cp -R ~/.agents/skills/rh-bonded-launch \
+  ~/cheshire-terminal/skills/rh-bonded-launch
 ```
 
 Portable duplicate: `skills/rh-bonded-launch/SKILL.md` in ClawdBrowser.

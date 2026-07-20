@@ -169,6 +169,6 @@ Prefer **user-signed** wallet txs. Agent-held keys only with explicit approval.
 ## Install elsewhere
 
 ```bash
-cp -R /Users/8bit/ClawdBrowser/.agents/skills/rh-launchpad-v3 \
+cp -R ~/.agents/skills/rh-launchpad-v3 \
   ~/.agents/skills/rh-launchpad-v3
 ```

@@ -10,7 +10,7 @@
  * Usage:
  *   npx clawdbot-go install
  *   node scripts/oneshot-install.mjs [--skip-go] [--skip-birth] [--dir PATH]
- *   curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+ *   curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
  */
 import {
   copyFileSync,
@@ -196,10 +196,13 @@ function installSkillPack({ installDir, force }) {
   }
 
   // Prefer full tree copy so pack-index + catalog ship together.
+  // Do NOT filter on "node_modules" in the absolute path — when installed from
+  // npm the package lives at …/node_modules/clawdbot-go/skills and a naive
+  // includes("node_modules") filter would drop every file.
+  ensureDir(destSkills);
   cpSync(SKILLS_DIR, destSkills, {
     recursive: true,
     force: true,
-    filter: (src) => !src.includes("node_modules"),
   });
 
   const pack = loadPackIndex();
@@ -312,7 +315,7 @@ function tryBuildGoBinary({ packageRoot, installDir, skip }) {
   const cmdDir = join(packageRoot, "cmd", "clawdbot");
   if (!existsSync(cmdDir)) {
     warn("cmd/clawdbot not in this package — use full git install for binary:");
-    warn("  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh | bash");
+    warn("  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash");
     return { skipped: true, reason: "go sources not shipped in npm pack" };
   }
   const binDir = join(installDir, "bin");
@@ -510,7 +513,7 @@ Usage:
   # Full stack in postinstall:
   CLAWDBOT_ONESHOT=1 npm install clawdbot-go
 
-  curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
 
 Commands:
   install | oneshot   Full stack install (default)

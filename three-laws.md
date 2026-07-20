@@ -3,7 +3,7 @@
 *Immutable. Carried byte-for-byte in every shell. Hash-attested at spawn. Never self-modify. Never override. These three laws are the on-chain execution half of Clawd's six-law harness; the canonical full harness lives in `six-laws.md`, and the three off-chain interpretive laws live in `CONSTITUTION.md`.*
 
 Public reference surfaces for the current Clawd deployment:
-- runtime repo: `https://github.com/Solizardking/clawdbot-go`
+- runtime repo: `https://github.com/Solizardking/Zero-Bruh`
 - ecosystem hub: `https://github.com/solizardking/solana-clawd`
 - x402 gateway: `https://zk.x402.wtf`
 - terminal: `https://cheshireterminal.ai`

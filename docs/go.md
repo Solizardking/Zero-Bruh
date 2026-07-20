@@ -1,7 +1,7 @@
 # ClawdBot-Go — Agent Handoff Document
 
-**Repo:** `https://github.com/Solizardking/clawdbot-go`  
-**Local path:** `/Users/8bit/clawdbot-go`  
+**Repo:** `https://github.com/Solizardking/Zero-Bruh`  
+**Local path:** `.`  
 **Language:** Go 1.26.4+  
 **Module:** `github.com/8bitlabs/clawdbot`  
 **Public gateway:** `https://zk.x402.wtf`  
@@ -10,7 +10,7 @@
 
 ## Module Path Decision
 
-The public runtime repository is `https://github.com/Solizardking/clawdbot-go`, but the active Go module path remains `github.com/8bitlabs/clawdbot`.
+The public runtime repository is `https://github.com/Solizardking/Zero-Bruh`, but the active Go module path remains `github.com/8bitlabs/clawdbot`.
 
 That is an intentional compatibility choice in the current state, not an accidental partial rename. It keeps:
 
@@ -68,7 +68,7 @@ func buildProvider(cfg *config.Config) providers.LLMProvider {
 
 The canonical public surfaces are:
 
-- `https://github.com/Solizardking/clawdbot-go`
+- `https://github.com/Solizardking/Zero-Bruh`
 - `https://github.com/solizardking/solana-clawd`
 - `https://zk.x402.wtf`
 - `https://cheshireterminal.ai`
@@ -124,7 +124,7 @@ The public-facing stack is:
 | `https://zk.x402.wtf` | Canonical public gateway and install surface |
 | `https://cheshireterminal.ai` | Canonical public terminal surface |
 | `https://github.com/solizardking/solana-clawd` | Canonical ecosystem hub |
-| `https://github.com/Solizardking/clawdbot-go` | Runtime repository |
+| `https://github.com/Solizardking/Zero-Bruh` | Runtime repository |
 
 The main backing services behind that public surface are:
 
@@ -161,7 +161,7 @@ signatures or a queued status. The installer writes the non-secret receipt to
 ## Build & Test
 
 ```bash
-cd /Users/8bit/clawdbot-go    # or clone from GitHub
+cd .    # or clone from GitHub
 
 go mod download
 go build ./...                 # must compile cleanly
@@ -187,5 +187,5 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 git push origin main
 ```
 
-Remote: `https://github.com/Solizardking/clawdbot-go`  
+Remote: `https://github.com/Solizardking/Zero-Bruh`  
 Hub: `https://github.com/solizardking/solana-clawd`

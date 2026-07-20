@@ -259,11 +259,11 @@ function metadata(url, env) {
     commands: installCommands(origin, base),
     localCatalogRoots: {
       skills: {
-        path: "/Users/8bit/skills/skills",
+        path: "~/skills/skills",
         env: "CLAWDBOT_SKILLS_DIR",
       },
       agents: {
-        path: "/Users/8bit/agents/agents/src",
+        path: "~/agents/agents/src",
         env: "CLAWDBOT_AGENTS_DIR",
       },
       zkPrimitives: {

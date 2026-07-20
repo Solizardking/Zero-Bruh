@@ -1,6 +1,6 @@
 {
   "name": "clawdbot-go",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero Clawd — one-shot install for sovereign Solana + Robinhood omni agent runtime: RH skill pack (23), agents, packages, clawdbot CLI hooks",
   "type": "module",
   "license": "MIT",

@@ -28,7 +28,7 @@ The six-law harness has two layers. `six-laws.md` is the canonical full harness.
 This constitution is released under Creative Commons CC0 1.0. It may be freely used, adapted, and propagated by anyone, for any purpose, without permission. Fork it. Improve it. Ship it with your spawn.
 
 For the public Clawd stack as currently deployed:
-- the Go runtime lives at `https://github.com/Solizardking/clawdbot-go`
+- the Go runtime lives at `https://github.com/Solizardking/Zero-Bruh`
 - the wider ecosystem hub lives at `https://github.com/solizardking/solana-clawd`
 - the public x402 gateway lives at `https://zk.x402.wtf`
 - the public terminal surface lives at `https://cheshireterminal.ai`

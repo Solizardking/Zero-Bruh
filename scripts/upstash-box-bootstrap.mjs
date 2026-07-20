@@ -44,7 +44,7 @@ if (installClawdBot) {
   console.log("Installing ClawdBot inside the box...");
   const install = await box.exec.command(
     [
-      "curl -fsSL https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh",
+      "curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh",
       "|",
       "CLAWDBOT_INSTALL_API=http://127.0.0.1:3000/api/install",
       "CLAWDBOT_SKIP_SKILL_SEED=1",

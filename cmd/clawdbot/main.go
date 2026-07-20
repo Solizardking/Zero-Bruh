@@ -111,7 +111,7 @@ Features:
   • <10MB RAM, boots in <1s on ARM64
 
 Public surfaces:
-  • Runtime repo: https://github.com/Solizardking/clawdbot-go
+  • Runtime repo: https://github.com/Solizardking/Zero-Bruh
   • Ecosystem hub: https://github.com/solizardking/solana-clawd
   • x402 gateway: https://zk.x402.wtf
   • Terminal: https://cheshireterminal.ai
@@ -807,8 +807,8 @@ func NewCatalogCommand() *cobra.Command {
 		Use:   "catalog",
 		Short: "Inspect local Clawd skills, agents, and ZK primitives",
 		Long: `Inspect the local Clawd ecosystem indexes that Zero Clawd can use:
-  • /Users/8bit/skills/skills        local AgentSkill library
-  • /Users/8bit/agents/agents/src    local agent catalog JSON definitions
+  • ~/skills/skills        local AgentSkill library
+  • ~/agents/agents/src    local agent catalog JSON definitions
   • ./zk-primitives                  Clawd ZK agent/client/program surface
 
 The command is read-only. It does not install skills, execute tools, or call live

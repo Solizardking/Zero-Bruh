@@ -13,7 +13,7 @@
   },
   "vars": {
     "DEFAULT_ZK_PRIMITIVES_DIR": "$HOME/.clawdbot/src/zk-primitives",
-    "PROJECT_REPO": "https://github.com/Solizardking/clawdbot-go",
+    "PROJECT_REPO": "https://github.com/Solizardking/Zero-Bruh",
     "ECOSYSTEM_HUB": "https://github.com/solizardking/solana-clawd",
     "X402_GATEWAY": "https://zk.x402.wtf",
     "TERMINAL_URL": "https://cheshireterminal.ai",
