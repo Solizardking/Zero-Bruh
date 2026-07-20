@@ -1,5 +1,7 @@
 const DEFAULT_UPSTREAM =
   "https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install.sh";
+const DEFAULT_NPM_UPSTREAM =
+  "https://raw.githubusercontent.com/Solizardking/clawdbot-go/main/install-npm.sh";
 const DEFAULT_PROJECT_REPO = "https://github.com/Solizardking/clawdbot-go";
 const DEFAULT_ECOSYSTEM_HUB = "https://github.com/solizardking/solana-clawd";
 const DEFAULT_X402_GATEWAY = "https://zk.x402.wtf";
@@ -288,8 +290,10 @@ curl -fsSL ${shellQuote(upstream)} | bash
 `;
 }
 
-async function proxyInstall(env) {
-  const upstream = envValue(env, "UPSTREAM_INSTALL_URL", DEFAULT_UPSTREAM);
+async function proxyInstall(env, options = {}) {
+  const upstream = options.npm
+    ? envValue(env, "UPSTREAM_NPM_INSTALL_URL", DEFAULT_NPM_UPSTREAM)
+    : envValue(env, "UPSTREAM_INSTALL_URL", DEFAULT_UPSTREAM);
   const response = await fetch(upstream, {
     cf: { cacheEverything: true, cacheTtl: 60 },
   });
@@ -370,6 +374,10 @@ export default {
 
     if (path === "/install.sh" || path === "/raw" || path === "/lite") {
       return finalizeResponse(request, await proxyInstall(env));
+    }
+
+    if (path === "/install-npm.sh" || path === "/npm" || path === "/oneshot") {
+      return finalizeResponse(request, await proxyInstall(env, { npm: true }));
     }
 
     if (JSON_ROUTES.has(path)) {
