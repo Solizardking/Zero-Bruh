@@ -22,6 +22,26 @@
     "v4-hook-generator",
     "v4-sdk-integration",
     "v4-security-foundations",
-    "viem-integration"
+    "viem-integration",
+    {
+      "name": "cheshire-agent-identity-registry",
+      "path": "cheshire-agent-identity-registry"
+    },
+    {
+      "name": "cheshire-agent-registries",
+      "path": "cheshire-agent-registries"
+    },
+    {
+      "name": "cheshire-agent-reputation-registry",
+      "path": "cheshire-agent-reputation-registry"
+    },
+    {
+      "name": "cheshire-agent-validation-registry",
+      "path": "cheshire-agent-validation-registry"
+    },
+    {
+      "name": "cheshire-zk-omni",
+      "path": "cheshire-zk-omni"
+    }
   ]
 }
