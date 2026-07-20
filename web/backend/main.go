@@ -39,6 +39,7 @@ import (
 	"github.com/8bitlabs/clawdbot/pkg/gameoflife"
 	"github.com/8bitlabs/clawdbot/pkg/keyvault"
 	"github.com/8bitlabs/clawdbot/pkg/laws"
+	"github.com/8bitlabs/clawdbot/pkg/mcp"
 	"github.com/8bitlabs/clawdbot/pkg/middleout"
 	"github.com/8bitlabs/clawdbot/pkg/release"
 	"github.com/8bitlabs/clawdbot/pkg/rh"
@@ -177,6 +178,7 @@ func main() {
 			{"name": "Aster", "status": envStatus("ASTER_API_KEY"), "type": "perps"},
 			{"name": "Vulcan", "status": binaryStatus("vulcan"), "type": "perps_cli"},
 			{"name": "Blockscout", "status": envStatus("BLOCKSCOUT_API_KEY"), "type": "explorer"},
+			{"name": "Blockscout MCP", "status": envStatus("BLOCKSCOUT_API_KEY"), "type": "mcp", "url": mcp.BlockscoutMCPURL},
 			{"name": "Robinhood RPC", "status": rhRPCStatus(), "type": "rpc"},
 			{"name": "OpenRouter", "status": envStatus("OPENROUTER_API_KEY"), "type": "llm"},
 			{"name": "Supabase", "status": envStatus("SUPABASE_URL"), "type": "database"},
@@ -199,6 +201,32 @@ func main() {
 			ready.ResolvedRPC = "<configured>"
 		}
 		json.NewEncoder(w).Encode(ready)
+	})
+
+	// Blockscout MCP host config + readiness (never returns the PRO key).
+	mux.HandleFunc("/api/mcp/blockscout", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		cfg, err := loadRuntimeConfig(absPath)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		key := strings.TrimSpace(cfg.Robinhood.BlockscoutAPIKey)
+		if key == "" {
+			key = mcp.ResolveAPIKey()
+		}
+		st := mcp.AssessBlockscout(key)
+		hostJSON, _ := mcp.MarshalHostConfigJSON(key, true) // always redacted
+		json.NewEncoder(w).Encode(map[string]any{
+			"status":       st,
+			"hostConfig":   json.RawMessage(hostJSON),
+			"claudeCode":   mcp.HostConfigClaudeCodeCLI(true),
+			"codexToml":    mcp.HostConfigCodexTOML(key, true),
+			"docs":         "https://docs.blockscout.com/devs/mcp-server",
+			"portal":       "https://dev.blockscout.com",
+			"landing":      "https://mcp.blockscout.com",
+			"defaultChain": mcp.DefaultChainID,
+		})
 	})
 
 	mux.HandleFunc("/api/ecosystem", func(w http.ResponseWriter, r *http.Request) {

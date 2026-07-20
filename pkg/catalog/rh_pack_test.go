@@ -10,6 +10,7 @@ import (
 
 // OBJECTIVE Robinhood/EVM open skill pack names (must stay in sync with go-bot/skills/pack-index.json).
 var objectiveRHSkills = []string{
+	"blockscout-analysis",
 	"copy-trade",
 	"dca-bot",
 	"deployer",

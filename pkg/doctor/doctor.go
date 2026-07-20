@@ -14,6 +14,7 @@ import (
 	"github.com/8bitlabs/clawdbot/pkg/config"
 	dnaPkg "github.com/8bitlabs/clawdbot/pkg/dna"
 	"github.com/8bitlabs/clawdbot/pkg/laws"
+	"github.com/8bitlabs/clawdbot/pkg/mcp"
 	rhPkg "github.com/8bitlabs/clawdbot/pkg/rh"
 	"github.com/8bitlabs/clawdbot/pkg/trading"
 )
@@ -66,6 +67,7 @@ func Run(options Options) Report {
 		tradingCheck(cfg),
 		connectorsCheck(cfg),
 		robinhoodCheck(cfg),
+		blockscoutMCPCheck(cfg),
 		vulcanCheck(cfg),
 		zkCheck(options.ProjectRoot),
 	}
@@ -235,6 +237,47 @@ func robinhoodCheck(cfg *config.Config) Check {
 		Label:   "Robinhood Chain (Blockscout + RPC)",
 		Status:  StatusWarn,
 		Message: ready.Message,
+		Details: details,
+	}
+}
+
+// blockscoutMCPCheck reports whether BLOCKSCOUT_API_KEY can drive the hosted
+// Blockscout MCP server (https://mcp.blockscout.com/mcp). Warn-only when missing.
+func blockscoutMCPCheck(cfg *config.Config) Check {
+	key := ""
+	if cfg != nil {
+		key = strings.TrimSpace(cfg.Robinhood.BlockscoutAPIKey)
+	}
+	if key == "" {
+		key = mcp.ResolveAPIKey()
+	}
+	st := mcp.AssessBlockscout(key)
+	details := map[string]any{
+		"configured":     st.Configured,
+		"url":            st.URL,
+		"restBase":       st.RESTBase,
+		"headerName":     st.HeaderName,
+		"defaultChainId": st.DefaultChainID,
+		"serverName":     st.ServerName,
+		"toolCount":      len(st.Tools),
+	}
+	if st.KeySuffix != "" {
+		details["keySuffix"] = st.KeySuffix
+	}
+	if st.Configured {
+		return Check{
+			ID:      "connectors.blockscout_mcp",
+			Label:   "Blockscout MCP",
+			Status:  StatusPass,
+			Message: st.Message,
+			Details: details,
+		}
+	}
+	return Check{
+		ID:      "connectors.blockscout_mcp",
+		Label:   "Blockscout MCP",
+		Status:  StatusWarn,
+		Message: st.Message,
 		Details: details,
 	}
 }

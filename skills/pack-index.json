@@ -2,7 +2,7 @@
   "name": "Robinhood Crypto Agent Open Stack",
   "id": "rh-crypto-agent",
   "version": 2,
-  "description": "Open-source Robinhood Chain / Uniswap EVM skill pack for Zero Clawd (clawdbot-go) and FunPump (funpump.ai). Covers bonded launch, LaunchpadV3, swaps, LP, DCA, copy-trade, payments, viem, Blockscout web3-dev, Cheshire ERC-8004 agent registries, omni mint, and zk-omni. Core env: BLOCKSCOUT_API_KEY + RH_RPC_URL.",
+  "description": "Open-source Robinhood Chain / Uniswap EVM skill pack for Zero Clawd (clawdbot-go) and FunPump (funpump.ai). Covers bonded launch, LaunchpadV3, swaps, LP, DCA, copy-trade, payments, viem, Blockscout web3-dev + MCP analysis, Cheshire ERC-8004 agent registries, omni mint, and zk-omni. Core env: BLOCKSCOUT_API_KEY + RH_RPC_URL.",
   "license": "MIT",
   "anyoneCanUse": true,
   "productHost": "https://funpump.ai",
@@ -13,12 +13,13 @@
   "agentsNpm": "https://www.npmjs.com/package/cheshire-terminal-agents",
   "agentsRepo": "https://github.com/Solizardking/Cheshire-Terminal-Agents",
   "skillHubRepo": "https://github.com/Solizardking/skillhub-main",
-  "skillCount": 23,
+  "skillCount": 24,
   "coreEnv": [
     "BLOCKSCOUT_API_KEY",
     "RH_RPC_URL"
   ],
   "skills": [
+    "blockscout-analysis",
     "cheshire-agent-identity-registry",
     "cheshire-agent-registries",
     "cheshire-agent-reputation-registry",

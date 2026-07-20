@@ -1,5 +1,17 @@
 [
   {
+    "slug": "blockscout-analysis",
+    "name": "blockscout-analysis",
+    "description": "MANDATORY before Blockscout MCP tool calls or multichain wallet/tx/token analysis via MCP. Wires BLOCKSCOUT_API_KEY into the hosted Blockscout MCP server (https://mcp.blockscout.com/mcp) for Zero Clawd agents. Use for on-chain balances, txs, NFTs, contract ABI/source, RH chain 4663 explorer intel, and agent host setup (Cursor, Claude Code, Codex).",
+    "category": "Blockscout / Multichain",
+    "tags": [
+      "blockscout",
+      "mcp",
+      "web3",
+      "open-source"
+    ]
+  },
+  {
     "slug": "cheshire-agent-identity-registry",
     "name": "cheshire-agent-identity-registry",
     "description": "Register and operate Cheshire Robinhood agent identities (ERC-721 RHAGENT) via CheshireAgentIdentityRegistry on Robinhood Chain. Use for register(agentURI), agentWallet EIP-712/1271 proofs, metadata, isAuthorized, and ownerOf reads.",

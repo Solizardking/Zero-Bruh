@@ -107,7 +107,7 @@ Also mirrored under `cheshire-terminal/robinhood-agents/skills/` for many skills
 | Var | Purpose |
 |-----|---------|
 | `RH_RPC_URL` | Robinhood mainnet RPC (chain **4663**) |
-| `BLOCKSCOUT_API_KEY` | Blockscout PRO (`web3-dev`) |
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO REST (`web3-dev`) + MCP (`blockscout-analysis`) |
 
 See `.env.example` and `docs/RH_CRYPTO_AGENT_STACK.md`.
 

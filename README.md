@@ -210,6 +210,7 @@ Hosted probes (browser-direct for loopback; `/api/zeroclawd/probe` for public ag
 | `GET /api/dna` | Starter DNA |
 | `GET /api/ecosystem` | Product/repo surfaces (zeroclawd, agents, SkillHub, …) |
 | `GET /api/rh/readiness` | RH 4663 presence gate |
+| `GET /api/mcp/blockscout` | Blockscout MCP status + redacted host config |
 
 Also: live npm meta via Cheshire `GET /api/zeroclawd/npm` → `registry.npmjs.org/clawdbot-go/latest` (**1.0.2**).
 
@@ -246,7 +247,7 @@ bundled skill pack and `pkg/rh`.
 
 **Robinhood Crypto Agent Open Stack (v2 · 23 skills).** Vendored under
 [`skills/`](skills/) for FunPump launch, Uniswap, strategy bots, payments,
-Cheshire ERC-8004 registries, omni mint, zk-omni, and Blockscout `web3-dev`.
+Cheshire ERC-8004 registries, omni mint, zk-omni, Blockscout `web3-dev` + MCP `blockscout-analysis`.
 Product host: [funpump.ai](https://funpump.ai) · Zero Clawd:
 [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) · agent hub:
 [cheshireterminal.ai/agents](https://cheshireterminal.ai/agents) · forge:
@@ -255,13 +256,16 @@ Open agents package: [npm](https://www.npmjs.com/package/cheshire-terminal-agent
 [GitHub](https://github.com/Solizardking/Cheshire-Terminal-Agents) ·
 [SkillHub](https://github.com/Solizardking/skillhub-main).
 Core operator env: **`BLOCKSCOUT_API_KEY`** + **`RH_RPC_URL`** (chain **4663**).
+The same PRO key authenticates **Blockscout MCP** (`https://mcp.blockscout.com/mcp`
+via header `Blockscout-MCP-Pro-Api-Key`) — see skill `blockscout-analysis` and `pkg/mcp`.
 See [docs/RH_CRYPTO_AGENT_STACK.md](docs/RH_CRYPTO_AGENT_STACK.md) and
 [skills/README.md](skills/README.md).
 
 **RH readiness in the Go runtime.** `pkg/config` loads RH settings;
-`pkg/rh` builds JSON-RPC + Blockscout PRO requests; `clawdbot doctor` reports
-`connectors.robinhood`; web console exposes `/api/connectors` and
-`GET /api/rh/readiness` (presence only — never secret values).
+`pkg/rh` builds JSON-RPC + Blockscout PRO requests; `pkg/mcp` wires Blockscout MCP
+from `BLOCKSCOUT_API_KEY`. `clawdbot doctor` reports `connectors.robinhood` and
+`connectors.blockscout_mcp`; web console exposes `/api/connectors`,
+`GET /api/rh/readiness`, and `GET /api/mcp/blockscout` (presence only — never secret values).
 
 **Live market data.** Web console pulls Jupiter prices (`/api/market/prices`),
 Birdeye perps OI and trending when keys allow, plus strategy / backtest panels.
@@ -358,8 +362,9 @@ The codebase carries the intellectual DNA of academic pioneers in compression, e
 | **OODA Trading Loop** | Autonomous Observe → Orient → Decide → Act cycle with RSI/EMA/ATR strategy engine, auto-optimization, ClawVault memory journaling, and hardware I2C controls |
 | **Birdeye v3 Analytics** | 22 API endpoints, 19 LLM-callable agent tools — token overview, OHLCV, trade feeds, security audits, trending, wallet analytics |
 | **Helius DAS + RPC** | Digital Asset Standard queries (get-asset, owner-assets, search), SPL token operations (balance, supply, largest holders), raw RPC forwarding |
-| **Robinhood / EVM skill pack** | 23 open skills under `skills/` — FunPump bonded + V3 launch, Uniswap swap/LP/v4, strategy bots, HTTP 402 payments, Cheshire ERC-8004 registries, omni mint, zk-omni, Blockscout `web3-dev` |
+| **Robinhood / EVM skill pack** | 24 open skills under `skills/` — FunPump bonded + V3 launch, Uniswap swap/LP/v4, strategy bots, HTTP 402 payments, Cheshire ERC-8004 registries, omni mint, zk-omni, Blockscout `web3-dev` + `blockscout-analysis` (MCP) |
 | **RH runtime (`pkg/rh`)** | Chain **4663** JSON-RPC + Blockscout PRO helpers; readiness via doctor / `GET /api/rh/readiness`; env **`RH_RPC_URL`** + **`BLOCKSCOUT_API_KEY`** |
+| **Blockscout MCP (`pkg/mcp`)** | Hosted MCP at `mcp.blockscout.com` from `BLOCKSCOUT_API_KEY`; doctor `connectors.blockscout_mcp`; `GET /api/mcp/blockscout` |
 | **ZK + Privacy Primitives** | Nullifiers, attestations, encrypted state commitments, and privacy-preserving proof flows under `zk-primitives/` |
 | **ZK Omnichain (RH ↔ Solana)** | msgType-4 LayerZero messages with Ed25519 PoK — `pkg/zkomni`, `clawdbot zero zkomni`, skill `cheshire-zk-omni` (pairs with cheshire-terminal `robinhood-agents`) |
 | **Cloudflare Edge Installer** | Branded install routes plus read-only ZK metadata at `/.well-known/clawdbot-zk.json` |
@@ -598,6 +603,7 @@ clawdbot-go/
 │   ├── rh-bonded-launch/        FunPump bonding createToken (RH 4663)
 │   ├── rh-launchpad-v3/         Curve → Uniswap V3 graduate
 │   ├── web3-dev/                Blockscout PRO multichain (chain_id=4663)
+│   ├── blockscout-analysis/     Blockscout MCP (BLOCKSCOUT_API_KEY header)
 │   ├── cheshire-agent-*/        ERC-8004 identity / reputation / validation
 │   ├── cheshire-omni-mint/      Dual-rail Solana + RH identity mint
 │   ├── cheshire-zk-omni/        LayerZero msgType-4 messenger skill
@@ -799,7 +805,7 @@ monorepo paths. Solana-first behavior is unchanged; the RH pack is additive.
 | **Auctions / CCA** | `deployer` |
 | **Payments (HTTP 402)** | `pay-with-any-token`, `pay-with-app` |
 | **EVM primitives** | `viem-integration` |
-| **On-chain data** | `web3-dev` (Blockscout PRO, multichain incl. 4663) |
+| **On-chain data** | `web3-dev` (PRO REST) + `blockscout-analysis` (MCP, multichain incl. 4663) |
 | **Cheshire registries (ERC-8004)** | `cheshire-agent-registries`, `cheshire-agent-identity-registry`, `cheshire-agent-reputation-registry`, `cheshire-agent-validation-registry` |
 | **Omni + zk** | `cheshire-omni-mint`, `cheshire-zk-omni` |
 
@@ -807,12 +813,13 @@ monorepo paths. Solana-first behavior is unchanged; the RH pack is additive.
 
 | Variable | Role |
 |----------|------|
-| `BLOCKSCOUT_API_KEY` | Blockscout PRO key (`proapi_…`) for chain **4663**. Free: [dev.blockscout.com](https://dev.blockscout.com) |
+| `BLOCKSCOUT_API_KEY` | Blockscout PRO key (`proapi_…`) for chain **4663** REST **and** MCP (`Blockscout-MCP-Pro-Api-Key`). Free: [dev.blockscout.com](https://dev.blockscout.com) |
 | `RH_RPC_URL` | Robinhood JSON-RPC. Public `https://rpc.mainnet.chain.robinhood.com` is a **read-only fallback** when unset — **not deploy-safe**; set a private/paid RPC for broadcast |
 
 Placeholders in [`.env.example`](.env.example). Runtime: `pkg/config` (`RobinhoodConfig`),
-`pkg/rh` (`FromConfig`, `AssessReadiness`), `clawdbot doctor` → `connectors.robinhood`,
-web `GET /api/rh/readiness` and connectors **Blockscout** / **Robinhood RPC** (presence only).
+`pkg/rh` (`FromConfig`, `AssessReadiness`), `pkg/mcp` (`DefaultConfigWithBlockscout`, `CallREST`),
+`clawdbot doctor` → `connectors.robinhood` + `connectors.blockscout_mcp`,
+web `GET /api/rh/readiness`, `GET /api/mcp/blockscout`, connectors **Blockscout** / **Blockscout MCP** / **Robinhood RPC** (presence only).
 
 ```bash
 # Discover the pack (default: bundled ./skills when pack-index.json is present)
@@ -999,6 +1006,7 @@ go build -o build/clawdbot-web ./web/backend
 | `/api/health` | GET | Health check |
 | `/api/connectors` | GET | Connector presence: Solana (Helius, Birdeye, Jupiter, Aster), **Blockscout**, **Robinhood RPC**, LLM, Supabase, Vulcan — status only, no secrets |
 | `/api/rh/readiness` | GET | RH launch/deploy/trade gate — `ready`, `missing` (`BLOCKSCOUT_API_KEY`, `RH_RPC_URL`), chain **4663**; presence only |
+| `/api/mcp/blockscout` | GET | Blockscout MCP readiness + redacted Cursor/Claude/Codex host config (never returns the PRO key) |
 | `/api/keys` | GET/POST | Managed key presence / localhost upsert (allowlist incl. RH env names) |
 | `/api/laws` | GET | Canonical six-law harness |
 | `/api/trading/cockpit` | GET | Trading readiness, risk limits, connector status, law state |

@@ -32,6 +32,7 @@ import (
 	"github.com/8bitlabs/clawdbot/pkg/doctor"
 	"github.com/8bitlabs/clawdbot/pkg/hardware"
 	"github.com/8bitlabs/clawdbot/pkg/laws"
+	"github.com/8bitlabs/clawdbot/pkg/mcp"
 	oodaPkg "github.com/8bitlabs/clawdbot/pkg/ooda"
 	"github.com/8bitlabs/clawdbot/pkg/perfbench"
 	"github.com/8bitlabs/clawdbot/pkg/phoenix"
@@ -39,6 +40,7 @@ import (
 	skillsPkg "github.com/8bitlabs/clawdbot/pkg/skills"
 	"github.com/8bitlabs/clawdbot/pkg/solana"
 	"github.com/8bitlabs/clawdbot/pkg/spinner"
+	"github.com/8bitlabs/clawdbot/pkg/tools"
 	"github.com/8bitlabs/clawdbot/pkg/trading"
 	"github.com/8bitlabs/clawdbot/pkg/vulcan"
 	walletPkg "github.com/8bitlabs/clawdbot/pkg/wallet"
@@ -2414,9 +2416,20 @@ func newClawdAgent(cfg *config.Config) (*agent.ClawdAgent, error) {
 			godModeModels = append(godModeModels, entry.Model)
 		}
 	}
+	registry := tools.NewRegistry()
+	// Blockscout MCP tools (BLOCKSCOUT_API_KEY → Blockscout-MCP-Pro-Api-Key).
+	// Registered even without a key so free tools (chains list, some reads) work;
+	// data tools fail clearly when the key is missing.
+	key := ""
+	if cfg != nil {
+		key = cfg.Robinhood.BlockscoutAPIKey
+	}
+	mcp.RegisterBlockscoutTools(registry, key)
+
 	return agent.NewClawdAgent(agent.AgentConfig{
 		Model:         model,
 		Provider:      buildProvider(cfg),
+		ToolRegistry:  registry,
 		MaxIterations: cfg.Agents.Defaults.MaxToolIterations,
 		MaxTokens:     cfg.Agents.Defaults.MaxTokens,
 		Temperature:   cfg.Agents.Defaults.Temperature,

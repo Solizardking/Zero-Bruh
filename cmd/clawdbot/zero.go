@@ -18,6 +18,7 @@ import (
 
 	"github.com/8bitlabs/clawdbot/pkg/config"
 	"github.com/8bitlabs/clawdbot/pkg/godmode"
+	"github.com/8bitlabs/clawdbot/pkg/mcp"
 	"github.com/8bitlabs/clawdbot/pkg/tools"
 	"github.com/8bitlabs/clawdbot/pkg/zero"
 	"github.com/8bitlabs/clawdbot/pkg/zkomni"
@@ -110,10 +111,13 @@ func zeroRun(prompt string, f zeroRunFlags) error {
 		}
 	}
 
+	registry := tools.NewRegistry()
+	mcp.RegisterBlockscoutTools(registry, cfg.Robinhood.BlockscoutAPIKey)
+
 	zcfg := zero.Config{
 		Model:       model,
 		Provider:    buildProvider(cfg),
-		Registry:    tools.NewRegistry(),
+		Registry:    registry,
 		MaxTokens:   cfg.Agents.Defaults.MaxTokens,
 		Temperature: cfg.Agents.Defaults.Temperature,
 	}
