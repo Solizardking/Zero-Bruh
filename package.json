@@ -1,7 +1,7 @@
 {
   "name": "clawdbot-go",
-  "version": "1.0.1",
-  "description": "Zero Clawd — one-shot install for sovereign Solana + Robinhood omni agent runtime: RH skill pack (23), agents, packages, clawdbot CLI hooks",
+  "version": "1.0.2",
+  "description": "Zero Clawd — one-shot install for sovereign Solana + Robinhood omni agent runtime: RH skill pack (23), agents, packages, clawdbot CLI hooks. Connect at cheshireterminal.ai/zeroclawd",
   "type": "module",
   "license": "MIT",
   "author": "Zero Clawd / Cheshire Terminal",
@@ -54,6 +54,7 @@
     "scripts/skill-pack.mjs",
     "scripts/postinstall.mjs",
     "install-npm.sh",
+    "install.sh",
     "skills",
     "automaton-main/package.json",
     "automaton-main/README.md",
