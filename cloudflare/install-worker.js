@@ -6,6 +6,14 @@ const DEFAULT_PROJECT_REPO = "https://github.com/Solizardking/Zero-Bruh";
 const DEFAULT_ECOSYSTEM_HUB = "https://github.com/solizardking/solana-clawd";
 const DEFAULT_X402_GATEWAY = "https://zk.x402.wtf";
 const DEFAULT_TERMINAL_URL = "https://cheshireterminal.ai";
+const DEFAULT_ZERO_CLAWD_URL = "https://cheshireterminal.ai/zeroclawd";
+const DEFAULT_AGENT_HUB_URL = "https://cheshireterminal.ai/agents";
+const DEFAULT_AGENT_FORGE_URL = "https://cheshireterminal.ai/agents/forge";
+const DEFAULT_AGENTS_NPM =
+  "https://www.npmjs.com/package/cheshire-terminal-agents";
+const DEFAULT_AGENTS_REPO =
+  "https://github.com/Solizardking/Cheshire-Terminal-Agents";
+const DEFAULT_SKILLHUB_REPO = "https://github.com/Solizardking/skillhub-main";
 const DEFAULT_ZK_PROGRAM_ID = "CLAWDzk11111111111111111111111111111111111";
 
 const BASE_PREFIXES = ["/clawdbot"];
@@ -240,6 +248,12 @@ function metadata(url, env) {
     ecosystemHub: envValue(env, "ECOSYSTEM_HUB", DEFAULT_ECOSYSTEM_HUB),
     x402Gateway: envValue(env, "X402_GATEWAY", DEFAULT_X402_GATEWAY),
     terminal: envValue(env, "TERMINAL_URL", DEFAULT_TERMINAL_URL),
+    zeroClawd: envValue(env, "ZERO_CLAWD_URL", DEFAULT_ZERO_CLAWD_URL),
+    agentHub: envValue(env, "AGENT_HUB_URL", DEFAULT_AGENT_HUB_URL),
+    agentForge: envValue(env, "AGENT_FORGE_URL", DEFAULT_AGENT_FORGE_URL),
+    agentsNpm: envValue(env, "AGENTS_NPM_URL", DEFAULT_AGENTS_NPM),
+    agentsRepo: envValue(env, "AGENTS_REPO_URL", DEFAULT_AGENTS_REPO),
+    skillHubRepo: envValue(env, "SKILLHUB_REPO_URL", DEFAULT_SKILLHUB_REPO),
     upstreamInstall: upstream,
     basePath: base || "/",
     commands: installCommands(origin, base),

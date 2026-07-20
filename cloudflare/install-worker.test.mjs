@@ -32,6 +32,19 @@ test("metadata includes install commands and ZK primitive surface", async () => 
   assert.equal(body.zkPrimitives.packages.agent, "@clawd/zk-shark-agent");
   assert.equal(body.zkPrimitives.packages.client, "@clawd/zk-client");
   assert.ok(body.zkPrimitives.operations.includes("publish_attestation"));
+  assert.equal(body.terminal, "https://cheshireterminal.ai");
+  assert.equal(body.zeroClawd, "https://cheshireterminal.ai/zeroclawd");
+  assert.equal(body.agentHub, "https://cheshireterminal.ai/agents");
+  assert.equal(body.agentForge, "https://cheshireterminal.ai/agents/forge");
+  assert.equal(
+    body.agentsNpm,
+    "https://www.npmjs.com/package/cheshire-terminal-agents",
+  );
+  assert.equal(
+    body.agentsRepo,
+    "https://github.com/Solizardking/Cheshire-Terminal-Agents",
+  );
+  assert.equal(body.skillHubRepo, "https://github.com/Solizardking/skillhub-main");
 });
 
 test("ZK metadata alias is read-only JSON", async () => {
