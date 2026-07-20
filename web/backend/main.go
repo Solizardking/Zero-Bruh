@@ -174,6 +174,8 @@ func main() {
 			{"name": "Jupiter", "status": envStatus("JUPITER_API_KEY"), "type": "swap"},
 			{"name": "Aster", "status": envStatus("ASTER_API_KEY"), "type": "perps"},
 			{"name": "Vulcan", "status": binaryStatus("vulcan"), "type": "perps_cli"},
+			{"name": "Blockscout", "status": envStatus("BLOCKSCOUT_API_KEY"), "type": "explorer"},
+			{"name": "Robinhood RPC", "status": rhRPCStatus(), "type": "rpc"},
 			{"name": "OpenRouter", "status": envStatus("OPENROUTER_API_KEY"), "type": "llm"},
 			{"name": "Supabase", "status": envStatus("SUPABASE_URL"), "type": "database"},
 		}
@@ -594,6 +596,15 @@ func envStatus(key string) string {
 	return "not_configured"
 }
 
+// rhRPCStatus reports RH_RPC_URL presence. Empty means public read fallback only
+// (not_configured) so operators know to Set a private/paid RPC for deploy/trade.
+func rhRPCStatus() string {
+	if strings.TrimSpace(os.Getenv("RH_RPC_URL")) != "" {
+		return "connected"
+	}
+	return "not_configured"
+}
+
 func binaryStatus(name string) string {
 	if _, err := exec.LookPath(name); err == nil {
 		return "connected"
@@ -852,6 +863,11 @@ func redactedConfig(cfg *config.Config) config.Config {
 	out.Solana.AsterAPIKey = redactSecret(out.Solana.AsterAPIKey)
 	out.Solana.AsterAPISecret = redactSecret(out.Solana.AsterAPISecret)
 	out.Solana.WalletKeyPath = redactSecret(out.Solana.WalletKeyPath)
+	out.Robinhood.BlockscoutAPIKey = redactSecret(out.Robinhood.BlockscoutAPIKey)
+	// RPC URL is not a secret token but may embed API keys in path (Alchemy etc.)
+	if strings.TrimSpace(out.Robinhood.RPCURL) != "" {
+		out.Robinhood.RPCURL = "<redacted>"
+	}
 	out.Supabase.ServiceKey = redactSecret(out.Supabase.ServiceKey)
 	return out
 }

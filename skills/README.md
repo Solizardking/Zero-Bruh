@@ -16,8 +16,11 @@ node --experimental-strip-types --test scripts/go-bot-rh-integration-unit.test.t
 
 Core open stack includes RH launch (`rh-bonded-launch`, `rh-launchpad-v3`), Uniswap
 swap/LP/v4 skills, strategy bots (`copy-trade`, `dca-bot`, `index-bot`), payments,
-`viem-integration`, plus Cheshire agent-registry skills (`cheshire-agent-*`,
-`cheshire-zk-omni`).
+`viem-integration`, Blockscout `web3-dev`, plus Cheshire agent-registry skills
+(`cheshire-agent-*`, `cheshire-zk-omni`).
+
+**Core env for RH omni launch/deploy/trade:** `BLOCKSCOUT_API_KEY` + `RH_RPC_URL`
+(chain id **4663**). See `.env.example` and `docs/RH_CRYPTO_AGENT_STACK.md`.
 
 ## Point clawdbot at this pack
 
@@ -40,6 +43,7 @@ Solana-first catalogs remain usable: set `CLAWDBOT_SKILLS_DIR` to your Solana sk
 - Swaps / LP / Uniswap v4 hooks via the Uniswap-oriented skills
 - DCA, index baskets, and copy-trade strategy skills
 - EVM reads/writes with `viem-integration`
+- Multichain explorer data via Blockscout PRO (`web3-dev`, requires `BLOCKSCOUT_API_KEY`)
 
 ## License
 

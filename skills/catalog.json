@@ -190,5 +190,18 @@
       "open-source",
       "crypto-agent"
     ]
+  },
+  {
+    "slug": "web3-dev",
+    "name": "web3-dev",
+    "description": "Build web3 applications and agents that need blockchain data via the Blockscout PRO API across 100+ EVM chains including Robinhood Chain (4663). Use when the user mentions Blockscout, proapi_, api.blockscout.com, explorer API, wallet history, or multichain on-chain indexing. Pair with BLOCKSCOUT_API_KEY and RH_RPC_URL for RH launch/deploy/trade.",
+    "category": "Robinhood / EVM",
+    "tags": [
+      "robinhood",
+      "evm",
+      "blockscout",
+      "open-source",
+      "crypto-agent"
+    ]
   }
 ]

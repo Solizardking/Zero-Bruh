@@ -64,6 +64,7 @@ func Run(options Options) Report {
 		dnaCheck(options.WorkspacePath),
 		tradingCheck(cfg),
 		connectorsCheck(cfg),
+		robinhoodCheck(cfg),
 		vulcanCheck(cfg),
 		zkCheck(options.ProjectRoot),
 	}
@@ -205,6 +206,51 @@ func connectorsCheck(cfg *config.Config) Check {
 		message = "some market data connectors are missing"
 	}
 	return Check{ID: "connectors.market_data", Label: "Market data connectors", Status: status, Message: message, Details: map[string]any{"missing": missing}}
+}
+
+// robinhoodCheck reports Blockscout + RH RPC readiness for Pons/Uniswap RH flows.
+// Missing keys are StatusWarn (not fail) so Solana-only installs still doctor clean.
+// Presence is boolean-only in Details — never secret values.
+func robinhoodCheck(cfg *config.Config) Check {
+	rh := cfg.Robinhood
+	missing := []string{}
+	if !rh.HasBlockscoutKey() {
+		missing = append(missing, "BLOCKSCOUT_API_KEY")
+	}
+	if !rh.HasCustomRPC() {
+		// Public RPC is usable for read; still report so launch/deploy agents know
+		// to set RH_RPC_URL for production writes.
+		missing = append(missing, "RH_RPC_URL")
+	}
+	details := map[string]any{
+		"chainId":              rh.ChainID,
+		"blockscoutConfigured": rh.HasBlockscoutKey(),
+		"rhRpcConfigured":      rh.HasCustomRPC(),
+		"usingPublicRpcRead":   !rh.HasCustomRPC(),
+		"missing":              missing,
+	}
+	if len(missing) == 0 {
+		return Check{
+			ID:      "connectors.robinhood",
+			Label:   "Robinhood Chain (Blockscout + RPC)",
+			Status:  StatusPass,
+			Message: "BLOCKSCOUT_API_KEY and RH_RPC_URL are configured for RH launch/deploy/trade",
+			Details: details,
+		}
+	}
+	msg := "Robinhood omni flows need BLOCKSCOUT_API_KEY and RH_RPC_URL"
+	if rh.HasBlockscoutKey() && !rh.HasCustomRPC() {
+		msg = "RH_RPC_URL unset — using public read RPC only (not deploy-safe)"
+	} else if !rh.HasBlockscoutKey() && rh.HasCustomRPC() {
+		msg = "BLOCKSCOUT_API_KEY missing — explorer/indexing disabled for RH"
+	}
+	return Check{
+		ID:      "connectors.robinhood",
+		Label:   "Robinhood Chain (Blockscout + RPC)",
+		Status:  StatusWarn,
+		Message: msg,
+		Details: details,
+	}
 }
 
 func vulcanCheck(cfg *config.Config) Check {

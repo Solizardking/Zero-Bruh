@@ -573,6 +573,8 @@ export default function App() {
                         Birdeye: 'BIRDEYE_API_KEY',
                         Jupiter: 'JUPITER_API_KEY',
                         Aster: 'ASTER_API_KEY',
+                        Blockscout: 'BLOCKSCOUT_API_KEY',
+                        'Robinhood RPC': 'RH_RPC_URL',
                         OpenRouter: 'OPENROUTER_API_KEY',
                         Supabase: 'SUPABASE_URL',
                       }

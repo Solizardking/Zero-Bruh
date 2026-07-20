@@ -26,6 +26,7 @@ var objectiveRHSkills = []string{
 	"v4-sdk-integration",
 	"v4-security-foundations",
 	"viem-integration",
+	"web3-dev",
 }
 
 func repoSkillsPackRoot(t *testing.T) string {

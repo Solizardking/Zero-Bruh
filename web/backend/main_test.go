@@ -51,10 +51,19 @@ func TestKeysAPIHandler_popupSave(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("GET status=%d body=%s", rr.Code, rr.Body.String())
 	}
+	getBody := rr.Body.String()
+	if !strings.Contains(getBody, "BLOCKSCOUT_API_KEY") || !strings.Contains(getBody, "RH_RPC_URL") {
+		t.Fatalf("GET presence missing RH keys: %s", getBody)
+	}
 	// POST save from localhost
 	const xaiVal = "xai-test-secret-value-zz9"
 	const heliusVal = "helius-test-secret-value-zz9"
-	body := fmt.Sprintf(`{"keys":{"XAI_API_KEY":%q,"HELIUS_API_KEY":%q}}`, xaiVal, heliusVal)
+	const blockscoutVal = "proapi_test_blockscout_zz9"
+	const rhRPCVal = "https://rpc.test.example/rh"
+	body := fmt.Sprintf(
+		`{"keys":{"XAI_API_KEY":%q,"HELIUS_API_KEY":%q,"BLOCKSCOUT_API_KEY":%q,"RH_RPC_URL":%q}}`,
+		xaiVal, heliusVal, blockscoutVal, rhRPCVal,
+	)
 	req = httptest.NewRequest(http.MethodPost, "/api/keys", strings.NewReader(body))
 	req.RemoteAddr = "127.0.0.1:12345"
 	req.Header.Set("Content-Type", "application/json")
@@ -63,7 +72,9 @@ func TestKeysAPIHandler_popupSave(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("POST status=%d body=%s", rr.Code, rr.Body.String())
 	}
-	if strings.Contains(rr.Body.String(), xaiVal) || strings.Contains(rr.Body.String(), heliusVal) {
+	if strings.Contains(rr.Body.String(), xaiVal) ||
+		strings.Contains(rr.Body.String(), heliusVal) ||
+		strings.Contains(rr.Body.String(), blockscoutVal) {
 		t.Fatalf("POST response leaked secrets: %s", rr.Body.String())
 	}
 	var resp map[string]any
@@ -99,8 +110,39 @@ func TestKeysAPIHandler_popupSave(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(data), "XAI_API_KEY="+xaiVal) {
+	fileBody := string(data)
+	if !strings.Contains(fileBody, "XAI_API_KEY="+xaiVal) {
 		t.Fatalf("env file missing key:\n%s", data)
+	}
+	if !strings.Contains(fileBody, "BLOCKSCOUT_API_KEY="+blockscoutVal) {
+		t.Fatalf("env file missing BLOCKSCOUT_API_KEY:\n%s", data)
+	}
+	if !strings.Contains(fileBody, "RH_RPC_URL="+rhRPCVal) {
+		t.Fatalf("env file missing RH_RPC_URL:\n%s", data)
+	}
+}
+
+func TestConnectorsAPIIncludesRobinhoodEntries(t *testing.T) {
+	t.Setenv("BLOCKSCOUT_API_KEY", "proapi_conn_test")
+	t.Setenv("RH_RPC_URL", "https://rpc.conn.test/rh")
+	t.Setenv("HELIUS_API_KEY", "")
+	t.Setenv("BIRDEYE_API_KEY", "")
+
+	// Drive the same status helpers the /api/connectors handler uses.
+	if envStatus("BLOCKSCOUT_API_KEY") != "connected" {
+		t.Fatal("blockscout should be connected")
+	}
+	if rhRPCStatus() != "connected" {
+		t.Fatal("rh rpc should be connected")
+	}
+
+	t.Setenv("BLOCKSCOUT_API_KEY", "")
+	t.Setenv("RH_RPC_URL", "")
+	if envStatus("BLOCKSCOUT_API_KEY") != "not_configured" {
+		t.Fatal("blockscout missing")
+	}
+	if rhRPCStatus() != "not_configured" {
+		t.Fatal("rh rpc missing")
 	}
 }
 
@@ -221,6 +263,8 @@ func TestRedactedConfigMasksSecrets(t *testing.T) {
 	cfg.Solana.AsterAPIKey = "aster-key"
 	cfg.Solana.AsterAPISecret = "aster-secret"
 	cfg.Solana.WalletKeyPath = "/home/user/.config/solana/id.json"
+	cfg.Robinhood.BlockscoutAPIKey = "proapi_blockscout_secret"
+	cfg.Robinhood.RPCURL = "https://alchemy.example/secret-path"
 	cfg.Supabase.ServiceKey = "supabase-secret"
 
 	got := redactedConfig(cfg)
@@ -241,6 +285,8 @@ func TestRedactedConfigMasksSecrets(t *testing.T) {
 		got.Solana.AsterAPIKey,
 		got.Solana.AsterAPISecret,
 		got.Solana.WalletKeyPath,
+		got.Robinhood.BlockscoutAPIKey,
+		got.Robinhood.RPCURL,
 		got.Supabase.ServiceKey,
 	}
 	for _, value := range secrets {
