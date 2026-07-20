@@ -707,10 +707,10 @@ func loadLobsterCouncil(projectRoot string) ([]LobsterCouncilMember, error) {
 			}
 		}
 		member := LobsterCouncilMember{
-			ID:          id,
-			Name:        name,
-			Category:    "governance",
-			Homepage:    raw.Homepage,
+			ID:       id,
+			Name:     name,
+			Category: "governance",
+			Homepage: raw.Homepage,
 		}
 		if raw.Meta != nil {
 			if desc, ok := raw.Meta["description"]; ok {
@@ -1653,7 +1653,7 @@ func keysAPIHandler(projectRoot string) http.HandlerFunc {
 				"source": envPath,
 				"keys":   presence,
 				"count":  len(presence),
-				"set": countSetKeys(presence),
+				"set":    countSetKeys(presence),
 			})
 		case http.MethodPost:
 			// Local console only — never accept remote key writes.

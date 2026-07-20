@@ -15,10 +15,10 @@ import (
 )
 
 const (
-	RuntimeRepoURL  = "https://github.com/Solizardking/Zero-Bruh"
-	HubRepoURL      = "https://github.com/solizardking/solana-clawd"
-	GatewayURL      = "https://zk.x402.wtf"
-	TerminalURL     = "https://cheshireterminal.ai"
+	RuntimeRepoURL = "https://github.com/Solizardking/Zero-Bruh"
+	HubRepoURL     = "https://github.com/solizardking/solana-clawd"
+	GatewayURL     = "https://zk.x402.wtf"
+	TerminalURL    = "https://cheshireterminal.ai"
 	// Hosted product surfaces on the Cheshire Terminal site.
 	AgentHubURL   = "https://cheshireterminal.ai/agents"
 	AgentForgeURL = "https://cheshireterminal.ai/agents/forge"
@@ -39,10 +39,10 @@ const (
 
 	// Robinhood Chain (Arbitrum Orbit L2). Public RPC is a read-only fallback —
 	// do not treat it as deploy-safe; set RH_RPC_URL for production write traffic.
-	RobinhoodChainID       = 4663
-	RobinhoodPublicRPCURL  = "https://rpc.mainnet.chain.robinhood.com"
-	BlockscoutPROBaseURL   = "https://api.blockscout.com"
-	RobinhoodExplorerURL   = "https://robinhoodchain.blockscout.com"
+	RobinhoodChainID      = 4663
+	RobinhoodPublicRPCURL = "https://rpc.mainnet.chain.robinhood.com"
+	BlockscoutPROBaseURL  = "https://api.blockscout.com"
+	RobinhoodExplorerURL  = "https://robinhoodchain.blockscout.com"
 )
 
 // ── Config Structure ─────────────────────────────────────────────────
@@ -58,14 +58,14 @@ type Config struct {
 	Gateway   GatewayConfig   `json:"gateway"`
 
 	// ClawdBot-specific
-	Solana     SolanaConfig     `json:"solana"`
-	Robinhood  RobinhoodConfig  `json:"robinhood"`
-	Vulcan     VulcanConfig     `json:"vulcan"`
-	ClawdCode  ClawdCodeConfig  `json:"clawd_code"`
-	GodMode    GodModeConfig    `json:"god_mode"`
-	OODA       OODAConfig       `json:"ooda"`
-	Supabase   SupabaseConfig   `json:"supabase"`
-	Strategy   StrategyConfig   `json:"strategy"`
+	Solana    SolanaConfig    `json:"solana"`
+	Robinhood RobinhoodConfig `json:"robinhood"`
+	Vulcan    VulcanConfig    `json:"vulcan"`
+	ClawdCode ClawdCodeConfig `json:"clawd_code"`
+	GodMode   GodModeConfig   `json:"god_mode"`
+	OODA      OODAConfig      `json:"ooda"`
+	Supabase  SupabaseConfig  `json:"supabase"`
+	Strategy  StrategyConfig  `json:"strategy"`
 }
 
 // ── ClawdBot: Robinhood Chain / EVM ──────────────────────────────────
@@ -287,22 +287,22 @@ type GodModeConfig struct {
 // ── ClawdBot: OODA Loop ──────────────────────────────────────────────
 
 type OODAConfig struct {
-	Enabled          bool     `json:"enabled"`
-	IntervalSeconds  int      `json:"interval_seconds"`
-	Mode             string   `json:"mode"` // "live", "simulated", "backtest"
-	Watchlist        []string `json:"watchlist"`
-	MinSignalStr     float64  `json:"min_signal_strength"`
-	MinConfidence    float64  `json:"min_confidence"`
-	MaxPositions     int      `json:"max_positions"`
-	StopLossPct      float64  `json:"stop_loss_pct"`
-	TakeProfitPct    float64  `json:"take_profit_pct"`
-	PositionSizePct  float64  `json:"position_size_pct"`
+	Enabled         bool     `json:"enabled"`
+	IntervalSeconds int      `json:"interval_seconds"`
+	Mode            string   `json:"mode"` // "live", "simulated", "backtest"
+	Watchlist       []string `json:"watchlist"`
+	MinSignalStr    float64  `json:"min_signal_strength"`
+	MinConfidence   float64  `json:"min_confidence"`
+	MaxPositions    int      `json:"max_positions"`
+	StopLossPct     float64  `json:"stop_loss_pct"`
+	TakeProfitPct   float64  `json:"take_profit_pct"`
+	PositionSizePct float64  `json:"position_size_pct"`
 	// RiskPerTradePct is the fraction of equity risked if a trade's stop is hit.
 	// When > 0 the OODA loop sizes positions by risk (size scales inversely with
 	// stop distance); when 0 it falls back to fixed-fraction sizing.
-	RiskPerTradePct  float64  `json:"risk_per_trade_pct"`
-	LearnIntervalMin int      `json:"learn_interval_min"`
-	AutoOptimize     bool     `json:"auto_optimize"`
+	RiskPerTradePct  float64 `json:"risk_per_trade_pct"`
+	LearnIntervalMin int     `json:"learn_interval_min"`
+	AutoOptimize     bool    `json:"auto_optimize"`
 }
 
 // ── ClawdBot: Supabase ────────────────────────────────────────────────

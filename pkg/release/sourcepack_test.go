@@ -64,16 +64,16 @@ func TestValidateGitattributesFile_worktree(t *testing.T) {
 
 func TestNormalizeArchivePath(t *testing.T) {
 	cases := map[string]string{
-		"clawdbot-go-dev/go.mod":           "go.mod",
-		"clawdbot-go-v1.2.3/cmd/main.go":   "cmd/main.go",
-		"go.mod":                           "go.mod",
-		"./clawdbot-go-x/README.md":        "README.md",
-		"clawdbot-go-dev/":                 "",
-		"Zero-Bruh-main/go.mod":            "go.mod",
-		"Zero-Bruh-v1.0.0/cmd/main.go":     "cmd/main.go",
-		"./Zero-Bruh-x/README.md":          "README.md",
-		"Zero-Bruh-main/":                  "",
-		"zero-bruh-dev/pkg/x.go":           "pkg/x.go",
+		"clawdbot-go-dev/go.mod":         "go.mod",
+		"clawdbot-go-v1.2.3/cmd/main.go": "cmd/main.go",
+		"go.mod":                         "go.mod",
+		"./clawdbot-go-x/README.md":      "README.md",
+		"clawdbot-go-dev/":               "",
+		"Zero-Bruh-main/go.mod":          "go.mod",
+		"Zero-Bruh-v1.0.0/cmd/main.go":   "cmd/main.go",
+		"./Zero-Bruh-x/README.md":        "README.md",
+		"Zero-Bruh-main/":                "",
+		"zero-bruh-dev/pkg/x.go":         "pkg/x.go",
 	}
 	for in, want := range cases {
 		if got := NormalizeArchivePath(in); got != want {
