@@ -13,8 +13,10 @@ Public surfaces for the current ecosystem:
 - **Agent hub** — `https://cheshireterminal.ai/agents`
 - **Agent forge** — `https://cheshireterminal.ai/agents/forge`
 - **npm agents** — `https://www.npmjs.com/package/cheshire-terminal-agents`
+- **npm runtime** — `https://www.npmjs.com/package/clawdbot-go`
 - **Agents repo** — `https://github.com/Solizardking/Cheshire-Terminal-Agents`
 - **SkillHub** — `https://github.com/Solizardking/skillhub-main`
+- **SPA ↔ agent map** — [`docs/CHESHIRE_CLIENT.md`](docs/CHESHIRE_CLIENT.md) (Cheshire Terminal client ↔ clawdbot-go)
 
 Local runtime catalog roots:
 - **Skills (open RH/EVM pack, anyone can use)** — `./skills` (`CLAWDBOT_SKILLS_DIR`; default when `pack-index.json` is present)

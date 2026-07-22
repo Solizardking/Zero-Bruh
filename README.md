@@ -180,40 +180,74 @@ Install both when you need identity forge **and** a local Zero Clawd console.
 
 ### E · Connect from Cheshire Terminal (hosted `/zeroclawd`)
 
+> **Canonical SPA ↔ agent map:** [`docs/CHESHIRE_CLIENT.md`](docs/CHESHIRE_CLIENT.md)  
+> (`# Cheshire Terminal client ↔ clawdbot-go`)
+
 **Zero Clawd** (this repo / [`clawdbot-go`](https://www.npmjs.com/package/clawdbot-go)) is the **local runtime**.  
-**Cheshire Terminal** hosts the public SPA that **communicates with** your agent after install.
+**Cheshire Terminal** hosts the public SPA under `cheshire-terminal/client` that is the **hosted install + connect UI**.
+
+| Item | Value |
+|------|--------|
+| npm | https://www.npmjs.com/package/clawdbot-go |
+| Default console | `http://127.0.0.1:18800` |
+| CORS for production SPA | `export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai` |
 
 #### How this runtime talks to the Cheshire client
 
 ```
 Browser (cheshireterminal.ai SPA)
   client/src/pages/ClawdbotGoPage.tsx     ← /zeroclawd UI
-  client/src/lib/zeroClawd.ts            ← URL join, probe mode, chat request builders
-  client/src/App.tsx                     ← routes /zeroclawd · /clawdbot-go · /clawdbot
+  client/src/lib/zeroClawd.ts            ← URL join, probe mode, allowlist, chat builders
+  client/src/App.tsx                     ← routes /zeroclawd · /clawdbot-go · /clawdbot · /zero-clawd
         │
         ├─ loopback agent (default http://127.0.0.1:18800)
         │     browser-direct fetch → GET /api/health · /api/status · /api/dna
         │     (requires CORS: CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai)
         │
         └─ same-origin Cheshire API (Fly)
-              GET  /api/zeroclawd/npm      → registry.npmjs.org/clawdbot-go/latest
-              POST /api/zeroclawd/probe    → SSRF-hardened proxy for public agent hosts
-              POST /api/zeroclawd/chat     → hosted chat bridge → your agent
+              GET  /api/zeroclawd/npm           → registry.npmjs.org/clawdbot-go/latest
+              POST /api/zeroclawd/probe         → SSRF-hardened proxy for public agent hosts
+              POST /api/zeroclawd/chat          → hosted chat bridge → your agent
+              POST /api/zeroclawd/create-agent  → custom SOUL.md + DNA + optional Gemini avatar
 
 Local clawdbot-go web console (this repo: web/backend + web/frontend)
-  go run ./web/backend -port 18800   ·or·  clawdbot web
+  go run ./web/backend -port 18800   ·or·  clawdbot web   ·or·  ./start.sh
   Serves: /api/health · /api/status · /api/dna · chat · ecosystem · RH readiness
+```
+
+#### SPA tree that talks to this agent
+
+```
+cheshire-terminal/client/
+  src/App.tsx                         routes /zeroclawd · /clawdbot-go · /clawdbot · /zero-clawd
+  src/pages/ClawdbotGoPage.tsx        install one-shots, Connect, health/status/DNA, chat
+  src/lib/zeroClawd.ts                normalize base URL, probe mode, allowlist, chat builders
+  src/lib/zeroClawd.test.ts           fixtures matching web/backend responses
+  src/pages/CheshireComputerPage.tsx  E2B desk → installs clawdbot-go for CLAWD holders
+  src/components/                     shared nav, badges, layout
+  src/hooks/ · src/contexts/          wallet / auth shell around the hub
+  src/main.tsx · index.css            SPA bootstrap
 ```
 
 | Cheshire client path | Role |
 |----------------------|------|
 | `client/src/pages/ClawdbotGoPage.tsx` | Install copy, Connect form, health/status/DNA, chat |
-| `client/src/lib/zeroClawd.ts` | Contracts mirror this backend; probe mode selection |
+| `client/src/lib/zeroClawd.ts` | Contracts mirror this backend; probe mode + allowlist |
 | `client/src/lib/zeroClawd.test.ts` | Fixtures for go-bot health/status/DNA |
 | `client/src/App.tsx` | Public routes (no $CLAWD gate) |
 | `client/src/pages/CheshireComputerPage.tsx` | E2B desk installs `clawdbot-go` for holders |
 | `client/src/components/*` · `hooks/*` · `contexts/*` | Shared shell (nav, wallet, UI) around the hub |
-| `server/routes/zeroclawd.ts` | npm meta + probe + chat (not in `client/`, but same product) |
+| `server/routes/zeroclawd.ts` | npm meta + probe + chat + create-agent (not in `client/`, but same product) |
+
+| From SPA | To | When |
+|----------|-----|------|
+| `fetch(http://127.0.0.1:18800/api/health)` etc. | This process (`web/backend`) | Loopback / LAN agent (browser-direct) |
+| `POST /api/zeroclawd/probe` | Cheshire Fly API → your public agent | Non-loopback agent base URL |
+| `POST /api/zeroclawd/chat` | Cheshire Fly API → agent chat | Hosted chat bridge |
+| `GET /api/zeroclawd/npm` | `registry.npmjs.org/clawdbot-go/latest` | Live package card on `/zeroclawd` |
+| `POST /api/zeroclawd/create-agent` | Cheshire Fly API | Custom SOUL.md + DNA + optional Gemini avatar |
+
+Allowlisted agent paths (browser / probe): see `ZERO_CLAWD_AGENT_ALLOWLIST` in `client/src/lib/zeroClawd.ts` (full map: [`docs/CHESHIRE_CLIENT.md`](docs/CHESHIRE_CLIENT.md)).
 
 | Surface | Where |
 |---------|--------|
@@ -226,6 +260,8 @@ Local clawdbot-go web console (this repo: web/backend + web/frontend)
 | **npm package** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) |
 | **GitHub release** | [v1.0.2](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
 
+#### Minimal connect loop
+
 ```bash
 # One-shots (same curl lines as the hosted hub + release notes)
 curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
@@ -234,11 +270,30 @@ curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install
 ./install-npm.sh
 ./install.sh
 
-# Start agent API/console + allow browser-direct probes from Cheshire SPA
+# Or via npm
+npm install -g clawdbot-go
 export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai
-clawdbot web    # or: go run ./web/backend -port 18800
-# → open https://cheshireterminal.ai/zeroclawd and Connect http://127.0.0.1:18800
+clawdbot web   # or: go run ./web/backend -port 18800
+# open https://cheshireterminal.ai/zeroclawd → Connect → http://127.0.0.1:18800
 ```
+
+From this source checkout (animated launcher):
+
+```bash
+export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai
+./start.sh
+```
+
+#### Create agent on the site
+
+On [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) operators can author a custom agent:
+
+1. Name, role, system prompt (becomes `SOUL.md` for `pkg/agent` `LoadSoul`)
+2. Optional personality + tagline (`IDENTITY.md`)
+3. Synthetic `agent-dna.json` (`clawd.agent.dna/v1`, same shape as `pkg/dna`)
+4. Optional Gemini Nano Banana avatar
+
+Drop the downloaded files into `~/.clawdbot/workspace/<slug>/` (or this repo root), start the web console with CORS, then Connect.
 
 **Agent endpoints the SPA probes** (browser-direct for loopback; `/api/zeroclawd/probe` for public agents):
 
