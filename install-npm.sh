@@ -132,7 +132,14 @@ fi
 if [[ "${WITH_GO}" == "1" ]]; then
   if command -v go >/dev/null 2>&1; then
     info "Chaining classic install.sh for Go clawdbot binary..."
-    if curl -fsSL "${REPO_RAW}/${REF}/install.sh" | CLAWDBOT_INSTALL_DIR="${INSTALL_DIR}" CLAWDBOT_SKIP_SKILL_SEED=1 bash; then
+    # Prefer the install.sh next to this script when run from a checkout.
+    if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/install.sh" ]]; then
+      if CLAWDBOT_INSTALL_DIR="${INSTALL_DIR}" CLAWDBOT_SKIP_SKILL_SEED=1 bash "${SCRIPT_DIR}/install.sh"; then
+        success "Go binary install finished (local install.sh)"
+      else
+        warn "Local install.sh failed — skill pack is still installed; retry later"
+      fi
+    elif curl -fsSL "${REPO_RAW}/${REF}/install.sh" | CLAWDBOT_INSTALL_DIR="${INSTALL_DIR}" CLAWDBOT_SKIP_SKILL_SEED=1 bash; then
       success "Go binary install finished"
     else
       warn "Classic install.sh failed — skill pack is still installed; retry later"

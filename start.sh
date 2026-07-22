@@ -54,14 +54,25 @@ fi
 # ── Create build dir ─────────────────────────────────────────────
 mkdir -p build
 
-# ── Load .env into environment ───────────────────────────────────
-if [ -f ".env" ]; then
-  set -a
-  source .env 2>/dev/null || true
-  set +a
-  echo -e "  ${GREEN}✔${RESET} Loaded .env"
+# ── Load .env / .env.local into environment ──────────────────────
+for _envf in ".env" ".env.local"; do
+  if [ -f "$_envf" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$_envf" 2>/dev/null || true
+    set +a
+    echo -e "  ${GREEN}✔${RESET} Loaded ${_envf}"
+  fi
+done
+
+# Browser-direct Connect from cheshireterminal.ai/zeroclawd needs CORS.
+if [ -z "${CLAWDBOT_CORS_ORIGINS:-}" ]; then
+  export CLAWDBOT_CORS_ORIGINS="https://cheshireterminal.ai"
+  echo -e "  ${TEAL}ℹ${RESET} CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai (default for Connect)"
 fi
 
+echo ""
+echo -e "${DIM}    After launch: open https://cheshireterminal.ai/zeroclawd → Connect http://127.0.0.1:18800${RESET}"
 echo ""
 
 # ── Run the animated launcher ────────────────────────────────────

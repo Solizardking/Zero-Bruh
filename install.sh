@@ -22,6 +22,14 @@ INSTALL_DIR="${CLAWDBOT_INSTALL_DIR:-$HOME/.clawdbot}"
 BIN_DIR="${CLAWDBOT_BIN_DIR:-$HOME/.local/bin}"
 SOURCE_MODE="${CLAWDBOT_SOURCE_MODE:-archive}"
 REF="${CLAWDBOT_REF:-main}"
+# When this script lives next to go.mod + cmd/clawdbot, prefer that tree
+# (./install.sh from a clone) instead of re-downloading into ~/.clawdbot/src.
+# Override with CLAWDBOT_FORCE_REMOTE_SOURCE=1 to always fetch.
+_INSTALLER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || true)"
+LOCAL_SOURCE_DIR=""
+if [[ -n "${_INSTALLER_DIR}" && -f "${_INSTALLER_DIR}/go.mod" && -d "${_INSTALLER_DIR}/cmd/clawdbot" ]]; then
+  LOCAL_SOURCE_DIR="${_INSTALLER_DIR}"
+fi
 CORE_AI_REPO="${CLAWDBOT_CORE_AI_REPO:-https://github.com/Solizardking/core-ai}"
 CORE_AI_REF="${CLAWDBOT_CORE_AI_REF:-clawd-stack-integration}"
 CORE_AI_DIR="${CLAWDBOT_CORE_AI_DIR:-$INSTALL_DIR/core-ai}"
@@ -235,15 +243,18 @@ success "Go: ${GO_VERSION}"
 check_cmd git || die "git is required. Install it and re-run."
 
 # ── Fetch source ──────────────────────────────────────────────────────────────
-REPO_DIR="$INSTALL_DIR/src"
 mkdir -p "$INSTALL_DIR"
+REPO_DIR="$INSTALL_DIR/src"
 
-if [[ "$SOURCE_MODE" == "archive" && ! -d "$REPO_DIR/.git" ]]; then
+if [[ -n "${LOCAL_SOURCE_DIR}" && "${CLAWDBOT_FORCE_REMOTE_SOURCE:-0}" != "1" ]]; then
+  REPO_DIR="$LOCAL_SOURCE_DIR"
+  info "Using local source checkout: $REPO_DIR"
+elif [[ "$SOURCE_MODE" == "archive" && ! -d "$REPO_DIR/.git" ]]; then
   info "Downloading clawdbot-go source archive (${REF})..."
   install_source_archive "$REPO" "$REF" "$REPO_DIR" "clawdbot-go"
 elif [[ -d "$REPO_DIR/.git" ]]; then
   info "Updating existing repo..."
-  git -C "$REPO_DIR" pull --ff-only --quiet
+  git -C "$REPO_DIR" pull --ff-only --quiet || warn "git pull failed — using existing tree"
 else
   info "Cloning clawdbot-go..."
   install_source_git "$REPO" "$REF" "$REPO_DIR" "clawdbot-go"
