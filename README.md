@@ -19,65 +19,68 @@
 
 </div>
 
-**Zero Clawd** is a small, self-hostable runtime for AI agents that need to work on **Solana** — trading loops, wallets, market data, skills, and a local web console — without a heavy cloud stack.
+**Zero Clawd** is a small, self-hostable runtime for AI agents on **Solana** — trading loops, wallets, market data, skills, and a local web console — without a heavy cloud stack.
 
-It is **Solana-first**. Robinhood Chain / EVM support is additive through an open skill pack (token launch, Uniswap, registries, payments). You bring your own keys and risk limits; live money paths stay opt-in.
+It is **Solana-first**. Robinhood Chain / EVM is additive via an open skill pack. You bring your own keys; live money paths stay opt-in.
 
-### Official release (public)
+---
 
-| Channel | Status |
-|---------|--------|
-| **GitHub** | Public repo [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh) · tag / notes [**v1.0.2**](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
-| **npm** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) (`latest`) · homepage [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
-| **Install scripts (raw)** | [`install-npm.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh) · [`install.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh) |
-| **Hosted connect** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) (aliases: `/clawdbot-go`, `/clawdbot`) |
-| **Computer / E2B desk** | [cheshireterminal.ai/cheshire-computer](https://cheshireterminal.ai/cheshire-computer) · `curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh \| bash` (installs this package) |
+## Start here (3 minutes)
+
+Pick **one** path. Then connect the hosted UI to your local console.
+
+| Path | Command | What you get |
+|------|---------|--------------|
+| **A · npm (recommended)** | `npm i -g clawdbot-go@1.0.2 && clawdbot-go install` | Skills + env into `~/.clawdbot` |
+| **B · curl skills** | `curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh \| bash` | Same as A (+ optional Go CLI) |
+| **C · curl Go CLI** | `curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh \| bash` | `clawdbot` binary + DNA + wallet |
+| **D · this checkout** | `export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai && ./start.sh` | Build + animated launcher + web |
 
 ```bash
-# Fastest path (published npm package)
-# https://www.npmjs.com/package/clawdbot-go
-npm install -g clawdbot-go@1.0.2
-npx clawdbot-go install
-
-# Or curl one-shots from the public GitHub main branch
-curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh | bash
-curl -fsSL https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh | bash
-
-# Cheshire Terminal Computer (E2B desk + ct_os_ + clawdbot-go for CLAWD holders)
-curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh | bash
-# packages only (local Node, no E2B):
-curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh | bash -s -- --packages-only
+# After any install — local console + Cheshire Connect
+export CLAWDBOT_CORS_ORIGINS=https://cheshireterminal.ai
+clawdbot web    # → http://127.0.0.1:18800
+# Open https://cheshireterminal.ai/zeroclawd → Connect → http://127.0.0.1:18800
 ```
-
-### What you get
 
 | Piece | What it is |
 |-------|------------|
-| **CLI** (`clawdbot`) | Go binary for agent chat, OODA loops, catalog, doctor, status, web console |
-| **npm package** (`clawdbot-go@1.0.2`) | One-shot install + RH skill pack into `~/.clawdbot` (and common agent skill dirs); ships `install.sh` + `install-npm.sh` |
-| **Skill pack** | 23 open skills under `skills/` — FunPump launch, swaps, LP, Cheshire registries, zk-omni |
-| **Web console** | Local dashboard/API (default `127.0.0.1:18800`) you can also wire to [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
-| **Laws + DNA** | Six-law harness, onchain-oriented identity, and starter agent DNA at install |
+| **CLI** (`clawdbot`) | Agent chat, OODA, catalog, doctor, status, web console |
+| **npm** ([`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go)) | One-shot skill pack + install hooks |
+| **Skills** | 23 open skills under `skills/` (FunPump, Uniswap, registries, zk-omni) |
+| **Web console** | `127.0.0.1:18800` — also wire to [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Scripts** | [`install-npm.sh`](install-npm.sh) · [`install.sh`](install.sh) · [`start.sh`](start.sh) |
 
-### Names (so the repo is less confusing)
+### Names (quick)
 
 | You see… | Means… |
 |----------|--------|
-| **Zero Clawd** | Product name (docs, DNA, UI, install banners) |
-| **`clawdbot` / `clawdbot-go`** | CLI binary and npm package (kept for compatibility) |
-| **Zero-Bruh** | Public GitHub repository (`Solizardking/Zero-Bruh`) |
-| **`cheshire-terminal-agents`** | Separate npm package: agent catalog + dual-chain forge SDK (not the Go runtime) |
+| **Zero Clawd** | Product name (docs, DNA, UI) |
+| **`clawdbot` / `clawdbot-go`** | CLI binary / npm package |
+| **Zero-Bruh** | Public GitHub repo |
+| **`cheshire-terminal-agents`** | Separate agents SDK (not this Go runtime) |
 
-### At a glance
+### Docs map (read these next)
 
-- **Solana** market/trading tools (Jupiter, Helius, Birdeye, Vulcan/Phoenix perps, and more when configured)
-- **Robinhood Chain 4663** via the open skill pack + FunPump product APIs
-- **ZK primitives** tree for nullifiers / attestations (observer by default; live writes are delegated)
-- **Lightweight footprint** — slim source archive via `make package`, stripped CLI on the order of ~10 MB
-- **Grok-first** model defaults, with other providers via env
-- **Cheshire Terminal** product hub for install + connect after local console is up
+| Doc | For |
+|-----|-----|
+| [**SPA ↔ agent**](docs/CHESHIRE_CLIENT.md) | Cheshire Terminal client routes, probe/chat, create-agent |
+| [**`pkg/` map**](docs/PKG_MAP.md) | All 53 Go packages — what each does |
+| [**SOL GPT tools**](docs/SOL_GPT_TOOLS.md) | **72** non-custodial trading research tools (Phoenix, Birdeye, Helius, DFlow) |
+| [**RH skill stack**](docs/RH_CRYPTO_AGENT_STACK.md) | FunPump / Uniswap open pack |
+| [**Security**](SECURITY.md) | Threat model + secrets |
 
-Jump to: [One-shot install](#-one-shot-install-grok-build-style) · [Cheshire Computer / E2B](#f--cheshire-terminal-computer-e2b--clawd-holders) · [Connect (Cheshire)](#e--connect-from-cheshire-terminal-hosted-zeroclawd) · [SPA map](docs/CHESHIRE_CLIENT.md) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Six laws](#-the-six-law-harness) · [CLI](#-cli-reference) · [RH skill pack](#robinhood-crypto-agent-open-stack-anyone-can-use)
+**Jump:** [Install detail](#-one-shot-install-grok-build-style) · [Connect](#e--connect-from-cheshire-terminal-hosted-zeroclawd) · [Computer / E2B](#f--cheshire-terminal-computer-e2b--clawd-holders) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [CLI](#-cli-reference) · [Six laws](#-the-six-law-harness)
+
+### Official release
+
+| Channel | Status |
+|---------|--------|
+| **GitHub** | [Solizardking/Zero-Bruh](https://github.com/Solizardking/Zero-Bruh) · [**v1.0.2**](https://github.com/Solizardking/Zero-Bruh/releases/tag/v1.0.2) |
+| **npm** | [`clawdbot-go@1.0.2`](https://www.npmjs.com/package/clawdbot-go) · homepage [zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Install scripts** | [`install-npm.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install-npm.sh) · [`install.sh`](https://raw.githubusercontent.com/Solizardking/Zero-Bruh/main/install.sh) |
+| **Hosted connect** | [cheshireterminal.ai/zeroclawd](https://cheshireterminal.ai/zeroclawd) |
+| **Computer / E2B** | [cheshire-computer](https://cheshireterminal.ai/cheshire-computer) · `curl -fsSL https://cheshireterminal.ai/api/e2b/install.sh \| bash` |
 
 ---
 
@@ -677,6 +680,9 @@ tooling is fetched and built as a sidecar after the Go binary is installed.
 
 ## 🏗 Architecture
 
+**Full package table:** [`docs/PKG_MAP.md`](docs/PKG_MAP.md) (all **53** `pkg/*` modules).  
+**Trading research catalog:** [`docs/SOL_GPT_TOOLS.md`](docs/SOL_GPT_TOOLS.md) (**72** SOL GPT tools).
+
 ```
 clawdbot-go/
 │
@@ -684,12 +690,13 @@ clawdbot-go/
 │   ├── clawdbot/                 CLI agent (cobra)
 │   └── clawdbot-tui/             TUI launcher (tcell/tview)
 │
-├── pkg/                         ── ~53 Packages, 24K+ lines ──
+├── pkg/                         ── 53 packages (see docs/PKG_MAP.md) ──
 │   │
 │   │  ┌─ Core Agent ────────────────────────────────────────┐
-│   ├── agent/                   OODA loop, hooks, tool executor, prompts
+│   ├── agent/                   Soul prompts, tool executor hooks
 │   ├── strategy/                RSI + EMA cross + ATR signal engine
 │   ├── memory/                  ClawVault + Supabase MemoryEngine
+│   ├── session/ · commands/ · tools/ · laws/ · dna/
 │   ├── research/                Dexter deep research agent
 │   │  └─────────────────────────────────────────────────────┘
 │   │
@@ -697,12 +704,14 @@ clawdbot-go/
 │   ├── gameoflife/              Conway's Life — universal computer
 │   ├── middleout/               Content-cache, Ralph loop, router
 │   ├── weissman/                Compression score
-│   ├── zero/                    Zero-dependency benchmark
+│   ├── zero/                    Flat queue + ZK run attestation
 │   │  └─────────────────────────────────────────────────────┘
 │   │
-│   │  ┌─ Solana Integrations ───────────────────────────────┐
-│   ├── solana/                  Birdeye v3, Helius RPC + DAS, Jupiter swaps
-│   ├── aster/                   Aster DEX perps (HMAC-signed)
+│   │  ┌─ Solana / trading ──────────────────────────────────┐
+│   ├── solana/                  Birdeye, Helius, Jupiter, trending
+│   ├── trading/ · phoenix/ · vulcan/ · aster/ · wallet/
+│   ├── ooda/                    TypeScript OODA harness wrapper
+│   ├── birthfund/               Explicit agent birth funding
 │   │  └─────────────────────────────────────────────────────┘
 │   │
 │   │  ┌─ Robinhood / EVM ───────────────────────────────────┐
@@ -713,17 +722,10 @@ clawdbot-go/
 │   │  ┌─ Infrastructure ───────────────────────────────────-┐
 │   ├── config/                  Config + RH env (BLOCKSCOUT_API_KEY, RH_RPC_URL)
 │   ├── keyvault/                Managed API keys allowlist + .env.local vault
-│   ├── doctor/                  Runtime diagnostics (incl. connectors.robinhood)
-│   ├── hardware/                I2C Modulino® adapter + drivers
-│   ├── providers/               LLM abstraction (OpenRouter, etc.)
-│   ├── channels/                Telegram, Discord, WebSocket
-│   ├── catalog/                 Skills + agents + ZK index (RH pack discovery)
-│   ├── mcp/                     Model Context Protocol server
-│   ├── auth/                    Authentication + pairing
-│   ├── bus/                     Event bus (pub/sub)
-│   ├── commands/                Command registry and routing
-│   ├── tools/                   Tool interface + registry
-│   └── ...                      health, heartbeat, logger, identity, etc.
+│   ├── doctor/ · health/ · catalog/ · skills/ · mcp/
+│   ├── providers/ · godmode/ · channels/ · auth/ · bus/
+│   ├── hardware/ · spinner/ · release/ · clawdcode/
+│   └── ...                      cron, devices, fileutil, identity, logger, …
 │
 ├── skills/                      RH Crypto Agent Open Stack (pack-index v2, 23 skills)
 │   ├── pack-index.json          Authoritative skill ids + funpump.ai / forge hosts

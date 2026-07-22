@@ -17,6 +17,8 @@ Public surfaces for the current ecosystem:
 - **Agents repo** — `https://github.com/Solizardking/Cheshire-Terminal-Agents`
 - **SkillHub** — `https://github.com/Solizardking/skillhub-main`
 - **SPA ↔ agent map** — [`docs/CHESHIRE_CLIENT.md`](docs/CHESHIRE_CLIENT.md) (Cheshire Terminal client ↔ clawdbot-go)
+- **Go package map** — [`docs/PKG_MAP.md`](docs/PKG_MAP.md) (all `pkg/*` modules)
+- **SOL GPT tools** — [`docs/SOL_GPT_TOOLS.md`](docs/SOL_GPT_TOOLS.md) (72 non-custodial trading tools)
 
 Local runtime catalog roots:
 - **Skills (open RH/EVM pack, anyone can use)** — `./skills` (`CLAWDBOT_SKILLS_DIR`; default when `pack-index.json` is present)

@@ -20,6 +20,7 @@ test("install-npm product line includes zeroclawd + agent hub", () => {
   assert.match(src, /Connect from Cheshire Terminal/);
   assert.match(src, /CLAWDBOT_CORS_ORIGINS=https:\/\/cheshireterminal\.ai/);
   assert.match(src, /127\.0\.0\.1:18800/);
+  assert.match(src, /local install\.sh/);
 });
 
 test("install.sh DNA and env use Zero Clawd product name", () => {

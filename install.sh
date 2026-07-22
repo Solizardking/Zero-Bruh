@@ -462,6 +462,8 @@ append_env_if_missing "SOLANA_WALLET_KEYPAIR" "$AGENT_WALLET_PATH"
 append_env_if_missing "CLAWDBOT_SKILLS_DIR" "$LOCAL_SKILLS_DIR"
 append_env_if_missing "CLAWDBOT_AGENTS_DIR" "$LOCAL_AGENTS_DIR"
 append_env_if_missing "CLAWDBOT_ZK_PRIMITIVES_DIR" "$LOCAL_ZK_PRIMITIVES_DIR"
+# Browser-direct Connect from https://cheshireterminal.ai/zeroclawd
+append_env_if_missing "CLAWDBOT_CORS_ORIGINS" "https://cheshireterminal.ai"
 
 # Symlink config into home
 if [[ ! -L "$HOME/.clawdbot" && "$INSTALL_DIR" != "$HOME/.clawdbot" ]]; then
