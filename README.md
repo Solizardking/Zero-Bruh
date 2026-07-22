@@ -1119,6 +1119,24 @@ executes `ooda/loop.ts` from the same binary and writes every tick to
 | **ATR** | 14-period with Wilder smoothing | Volatility-based SL/TP: SL = 1.5×ATR, TP = 3×ATR |
 | **Auto-Optimizer** | Hill-climbing on win rate + avg PnL | Adjusts RSI thresholds, SL width, position size |
 
+### SOL GPT tool catalog (72 · non-custodial)
+
+Cheshire **SOL GPT** exposes a shared research catalog for Kimi / OpenRouter / Grok:
+
+| | |
+|--|--:|
+| **Shipped tools** | **72** |
+| Core (always on for Kimi) | 37 |
+| Phoenix Eternal perps research | 16 |
+| Live place/deposit/withdraw orders | **none** (user signs spot only) |
+
+Groups: Phoenix · market data · OHLCV · wallet · Helius Wallet API · swaps/sends · prediction markets · browser · agents/DAS · platform.
+
+**Execution model:** research tools return JSON; `prepare_user_swap` / `prepare_user_transfer` return unsigned txs for the browser wallet. No server hot wallet.
+
+Full tables, core name list, and env vars: **[`docs/SOL_GPT_TOOLS.md`](docs/SOL_GPT_TOOLS.md)**.  
+Go cousins: `pkg/solana`, `pkg/phoenix`, `pkg/vulcan`, `pkg/trading`, `pkg/wallet`, `pkg/tools` — map in [`docs/PKG_MAP.md`](docs/PKG_MAP.md).
+
 ---
 
 ## 🌐 Web Console
